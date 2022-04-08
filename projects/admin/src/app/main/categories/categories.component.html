@@ -1,0 +1,154 @@
+<p-toolbar>
+  <ng-template pTemplate="left">
+    <button
+      pButton
+      pRipple
+      type="button"
+      icon="fa fa-plus"
+      label="Thêm loại"
+      class="p-button-sm mr-1"
+      (click)="showAddDialog()"
+    ></button>
+    <!-- <p-dropdown [options]="visibleOptions" >
+    </p-dropdown> -->
+  </ng-template>
+  <ng-template pTemplate="right">
+    <form (submit)="dt.filterGlobal(search.value, 'contains')" class="p-inputgroup">
+      <span class="p-inputgroup-addon"> <i class="pi pi-search"></i></span>
+      <input
+        pInputText
+        type="text"
+        #search
+        placeholder="Từ khóa tìm kiếm..."
+        class="w-100"
+      />
+      <button
+        pButton
+        type="submit"
+        label="Tìm"
+      ></button>
+    </form>
+  </ng-template>
+</p-toolbar>
+<p-table
+  #dt
+  [value]="categories"
+  [lazy]="true"
+  (onLazyLoad)="loadCategories($event)"
+  responsiveLayout="scroll"
+  dataKey="id"
+  [selection]="selectedCategories"
+  [selectAll]="selectAll"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[5, 10, 15, 25]"
+  [totalRecords]="totalRecords"
+  [loading]="loading"
+  [globalFilterFields]="['name']"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="name">
+        Tên loại <p-sortIcon field="name"></p-sortIcon>
+      </th>
+      <th pSortableColumn="visible">
+        Hiển thị <p-sortIcon field="visible"></p-sortIcon>
+      </th>
+      <th pSortableColumn="created_at">
+        Thời gian tạo<p-sortIcon field="created_at"></p-sortIcon>
+      </th>
+      <th>
+        Ghi chú
+      </th>
+      <th style="width: 7rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-cate>
+    <tr>
+      <td>{{ cate.name }}</td>
+      <td>{{ cate.visible ? "Có" : "Không" }}</td>
+      <td>{{ cate.created_at | date:'HH:mm dd/MM/yyyy' }}</td>
+      <td>{{ cate.note}}</td>
+      <td class="d-md-flex">
+        <button
+          pButton
+          pRipple
+          type="button"
+          icon="far fa-edit"
+          class="p-button-rounded p-button-sm mr-1"
+          (click)="showEditDialog(cate)"
+        ></button>
+        <button
+          pButton
+          pRipple
+          type="button"
+          icon="far fa-trash-alt"
+          class="p-button-rounded p-button-danger"
+          (click)="delete(cate)"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [draggable]="true"
+  [resizable]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [header]="(displayAddDialog ? 'Thêm' : 'Sửa') + ' loại sản phẩm'"
+  [(visible)]="formVisible"
+  [style]="{ width: '50vw' }"
+  styleClass="p-fluid"
+  [modal]="true"
+>
+  <div class="p-field">
+    <label for="name"><strong>Tên loại</strong></label>
+    <span *ngIf="nameInvalid" class="text-danger d-block">Tên loại đã tồn tại</span>
+    <input
+      [class.ng-invalid]="nameInvalid"
+      type="text"
+      (input)="nameInvalid = false"
+      [(ngModel)]="category.name"
+      name="category-name"
+      id="name"
+      pInputText
+    />
+  </div>
+  <div class="d-flex justify-content-start mt-3">
+    <label class="mr-3" for="visible"
+      ><strong>Hiện thị ở trang chủ</strong></label
+    >
+    <p-inputSwitch id="visible" [(ngModel)]="category.visible"></p-inputSwitch>
+  </div>
+  <ng-template pTemplate="footer">
+    <button 
+      *ngIf="displayAddDialog"
+      pButton
+      pRipple
+      icon="fas fa-check"
+      class="p-button-success p-button-sm"
+      label="Thêm"
+      type="button"
+      (click)="add()"
+    ></button>
+    <button 
+      *ngIf="displayEditDialog"
+      pButton
+      pRipple
+      icon="fas fa-check"
+      class="p-button-success p-button-sm"
+      label="Lưu"
+      type="button"
+      (click)="save()"
+    ></button>
+    <button
+      pButton
+      pRipple
+      class="p-button-danger p-button-sm"
+      label="Hủy"
+      type="button"
+      (click)="formVisible=false; nameInvalid = false;"
+    ></button>
+  </ng-template>
+</p-dialog>

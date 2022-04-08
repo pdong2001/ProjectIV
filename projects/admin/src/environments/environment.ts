@@ -3,7 +3,12 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  REST_API_SERVER : 'http://localhost:8000/api',
+  FILE_GET_BY_NAME: 'http://localhost:8000/api/files/',
+  FILE_GET_BY_BLOB_ID: 'http://localhost:8000/api/blobs/',
+  FILE_DOWNLOAD_BY_NAME: 'http://localhost:8000/api/file/download/',
+  FILE_DOWNLOAD_BY_BLOB_ID: 'http://localhost:8000/api/blobs/download/',
 };
 
 /*

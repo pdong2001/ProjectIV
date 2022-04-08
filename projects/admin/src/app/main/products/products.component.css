@@ -1,0 +1,13 @@
+.image-block {
+    position: relative;
+}
+
+.image-block button
+{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    outline: none;
+    border: none;
+    background: none;
+}

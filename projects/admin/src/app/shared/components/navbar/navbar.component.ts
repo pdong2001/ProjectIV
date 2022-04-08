@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { UserDto } from '../../../Contracts/User/user-dto';
+import { AuthDataService } from '../../../services/auth-data.service';
+import { OAuthService } from '../../../services/oauth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -7,9 +11,38 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavbarComponent implements OnInit {
 
-  constructor() { }
+  user!:UserDto;
+
+  constructor(private authService:OAuthService,
+    private authDataService:AuthDataService,
+    private router:Router) { }
 
   ngOnInit(): void {
+    this.authService.getUser()
+    .toPromise()
+    .then(res => {
+      if (res?.status && res.data)
+      {
+        this.user = res.data;
+      }
+      else
+      {
+        this.authDataService.token = null;
+        this.router.navigate(['account', 'login']);
+      }
+    });
+  }
+
+  logout()
+  {
+    this.authService.logout().toPromise()
+    .then(res => {
+      if (res?.status == true)
+      {
+        this.authDataService.token = null;
+        this.router.navigate(['account', 'login']);
+      }
+    })
   }
 
 }
