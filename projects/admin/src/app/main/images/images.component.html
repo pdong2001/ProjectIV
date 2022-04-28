@@ -9,9 +9,18 @@
       class="p-button-sm mr-1 my-1"
       (click)="displayAddDialog = true"
     ></button>
+    <button
+      pButton
+      pRipple
+      type="button"
+      icon="fa fa-trash"
+      label="Xóa ảnh trùng lặp"
+      class="p-button-sm p-button-success mr-1 my-1"
+      (click)="deleteDuplicatedImage()"
+    ></button>
   </ng-template>
   <ng-template pTemplate="right">
-    <form (submit)="dv.filter(search.value)" class="p-inputgroup my-1">
+    <form (submit)="searchBlob(search.value)" class="p-inputgroup my-1">
       <span class="p-inputgroup-addon"> <i class="pi pi-search"></i></span>
       <input
         pInputText
@@ -30,25 +39,28 @@
   [value]="blobs"
   [lazy]="true"
   (onLazyLoad)="loadBlob($event)"
-  [rows]="9"
-  [rowsPerPageOptions]="[9, 15, 30]"
+  [rows]="12"
+  [rowsPerPageOptions]="[12, 16, 24]"
   [paginator]="true"
-  filterBy="name"
   emptyMessage="Không có hình ảnh được lưu trữ"
   paginatorDropdownAppendTo="body"
   layout="grid"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate="Đang hiển thị từ {first} đến {last} của {totalRecords} hình ảnh"
 >
   <ng-template let-blob pTemplate="gridItem">
-    <div class="col-12 col-md-3 col-sm-6 my-2">
+    <div class="col-12 col-md-4 col-lg-2 col-sm-6 my-2">
       <div
         class="h-100 d-flex justify-content-between flex-column border rounded"
       >
         <p-image
           appendTo="body"
-          imageClass="w-100"
+          class="mx-auto h-100"
           [src]="getFilePath(blob.file_path)"
           [alt]="blob.name"
           [preview]="true"
+          imageClass="h-100 mw-100"
+          styleClass="h-100 mw-100"
         ></p-image>
         <div>
           <strong class="d-block text-center">{{ blob.name }}</strong>
@@ -56,16 +68,27 @@
             <button
               pButton
               pRipple
-              icon="far fa-edit"
-              class="my-1 mx-3 p-button-sm"
+              icon="fas fa-plus"
+              class="m-3 p-button-sm p-button-success"
+              (click)="duplicate(blob)"
+              pTooltip="Nhân bản ảnh"
             ></button>
+            <button
+              pButton
+              pRipple
+              icon="far fa-edit"
+              class="m-3 p-button-sm"
+              (click)="showEditDialog(blob)"
+              pTooltip="Chỉnh sửa ảnh"
+              ></button>
             <button
               (click)="delete(blob)"
               pButton
               pRipple
               icon="pi pi-trash"
-              class="my-1 mx-3 p-button-sm p-button-danger"
-            ></button>
+              class="m-3 p-button-sm p-button-danger"
+              pTooltip="Xóa ảnh"
+              ></button>
           </div>
         </div>
       </div>
@@ -83,13 +106,9 @@
     <div class="p-fluid">
       <div class="p-field">
         <h5>Tên ảnh</h5>
-        <span *ngIf="uploadedFiles.length > 1" class="text-warning"
-          >Tên sẽ không được áp dụng cho nhiều ảnh</span
-        >
         <input
           [(ngModel)]="fileName"
           [class.disabled]="uploadedFiles.length > 1"
-          [disabled]="uploadedFiles.length > 1"
           type="text"
           name="file-name"
           id="file-name"
@@ -113,17 +132,6 @@
   </div>
   <ng-template pTemplate="footer">
     <button
-      *ngIf="displayAddDialog"
-      pButton
-      pRipple
-      type="button"
-      icon="fa fa-plus"
-      label="Tải lên"
-      class="p-button-sm mr-1 my-1"
-      (click)="upload()"
-    ></button>
-    <button
-      *ngIf="displayEditDialog"
       pButton
       pRipple
       type="button"
@@ -140,6 +148,67 @@
       label="Hủy"
       class="p-button-sm mr-1 my-1 p-button-warning"
       (click)="file.clear(); displayAddDialog = false"
+    ></button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  header="Chỉnh sửa hình ảnh"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  [(visible)]="displayEditDialog"
+>
+  <div class="card">
+    <div class="p-fluid">
+      <div class="p-field">
+        <h5>Tên ảnh</h5>
+        <input
+          [(ngModel)]="fileName"
+          [class.disabled]="uploadedFiles.length > 1"
+          type="text"
+          name="file-name"
+          id="file-name"
+          pInputText
+        />
+      </div>
+      <!-- <input
+        *ngIf="selectedBlob"
+        (change)="onFileChange($event)"
+        type="file"
+        value="C:\Users\phamp\Downloads"
+      /> -->
+      <div class="p-field">
+        <h5>Hình ảnh</h5>
+        <image-cropper
+          [imageBase64]="base64Image"
+          [maintainAspectRatio]="true"
+          [aspectRatio]="10 / 13"
+          [resizeToWidth]="256"
+          (imageCropped)="imageCropped($event)"
+          format="png"
+        >
+        </image-cropper>
+      </div>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      pRipple
+      type="button"
+      icon="fa fa-plus"
+      label="Tải lên"
+      class="p-button-sm mr-1 my-1"
+      (click)="saveChange()"
+    ></button>
+    <button
+      pButton
+      pRipple
+      type="button"
+      icon="fas fa-times "
+      label="Hủy"
+      class="p-button-sm mr-1 my-1 p-button-warning"
+      (click)="displayEditDialog = false"
     ></button>
   </ng-template>
 </p-dialog>

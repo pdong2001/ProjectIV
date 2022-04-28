@@ -5,12 +5,10 @@
       pRipple
       type="button"
       icon="fa fa-plus"
-      label="Thêm loại"
+      label="Thêm sản phẩm"
       class="p-button-sm mr-1 my-1"
       (click)="showAddDialog()"
     ></button>
-    <!-- <p-dropdown [options]="visibleOptions" >
-      </p-dropdown> -->
   </ng-template>
   <ng-template pTemplate="right">
     <form
@@ -46,6 +44,7 @@
   [globalFilterFields]="['name']"
   breakpoint="992px"
 >
+  <!-- Header -->
   <ng-template pTemplate="header">
     <tr>
       <th class="d-lg-table-cell d-none"></th>
@@ -53,6 +52,7 @@
       <th pSortableColumn="name">
         Tên sản phẩm <p-sortIcon field="name"></p-sortIcon>
       </th>
+      <th>Ảnh</th>
       <th pSortableColumn="quantity">
         Số lượng <p-sortIcon field="quantity"></p-sortIcon>
       </th>
@@ -62,6 +62,7 @@
       <th style="width: 7rem"></th>
     </tr>
   </ng-template>
+  <!-- Body -->
   <ng-template
     pTemplate="body"
     let-product
@@ -73,6 +74,7 @@
         <button
           type="button"
           pButton
+          (click)="chosingDefaultImage = chosingDefaultImage && expanded"
           pRipple
           [pRowToggler]="product"
           class="p-button-text p-button-rounded p-button-plain"
@@ -84,6 +86,17 @@
         <span class="p-column-title">Tên sản phẩm</span>{{ product.name }}
       </td>
       <td>
+        <span class="p-column-title">Ảnh</span>
+        <p-image
+          [preview]="true"
+          *ngIf="product.default_image"
+          height="50"
+          [src]="getFilePath(product.default_image.file_path)"
+          appendTo="body"
+        >
+        </p-image>
+      </td>
+      <td>
         <span class="p-column-title">Số lượng</span
         >{{ product.quantity | number }}
       </td>
@@ -91,31 +104,41 @@
         <span class="p-column-title">Thời gian tạo</span
         >{{ product.created_at | date: "dd/MM/yyyy" }}
       </td>
-      <td class="d-md-flex">
-        <button
-          type="button"
-          pButton
-          pRipple
-          [pRowToggler]="product"
-          class="p-button-text p-button-rounded p-button-plain d-lg-none"
-          [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
-        ></button>
-        <button
-          pButton
-          pRipple
-          type="button"
-          icon="far fa-edit"
-          class="p-button-rounded p-button-sm mr-1"
-          (click)="showEditDialog(product)"
-        ></button>
-        <button
-          pButton
-          pRipple
-          type="button"
-          icon="far fa-trash-alt"
-          class="p-button-rounded p-button-danger"
-          (click)="delete(product)"
-        ></button>
+      <td>
+        <div class="d-flex justify-content-between w-100">
+          <button
+            type="button"
+            pButton
+            pRipple
+            (click)="chosingDefaultImage = chosingDefaultImage && expanded"
+            [pRowToggler]="product"
+            class="p-button-text p-button-rounded p-button-plain d-lg-none"
+            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+          ></button>
+          <button
+            [routerLink]="[product.id]"
+            pButton
+            pRipple
+            icon="pi pi-info-circle"
+            class="p-button p-button-success p-button-sm p-button-rounded mr-1"
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="far fa-edit"
+            class="p-button-rounded p-button-sm mr-1"
+            (click)="showEditDialog(product)"
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="far fa-trash-alt"
+            class="p-button-rounded p-button-danger p-button-sm"
+            (click)="delete(product)"
+          ></button>
+        </div>
       </td>
     </tr>
   </ng-template>
@@ -136,7 +159,7 @@
               />
             </div>
             <div class="my-1 p-field col-md-3 col-sm-6 col-8">
-              <strong>Số lựa chọn</strong>
+              <strong>Số chi tiết</strong>
               <input
                 type="text"
                 readonly
@@ -165,6 +188,10 @@
               <strong>Nhà cung cấp</strong>
               <input pInputText readonly [ngModel]="product?.provider?.name" />
             </div>
+            <div class="my-1 p-field col-12">
+              <strong>Loại lựa chọn</strong>
+              <app-product-option-table [options]="product.options" [readonly]="true"></app-product-option-table>
+            </div>
           </div>
           <div class="my-1 p-field">
             <strong>Mô tả</strong>
@@ -174,17 +201,56 @@
             ></div>
           </div>
           <div class="p-field my-1">
-            <div class="d-flex justify-content-between">
-              <strong>Ảnh sản phẩm</strong>
-              <label for="file" pButton pRipple label="Thêm" icon="pi pi-plus"
-              class="p-button-sm w-auto"></label></div>
-              <input type="file" accept="image/*" id="file" class="d-none"
-              multiple
-              (input)="fileInput($event.currentTarget)">
+            <strong>Ảnh sản phẩm</strong>
             <div class="d-flex" style="overflow-x: auto">
-              <div *ngFor="let image of product.images" class="mx-1 image-block border rounded">
-                <!-- <button (click)="deleteFile(image)" class="text-danger"><i class="far fa-times-circle"></i></button> -->
-                <img height="100px" [src]="getFilePath(image.blob.file_path)" />
+              <div
+                *ngFor="let image of product.images"
+                class="mx-1 image-block border rounded"
+              >
+                <p-image
+                  appendTo="body"
+                  width="150"
+                  [src]="getFilePath(image.blob.file_path)"
+                  [alt]="image.blob.name"
+                  [preview]="true"
+                  #imagePreview
+                >
+                </p-image>
+                <div>
+                  <div class="d-flex justify-content-between">
+                    <button
+                      *ngIf="!chosingDefaultImage"
+                      (click)="deleteFile(image)"
+                      pButton
+                      pRipple
+                      type="button"
+                      icon="pi pi-times"
+                      class="p-button-sm p-button-rounded p-button-danger"
+                    ></button>
+                    <button
+                      *ngIf="chosingDefaultImage"
+                      (click)="setDefaultImage(product, image.blob)"
+                      pButton
+                      pRipple
+                      type="button"
+                      icon="pi pi-check"
+                      class="p-button-sm p-button-rounded p-button-success"
+                    ></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex">
+              <div class="ml-auto">
+                <button
+                  (click)="chosingDefaultImage = !chosingDefaultImage"
+                  pButton
+                  pRipple
+                  class="p-button-sm p-button-outlined"
+                  [label]="
+                    chosingDefaultImage ? 'Hoàn tất' : 'Chọn ảnh đại diện'
+                  "
+                ></button>
               </div>
             </div>
           </div>
@@ -274,7 +340,7 @@
     </p-dropdown>
   </div>
   <div class="p-field">
-    <label><strong>Nhà cung cấp</strong></label>
+    <label><strong>Mô tả sản phẩm</strong></label>
     <p-editor
       #editor
       [style]="{ height: '320px' }"
@@ -282,20 +348,56 @@
     >
     </p-editor>
   </div>
+  <div class="p-field">
+    <div class="d-flex">
+      <strong>Các lựa chọn</strong>
+      <form (ngSubmit)="addNewOption(optionName.value); optionName.value = ''" class="ml-auto p-inputgroup w-auto">
+        <input type="text" pInputText #optionName  placeholder="Tên lựa chọn">
+        <button class="p-button-sm" pButton pRipple [disabled]="!optionName.value" label="Thêm" icon="fas fa-plus"></button>
+      </form>
+    </div>
+    <app-product-option-table [(options)]="options" [deletable]="displayAddDialog">
+    </app-product-option-table>
+  </div>
   <div class="p-field my-1">
-    <div class="d-flex justify-content-between">
-      <strong>Ảnh sản phẩm</strong>
-      <label for="file" pButton pRipple label="Thêm" icon="pi pi-plus"
-      class="p-button-sm w-auto"></label></div>
-      <input type="file" accept="image/*" id="file" class="d-none"
+    <strong>Ảnh sản phẩm</strong>
+    <p-tabView [(activeIndex)]="tabActiveIndex">
+      <p-tabPanel header="Tải lên">
+        <p-fileUpload
+          #fileUpload
+          [multiple]="true"
+          chooseLabel="Chọn ảnh"
+          cancelLabel="Hủy"
+          accept="image/*"
+        >
+        </p-fileUpload>
+      </p-tabPanel>
+      <p-tabPanel header="Có sẵn">
+        <app-file-table
+          *ngIf="tabActiveIndex == 1"
+          [(selection)]="selectedFiles"
+        ></app-file-table>
+      </p-tabPanel>
+    </p-tabView>
+    <!-- <input
+      type="file"
+      accept="image/*"
+      id="file"
+      class="d-none"
       multiple
-      (input)="fileInput($event.currentTarget)">
+      (input)="fileInput($event.currentTarget)"
+    />
     <div class="d-flex" style="overflow-x: auto">
-      <div *ngFor="let image of newImages" class="mx-1 image-block border rounded">
-        <button (click)="deleteFile(image)" class="text-danger"><i class="far fa-times-circle"></i></button>
+      <div
+        *ngFor="let image of newImages"
+        class="mx-1 image-block border rounded"
+      >
+        <button (click)="deleteFile(image)" class="text-danger">
+          <i class="far fa-times-circle"></i>
+        </button>
         <img height="100px" [src]="image.URL" />
       </div>
-    </div>
+    </div> -->
   </div>
   <ng-template pTemplate="footer">
     <button

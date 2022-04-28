@@ -47,8 +47,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "1.5mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -104,10 +104,8 @@
               "projects/admin/src/favicon.ico",
               "projects/admin/src/assets"
             ],
-            "styles": [
-            ],
-            "scripts": [
-            ]
+            "styles": [],
+            "scripts": []
           }
         }
       }
@@ -135,7 +133,16 @@
               "projects/main/src/favicon.ico",
               "projects/main/src/assets"
             ],
-            "styles": ["projects/main/src/styles.css"],
+            "styles": [
+              "projects/main/src/assets/plugins/bootstrap/css/bootstrap.min.css",
+              "projects/main/src/assets/plugins/bootstrap/css/bootstrap-slider.css",
+              "projects/main/src/assets/plugins/font-awesome/css/font-awesome.min.css",
+              "projects/main/src/assets/plugins/slick-carousel/slick/slick.css",
+              "projects/main/src/assets/plugins/slick-carousel/slick/slick-theme.css",
+              "projects/main/src/assets/plugins/fancybox/jquery.fancybox.pack.css",
+              "projects/main/src/assets/plugins/jquery-nice-select/css/nice-select.css",
+              "projects/main/src/assets/css/style.css",
+              "projects/main/src/styles.css"],
             "scripts": []
           },
           "configurations": {
@@ -200,7 +207,9 @@
               "projects/main/src/favicon.ico",
               "projects/main/src/assets"
             ],
-            "styles": ["projects/main/src/styles.css"],
+            "styles": [
+              "projects/main/src/styles.css"
+            ],
             "scripts": []
           }
         }
@@ -238,5 +247,5 @@
       }
     }
   },
-  "defaultProject": "admin"
+  "defaultProject": "main"
 }

@@ -2,19 +2,24 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { LazyLoadEvent } from 'primeng/api';
 import { Editor } from 'primeng/editor';
+import { FileUpload } from 'primeng/fileupload';
+import { Image } from 'primeng/image';
 import { Table } from 'primeng/table';
 import { environment } from 'projects/admin/src/environments/environment';
 import { ImageableType } from 'projects/common/src/lib/imageable-type';
-import { CategoryDto } from '../../Contracts/Category/category-dto';
-import { SortMode } from '../../Contracts/Common/paged-and-sorted-request';
-import { InsertUpdateProductDto } from '../../Contracts/Product/insert-update-product-dto';
-import { ProductDto } from '../../Contracts/Product/product-dto';
-import { CategoryService } from '../../services/category.service';
-import { ConfirmService } from '../../services/confirm.service';
-import { FileService } from '../../services/file.service';
-import { ProductService } from '../../services/product.service';
-import { TitleService } from '../../services/title.service';
-import { ToastService } from '../../services/toast.service';
+import { ConfirmService } from 'projects/common/src/services/confirm.service';
+import { ProductService } from 'projects/common/src/services/product.service';
+import { TitleService } from 'projects/admin/src/app/services/title.service';
+import { ToastService } from 'projects/common/src/services/toast.service';
+import { BlobDto } from '../../../../../common/src/Contracts/Blob/blob-dto';
+import { CategoryDto } from '../../../../../common/src/Contracts/Category/category-dto';
+import { ImageAssign } from '../../../../../common/src/Contracts/Common/image';
+import { SortMode } from '../../../../../common/src/Contracts/Common/paged-and-sorted-request';
+import { InsertUpdateProductDto } from '../../../../../common/src/Contracts/Product/insert-update-product-dto';
+import { ProductDto } from '../../../../../common/src/Contracts/Product/product-dto';
+import { ProductOptionDto } from '../../../../../common/src/Contracts/Product/product-option-dto';
+import { CategoryService } from '../../../../../common/src/services/category.service';
+import { FileService } from '../../../../../common/src/services/file.service';
 
 @Component({
   selector: 'app-products',
@@ -22,8 +27,13 @@ import { ToastService } from '../../services/toast.service';
   styleUrls: ['./products.component.css'],
 })
 export class ProductsComponent implements OnInit {
+  @ViewChild('imagePreview') image!: Image;
   @ViewChild('dt') dt!: Table;
   @ViewChild('editor') editor!: Editor;
+  @ViewChild('fileUpload') fileUpload!: FileUpload;
+
+  chosingDefaultImage: boolean = false;
+
   getFilePath(value: string) {
     if (!value) return '';
     return environment.FILE_GET_BY_NAME + value;
@@ -42,14 +52,14 @@ export class ProductsComponent implements OnInit {
   ];
 
   selectedVisibleOption = this.visibleOptions[0];
+  selectedFiles: BlobDto[] = [];
 
   product: InsertUpdateProductDto = { name: '', visible: true };
-  newImages: { file: File; URL: any }[] = [];
   nameInvalid: boolean = false;
 
   displayAddDialog: boolean = false;
   displayEditDialog: boolean = false;
-
+  options : ProductOptionDto[] = [];
   get formVisible(): boolean {
     return this.displayAddDialog || this.displayEditDialog;
   }
@@ -63,6 +73,7 @@ export class ProductsComponent implements OnInit {
     if (!value) return '';
     return this.sanitizer.bypassSecurityTrustHtml(value);
   }
+  tabActiveIndex: number = 0;
 
   constructor(
     private breadCrumpService: TitleService,
@@ -112,7 +123,7 @@ export class ProductsComponent implements OnInit {
         search: event.globalFilter ?? '',
         with_detail: false,
         consumeable_only: false,
-        with_images: true
+        with_images: true,
       })
       .subscribe({
         next: (res) => {
@@ -138,31 +149,64 @@ export class ProductsComponent implements OnInit {
     this.product = { name: '', visible: true };
     this.displayEditDialog = false;
     this.displayAddDialog = true;
+    this.options = [];
   }
 
   add() {
-    if (this.product.name != '') {
+    if (this.product.name != '' && this.options.length) {
       this.formVisible = false;
+      this.product.options = this.options;
       this.loading = true;
       this.productService
         .create(this.product)
         .toPromise()
         .then(async (res) => {
+          this.options = [];
           if (res?.status == true) {
             if (res.data != undefined) {
-              for (let index = 0; index < this.newImages.length; index++) {
-                const file = this.newImages[index];
-                await this.fileService.createAssign({
-                  imageable_id: res.data??0,
-                  imageable_type: ImageableType.Product,
-                  file: file.file
-                }).toPromise();
-              };
+              if (this.tabActiveIndex == 0) {
+                for (
+                  let index = 0;
+                  index < this.fileUpload.files.length;
+                  index++
+                ) {
+                  const file = this.fileUpload.files[index];
+                  await this.fileService
+                    .createAssign({
+                      imageable_id: res.data ?? 0,
+                      imageable_type: ImageableType.Product,
+                      file: file,
+                      name : this.product.name
+                    })
+                    .toPromise();
+                }
+              } else {
+                for (
+                  let index = 0;
+                  index < this.selectedFiles.length;
+                  index++
+                ) {
+                  const blob = this.selectedFiles[index];
+                  await this.fileService
+                    .createAssign({
+                      imageable_id: res.data ?? 0,
+                      imageable_type: ImageableType.Product,
+                      blob_id: blob.id,
+                    })
+                    .toPromise();
+                }
+              }
+              this.selectedFiles = [];
+              this.fileUpload.clear();
             }
             this.loadProducts(this.dt.createLazyLoadMetadata());
             this.toastService.addSuccess(
               `Đã thêm ${this.product.name.toLocaleLowerCase()}.`
             );
+          }
+          else
+          {
+            this.loading = false;
           }
         });
     }
@@ -170,20 +214,60 @@ export class ProductsComponent implements OnInit {
 
   save() {
     if (this.product.name != '') {
+      this.product.options = this.options;
       this.loading = true;
       this.productService
         .update(this.selectedProduct.id, this.product)
         .toPromise()
         .then(async (res) => {
+          this.options = [];
           if (res?.status == true) {
-            for (let index = 0; index < this.newImages.length; index++) {
-              const file = this.newImages[index];
-              await this.fileService.createAssign({
-                imageable_id: res.data??0,
-                imageable_type: ImageableType.Product,
-                file: file.file
-              }).toPromise();
-            };
+            if (this.tabActiveIndex == 0) {
+              for (
+                let index = 0;
+                index < this.fileUpload.files.length;
+                index++
+              ) {
+                const file = this.fileUpload.files[index];
+                await this.fileService
+                  .createAssign({
+                    imageable_id: res.data ?? 0,
+                    imageable_type: ImageableType.Product,
+                    file: file,
+                    name: this.product.name
+                  })
+                  .toPromise();
+              }
+            } else {
+              for (let index = 0; index < this.selectedFiles.length; index++) {
+                const blob = this.selectedFiles[index];
+                if (
+                  !this.selectedProduct.images.some(
+                    (assign) => assign.blob.id == blob.id
+                  )
+                ) {
+                  await this.fileService
+                    .createAssign({
+                      imageable_id: res.data ?? 0,
+                      imageable_type: ImageableType.Product,
+                      blob_id: blob.id,
+                    })
+                    .toPromise();
+                }
+              }
+              for (
+                let index = 0;
+                index < this.selectedProduct.images.length;
+                index++
+              ) {
+                const assign = this.selectedProduct.images[index];
+                if (!this.selectedFiles.some((b) => b.id == assign.blob.id)) {
+                  await this.fileService.deleteAssign(assign.id).toPromise();
+                }
+              }
+            }
+            this.selectedFiles = [];
+            this.fileUpload.clear();
             this.formVisible = false;
             this.toastService.addSuccess(`Chỉnh sửa ${this.product.name}.`);
             this.loadProducts(this.dt.createLazyLoadMetadata());
@@ -223,6 +307,7 @@ export class ProductsComponent implements OnInit {
 
   showEditDialog(value: ProductDto) {
     this.selectedProduct = value;
+    this.options = value.options;
     this.product = {
       name: value.name,
       code: value.code,
@@ -232,29 +317,54 @@ export class ProductsComponent implements OnInit {
       category_id: value.category_id,
       description: value.description,
     };
+    this.selectedFiles = value.images.map((assign) => assign.blob);
     this.displayEditDialog = true;
     this.displayAddDialog = false;
   }
 
-  async fileInput(e: any) {
-    for (let index = 0; index < e.files.length; index++) {
-      const file: File = e.files[index];
-      if (file.size > 150000) {
-        this.toastService.addError('Ảnh có kích thước quá lớn!');
-      } else {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (_event) => {
-          this.newImages.push({ file: file, URL: reader.result });
-        };
-      }
-    }
-    e.value = '';
+  deleteFile(assign: ImageAssign) {
+    this.confirmService.confirm(
+      'Bạn có thật sự muốn xóa ảnh này khỏi sản phẩm?\nẢnh vẫn sẽ được lưu lại trong kho ảnh.',
+      () => {
+        this.fileService
+          .deleteAssign(assign.id)
+          .toPromise()
+          .then((res) => {
+            if (res?.status) {
+              this.loadProducts(this.dt.createLazyLoadMetadata());
+            }
+          });
+      },
+      'Xác nhận'
+    );
   }
 
-  deleteFile(file: any) {
-    var index = this.newImages.indexOf(file);
-    delete this.newImages[index];
-    this.newImages.splice(index, 1);
+  setDefaultImage(prod: ProductDto, blob: BlobDto) {
+    this.confirmService.confirm(
+      'Bạn có thật sự muốn thay đổi ảnh đại diện cho sản phẩm?',
+      () => {
+        this.selectedProduct = prod;
+        this.product = {
+          name: prod.name,
+          code: prod.code,
+          visible: prod.visible,
+          provider_id: prod.provider_id,
+          default_image: blob.id,
+          category_id: prod.category_id,
+          description: prod.description,
+        };
+        this.selectedFiles = prod.images.map((assign) => assign.blob);
+        this.save();
+      },
+      'Xác nhận'
+    );
+  }
+
+  addNewOption(name:string)
+  {
+    this.options.push({
+      name:name,
+      product_id: this.selectedProduct?.id
+    });
   }
 }

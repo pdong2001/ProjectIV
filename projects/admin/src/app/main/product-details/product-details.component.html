@@ -1,0 +1,383 @@
+<p-toolbar styleClass="py-2 mb-1">
+  <ng-template pTemplate="left">
+    <button
+      pButton
+      pRipple
+      type="button"
+      icon="fa fa-plus"
+      label="Thêm sản phẩm"
+      class="p-button-sm mr-1 my-1"
+      (click)="showAddDialog()"
+    ></button>
+    <!-- <p-dropdown [options]="visibleOptions" >
+        </p-dropdown> -->
+  </ng-template>
+  <ng-template pTemplate="right">
+    <form
+      (submit)="dt.filterGlobal(search.value, 'contains')"
+      class="p-inputgroup my-1"
+    >
+      <span class="p-inputgroup-addon"> <i class="pi pi-search"></i></span>
+      <input
+        pInputText
+        type="text"
+        #search
+        placeholder="Từ khóa tìm kiếm..."
+        class="w-100"
+      />
+      <button pButton type="submit" label="Tìm"></button>
+    </form>
+  </ng-template>
+</p-toolbar>
+<p-table
+  #dt
+  [value]="productDetails"
+  [lazy]="true"
+  (onLazyLoad)="loadProductDetails($event)"
+  responsiveLayout="stack"
+  dataKey="id"
+  [selection]="selectedProductDetails"
+  [selectAll]="selectAll"
+  [paginator]="true"
+  [rows]="15"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate="Đang hiển thị từ {first} đến {last} của {totalRecords} chi tiết"
+  [rowsPerPageOptions]="[10, 15, 25, 50]"
+  [totalRecords]="totalRecords"
+  [loading]="loading"
+  [globalFilterFields]="['product.name']"
+  breakpoint="992px"
+  sortField="product_id"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th class="d-lg-table-cell d-none"></th>
+      <th>STT</th>
+      <th style="white-space: nowrap" pSortableColumn="product_id">
+        Tên sản phẩm <p-sortIcon field="product_id"></p-sortIcon>
+      </th>
+      <th style="white-space: nowrap" pSortableColumn="default_image">
+        Ảnh <p-sortIcon field="default_image"></p-sortIcon>
+      </th>
+      <th style="white-space: nowrap" pSortableColumn="remaining_quantity">
+        Còn lại <p-sortIcon field="remaining_quantity"></p-sortIcon>
+      </th>
+      <th style="white-space: nowrap" pSortableColumn="unit">
+        ĐVT <p-sortIcon field="unit"></p-sortIcon>
+      </th>
+      <th style="white-space: nowrap" pSortableColumn="created_at">
+        Ngày tạo <p-sortIcon field="created_at"></p-sortIcon>
+      </th>
+      <th style="width: 7rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-detail
+    let-index="rowIndex"
+    let-expanded="expanded"
+  >
+    <tr>
+      <td class="d-lg-table-cell d-none">
+        <button
+          type="button"
+          pButton
+          pRipple
+          [pRowToggler]="detail"
+          class="p-button-text p-button-rounded p-button-plain"
+          [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+        ></button>
+      </td>
+      <td><span class="p-column-title">STT</span>{{ index + 1 }}</td>
+      <td>
+        <span class="p-column-title">Tên sản phẩm</span
+        >{{ detail.product.name }}
+      </td>
+      <td>
+        <span class="p-column-title">Ảnh</span>
+        <div style="height: 100px">
+          <p-image
+            [preview]="true"
+            appendTo="body"
+            height="100px"
+            *ngIf="detail.default_image"
+            [src]="getFilePath(detail.default_image.file_path)"
+          ></p-image>
+        </div>
+      </td>
+      <td>
+        <span class="p-column-title">Còn lại</span
+        >{{ detail.remaining_quantity | number }}
+      </td>
+      <td><span class="p-column-title">ĐVT</span>{{ detail.unit }}</td>
+      <td><span class="p-column-title">Ngày tạo</span>{{ detail.created_at | date :"dd/MM/yyyy" }}</td>
+      <td>
+        <div class="d-flex justify-content-between w-100">
+          <button
+            type="button"
+            pButton
+            pRipple
+            [pRowToggler]="detail"
+            class="p-button-text p-button-rounded p-button-plain d-lg-none"
+            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+          ></button>
+          <button
+            [routerLink]="[detail.id]"
+            pButton
+            pRipple
+            icon="pi pi-info-circle"
+            class="p-button p-button-success p-button-sm p-button-rounded mr-1"
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="far fa-edit"
+            class="p-button-rounded p-button-sm mr-1"
+            (click)="showEditDialog(detail)"
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="far fa-trash-alt"
+            class="p-button-rounded p-button-danger p-button-sm"
+            (click)="delete(detail)"
+          ></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="rowexpansion" let-detail>
+    <tr>
+      <td colspan="10">
+        <div class="p-fluid w-100">
+          <div class="row">
+            <div class="p-field col-8 col-sm-9">
+              <label for="total_quantity"
+                ><strong>Tổng số lượng đã nhập</strong></label
+              >
+              <input
+                type="text"
+                [ngModel]="detail.total_quantity | number"
+                id="total_quantity"
+                [readonly]="true"
+                pInputText
+              />
+            </div>
+            <div class="p-field col-sm-3 col-4">
+              <label class="mr-3">
+                <strong>Hiển thị</strong>
+              </label>
+              <div style="height: 50px" class="d-flex align-items-center">
+                <p-inputSwitch
+                  id="visible"
+                  [readonly]="true"
+                  [(ngModel)]="detail.visible"
+                ></p-inputSwitch>
+              </div>
+            </div>
+            <div class="p-field col-12 col-sm-6">
+              <label for="in_price"><strong>Giá nhập</strong></label>
+              <input
+                type="text"
+                [ngModel]="detail.in_price | currency: 'VND'"
+                id="in_price"
+                [readonly]="true"
+                pInputText
+              />
+            </div>
+            <div class="p-field col-12 col-sm-6">
+              <label for="out_price"><strong>Giá bán</strong></label>
+              <input
+                type="text"
+                [ngModel]="detail.out_price | currency: 'VND'"
+                id="out_price"
+                [readonly]="true"
+                pInputText
+              />
+            </div>
+            <div *ngFor="let opt of detail.options" class="p-field col-12 col-sm-6">
+              <label><strong> {{opt?.name}} </strong></label>
+              <input
+                type="text"
+                [ngModel]="opt.value"
+                [readonly]="true"
+                pInputText
+              />
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [draggable]="true"
+  [resizable]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [header]="(displayAddDialog ? 'Thêm' : 'Sửa') + ' chi tiết sản phẩm'"
+  [(visible)]="formVisible"
+  styleClass="p-fluid"
+  [modal]="true"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  [style]="{ width: '50vw' }"
+>
+  <form [formGroup]="formGroup">
+    <div class="row">
+      <div class="p-field col-md-8 col-12">
+        <label><strong>Đơn vị tính</strong></label>
+        <input
+          type="text"
+          pInputText
+          formControlName="unit"
+          placeholder="Đơn vị tính"
+        />
+        <ng-container
+          *ngIf="
+            formGroup.controls['unit'].touched &&
+            formGroup.controls['unit'].errors
+          "
+        >
+          <small
+            *ngIf="formGroup.controls['unit'].errors['required']"
+            id="unit-help"
+            class="p-error"
+            >Không thể để trống đơn vị tính</small
+          >
+        </ng-container>
+      </div>
+      <div class="p-field col-md-4 col-12">
+        <label class="mr-3">
+          <strong>Hiển thị</strong>
+        </label>
+        <div style="height: 50px" class="d-flex align-items-center">
+          <p-inputSwitch id="visible" formControlName="visible"></p-inputSwitch>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="p-field col-12">
+        <label><strong>Sản phẩm</strong></label>
+        <p-dropdown
+          [options]="products"
+          optionLabel="name"
+          dataKey="id"
+          appendTo="body"
+          [(ngModel)]="selectedProduct"
+          [ngModelOptions]="{ standalone: true }"
+          emptyMessage="Chưa có sản phẩm"
+          [filter]="true"
+          placeholder="Sản phẩm"
+        >
+        </p-dropdown>
+      </div>
+      <div *ngFor="let opt of options" class="p-field col-12 col-sm-6">
+        <label><strong>{{opt?.option?.name}}</strong></label>
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="opt.value"
+          [ngModelOptions]="{standalone : true}"
+          [placeholder]="opt?.option?.name"
+        />
+      </div>
+      <div *ngIf="options.length % 2 == 1" class="p-field col-12 col-sm-6"></div>
+    </div>
+    <div class="row">
+      <div class="p-field col-sm-6 col-12">
+        <label class="mr-3">
+          <strong>Số lượng còn</strong>
+        </label>
+        <p-inputNumber
+          placeholder="Số lượng còn"
+          formControlName="remaining_quantity"
+        >
+        </p-inputNumber>
+      </div>
+      <div class="p-field col-sm-6 col-12">
+        <label class="mr-3">
+          <strong>Tổng số lượng</strong>
+        </label>
+        <p-inputNumber
+          placeholder="Số lượng đã nhập"
+          formControlName="total_quantity"
+        >
+        </p-inputNumber>
+      </div>
+      <div class="p-field col-sm-6 col-12">
+        <label class="mr-3">
+          <strong>Giá nhập</strong>
+        </label>
+        <p-inputNumber
+          formControlName="in_price"
+          mode="currency"
+          currency="VND"
+          locale="vn"
+          placeholder="Giá nhập"
+        >
+        </p-inputNumber>
+      </div>
+      <div class="p-field col-sm-6 col-12">
+        <label class="mr-3">
+          <strong>Giá bán</strong>
+        </label>
+        <p-inputNumber
+          formControlName="out_price"
+          mode="currency"
+          currency="VND"
+          locale="vn"
+          placeholder="Giá bán"
+        >
+        </p-inputNumber>
+      </div>
+    </div>
+    <div class="p-field my-1 col">
+      <strong>Ảnh sản phẩm</strong>
+      <p-tabView [(activeIndex)]="tabActiveIndex">
+        <p-tabPanel header="Tải lên">
+          <p-fileUpload
+            [multiple]="true"
+            (onSelect)="fileInput($event)"
+            chooseLabel="Chọn ảnh"
+            cancelLabel="Hủy"
+          >
+          </p-fileUpload>
+        </p-tabPanel>
+        <p-tabPanel header="Có sẵn">
+          <app-file-table
+            [option]="{ productId: selectedProduct?.id }"
+            [multiple]="false"
+            *ngIf="selectedProduct && tabActiveIndex == 1"
+            [(selection)]="selectedFiles"
+          ></app-file-table>
+          <span class="w-100" *ngIf="!selectedProduct">
+            Hãy chọn sản phẩm trước!
+          </span>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <button
+      [disabled]="!selectedProduct"
+      pButton
+      pRipple
+      icon="fas fa-check"
+      class="p-button-success p-button-sm"
+      [label]="displayAddDialog ? 'Thêm' : 'Lưu'"
+      type="button"
+      (click)="save()"
+    ></button>
+    <button
+      pButton
+      pRipple
+      class="p-button-danger p-button-sm"
+      label="Hủy"
+      type="button"
+      (click)="formVisible = false; nameInvalid = false"
+    ></button>
+  </ng-template>
+</p-dialog>

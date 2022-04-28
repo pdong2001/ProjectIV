@@ -14,11 +14,17 @@ import { DialogModule } from 'primeng/dialog';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { CardModule } from 'primeng/card';
 import { EditorModule } from 'primeng/editor';
+import { TabViewModule } from 'primeng/tabview';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ComponentsModule } from '../../shared/components/components.module';
+import { ImageModule } from 'primeng/image';
+import { ProductDetailComponent } from './product-detail/product-detail.component';
 
 
 @NgModule({
   declarations: [
-    ProductsComponent
+    ProductsComponent,
+    ProductDetailComponent
   ],
   imports: [
     CommonModule,
@@ -33,7 +39,11 @@ import { EditorModule } from 'primeng/editor';
     DialogModule,
     InputSwitchModule,
     CardModule,
-    EditorModule
+    EditorModule,
+    TabViewModule,
+    FileUploadModule,
+    ComponentsModule,
+    ImageModule,
   ]
 })
 export class ProductsModule { }

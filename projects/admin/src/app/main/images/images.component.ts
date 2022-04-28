@@ -1,14 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { LazyLoadEvent } from 'primeng/api';
 import { DataView } from 'primeng/dataview';
 import { FileUpload } from 'primeng/fileupload';
 import { environment } from 'projects/admin/src/environments/environment';
-import { Blob } from '../../Contracts/Common/blob';
-import { SortMode } from '../../Contracts/Common/paged-and-sorted-request';
-import { ConfirmService } from '../../services/confirm.service';
-import { FileService } from '../../services/file.service';
-import { TitleService } from '../../services/title.service';
-import { ToastService } from '../../services/toast.service';
+import { firstValueFrom } from 'rxjs';
+import { BlobDto } from '../../../../../common/src/Contracts/Blob/blob-dto';
+import { SortMode } from '../../../../../common/src/Contracts/Common/paged-and-sorted-request';
+import { FileService } from '../../../../../common/src/services/file.service';
+import { ConfirmService } from 'projects/common/src/services/confirm.service';
+import { ToastService } from 'projects/common/src/services/toast.service';
+import { TitleService } from 'projects/admin/src/app/services/title.service';
 
 @Component({
   selector: 'app-images',
@@ -17,10 +19,15 @@ import { ToastService } from '../../services/toast.service';
 })
 export class ImagesComponent implements OnInit {
   @ViewChild('dv') dv!: DataView;
+  @ViewChild('file') file!: FileUpload;
+  @ViewChild(ImageCropperComponent) cropper!: ImageCropperComponent;
   loading: boolean = false;
   totalRecords: number = 0;
-  blobs: Blob[] = [];
+  blobs: BlobDto[] = [];
   fileName: string = '';
+  selectedBlob: BlobDto | undefined;
+  imgChangeEvt: any;
+  croppedImage: string | undefined;
   getFilePath(value: string) {
     if (!value) return '';
     return environment.FILE_GET_BY_NAME + value;
@@ -38,6 +45,8 @@ export class ImagesComponent implements OnInit {
     this.displayAddDialog = true;
   }
 
+  imageChangedEvent: any = '';
+
   constructor(
     private titleService: TitleService,
     private fileService: FileService,
@@ -49,7 +58,7 @@ export class ImagesComponent implements OnInit {
   }
   uploadedFiles: any[] = [];
   ngOnInit(): void {}
-
+  base64Image: string | undefined;
   loadBlob(event: LazyLoadEvent) {
     this.loading = true;
     this.fileService
@@ -77,7 +86,7 @@ export class ImagesComponent implements OnInit {
       });
   }
 
-  public delete(blob: Blob) {
+  public delete(blob: BlobDto) {
     this.confirmService.confirm(
       `Bạn có chắc chắn muốn xóa ${blob.name.toLocaleLowerCase()} khỏi kho lưu trữ? Hình ảnh sẽ bị xóa ở mọi nơi!`,
       () => {
@@ -98,21 +107,43 @@ export class ImagesComponent implements OnInit {
   }
 
   public upload() {
-    if (this.uploadedFiles.length > 1) {
-      this.fileService
-        .uploadRange(this.uploadedFiles)
-        .toPromise()
+    if (this.uploadedFiles.length > 0) {
+      this.loading = true;
+      firstValueFrom(
+        this.fileService.uploadRange(this.uploadedFiles, this.fileName)
+      )
         .then((res) => {
           if (res?.status == true) {
+            this.displayAddDialog = false;
+            this.fileName = '';
+            this.file.clear();
+            this.uploadedFiles = [];
+            this.toastService.addSuccess(`Đã tải lên ${res.data} ảnh`);
             this.loadBlob(this.dv.createLazyLoadMetadata());
+          } else {
+            this.loading = false;
           }
+        })
+        .catch(() => {
+          this.loading = false;
         });
-    } else if (this.uploadedFiles.length == 1) {
+    }
+  }
+
+  public saveChange() {
+    if (this.selectedBlob) {
+      let blob;
+      if (this.croppedImage) {
+        const contentType = 'image/png';
+        const b64Data = this.croppedImage.replace('data:image/png;base64,', '');
+        blob = this.b64ToBlob(b64Data, contentType);
+      }
       this.fileService
-        .upload(this.uploadedFiles[0], this.fileName)
-        .toPromise()
-        .then((res) => {
-          if (res?.status == true) {
+        .updateBlob(this.selectedBlob.id, this.fileName, blob)
+        .subscribe((res) => {
+          if (res.status == true) {
+            this.selectedBlob = undefined;
+            this.displayEditDialog = false;
             this.loadBlob(this.dv.createLazyLoadMetadata());
           }
         });
@@ -121,6 +152,76 @@ export class ImagesComponent implements OnInit {
 
   onSelect(files: File[]) {
     this.uploadedFiles = files;
-    console.log(files);
+  }
+
+  showEditDialog(blob: BlobDto) {
+    this.selectedBlob = blob;
+    this.displayEditDialog = true;
+    this.displayAddDialog = false;
+    this.fileService.getFileByName(blob.file_path).subscribe((res) => {
+      var reader = new FileReader();
+      reader.readAsDataURL(res);
+      reader.onloadend = () => {
+        this.base64Image = reader.result?.toString();
+      };
+    });
+  }
+
+  deleteDuplicatedImage() {
+    this.loading = true;
+    this.fileService.duplicatedFilter().subscribe((res) => {
+      if (res.status == true) {
+        this.toastService.addSuccess('Lọc ảnh trùng nhau hoàn tất.');
+        this.loadBlob(this.dv.createLazyLoadMetadata());
+      } else {
+        this.loading = false;
+      }
+    });
+  }
+
+  onFileChange(event: any): void {
+    this.imgChangeEvt = event;
+  }
+
+  b64ToBlob = (b64Data: any, contentType = '', sliceSize = 512) => {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+  };
+
+  imageCropped(event: ImageCroppedEvent) {
+    if (event.base64) {
+      this.croppedImage = event.base64.toString();
+    }
+  }
+
+  duplicate(blob: BlobDto) {
+    this.fileService.duplicateBlob(blob.id).subscribe((res) => {
+      if (res.status) {
+        this.toastService.addSuccess(`Đã nhân bản ${blob.name}`);
+        this.loadBlob(this.dv.createLazyLoadMetadata());
+      }
+    });
+  }
+
+  searchBlob(value:string)
+  {
+    const meta = this.dv.createLazyLoadMetadata();
+    meta.globalFilter = value;
+    this.loadBlob(meta);
   }
 }

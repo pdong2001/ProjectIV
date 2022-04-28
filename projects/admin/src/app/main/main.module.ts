@@ -6,14 +6,12 @@ import { MainComponent } from './main.component';
 import { ComponentsModule } from '../shared/components/components.module';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, MessageService } from 'primeng/api';
 
 
 
 @NgModule({
   declarations: [
-    MainComponent
-  ],
+    MainComponent,  ],
   imports: [
     CommonModule,
     MainRoutingModule,

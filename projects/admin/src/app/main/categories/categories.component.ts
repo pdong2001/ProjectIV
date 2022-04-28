@@ -4,14 +4,14 @@ import {
   LazyLoadEvent,
   MessageService,
 } from 'primeng/api';
-import { CategoryDto } from '../../Contracts/Category/category-dto';
-import { SortMode } from '../../Contracts/Common/paged-and-sorted-request';
+import { CategoryDto } from '../../../../../common/src/Contracts/Category/category-dto';
+import { SortMode } from '../../../../../common/src/Contracts/Common/paged-and-sorted-request';
 import { TitleService } from '../../services/title.service';
-import { CategoryService } from '../../services/category.service';
-import { InsertUpdateCategoryDto } from '../../Contracts/Category/insert-update-category-dto';
+import { CategoryService } from '../../../../../common/src/services/category.service';
+import { InsertUpdateCategoryDto } from '../../../../../common/src/Contracts/Category/insert-update-category-dto';
 import { Table } from 'primeng/table';
-import { ToastService } from '../../services/toast.service';
-import { ConfirmService } from '../../services/confirm.service';
+import { ConfirmService } from 'projects/common/src/services/confirm.service';
+import { ToastService } from 'projects/common/src/services/toast.service';
 
 @Component({
   selector: 'app-categories',

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserDto } from '../../../Contracts/User/user-dto';
-import { AuthDataService } from '../../../services/auth-data.service';
+import { UserDto } from '../../../../../../common/src/Contracts/User/user-dto';
+import { AuthDataService } from '../../../../../../common/src/services/auth-data.service';
 import { OAuthService } from '../../../services/oauth.service';
 
 @Component({
@@ -33,8 +33,9 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  logout()
+  logout(e:Event)
   {
+    e.preventDefault();
     this.authService.logout().toPromise()
     .then(res => {
       if (res?.status == true)

@@ -5,17 +5,8 @@
 export const environment = {
   production: false,
   REST_API_SERVER : 'http://localhost:8000/api',
-  FILE_GET_BY_NAME: 'http://localhost:8000/api/files/',
-  FILE_GET_BY_BLOB_ID: 'http://localhost:8000/api/blobs/',
-  FILE_DOWNLOAD_BY_NAME: 'http://localhost:8000/api/file/download/',
-  FILE_DOWNLOAD_BY_BLOB_ID: 'http://localhost:8000/api/blobs/download/',
+  FILE_GET_BY_NAME: () => environment.REST_API_SERVER + '/files/',
+  FILE_GET_BY_BLOB_ID: () => environment.REST_API_SERVER + '/blobs/',
+  FILE_DOWNLOAD_BY_NAME: () => environment.REST_API_SERVER + '/file/download/',
+  FILE_DOWNLOAD_BY_BLOB_ID: () => environment.REST_API_SERVER + '/blobs/download/',
 };
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

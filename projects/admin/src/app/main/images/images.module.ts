@@ -12,6 +12,8 @@ import { ImageModule } from 'primeng/image';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
+import { ImageCropperModule } from 'ngx-image-cropper';
+import { TooltipModule } from 'primeng/tooltip';
 
 
 @NgModule({
@@ -29,7 +31,9 @@ import { FileUploadModule } from 'primeng/fileupload';
     ImageModule,
     FormsModule,
     DialogModule,
-    FileUploadModule
+    FileUploadModule,
+    ImageCropperModule,
+    TooltipModule
   ]
 })
 export class ImagesModule { }

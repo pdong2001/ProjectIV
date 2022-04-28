@@ -7,7 +7,7 @@ import { ComponentsModule } from './shared/components/components.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { AuthInterceptor } from './auth.interceptor';
+import { AuthInterceptor } from '../../../common/src/lib/auth.interceptor';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
@@ -19,7 +19,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
-    ComponentsModule,
+    // ComponentsModule,
     HttpClientModule,
     ToastModule,
     ConfirmDialogModule

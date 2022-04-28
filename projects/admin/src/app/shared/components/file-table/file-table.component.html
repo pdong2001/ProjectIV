@@ -1,0 +1,57 @@
+<p-table
+  #dt
+  [value]="items"
+  [(selection)]="selectedFiles"
+  dataKey="id"
+  responsiveLayout="stack"
+  [paginator]="true"
+  [rows]="5"
+  [selectionPageOnly]="true"
+  [lazy]="loadDataFormService"
+  [totalRecords]="totalRecords"
+  (onLazyLoad)="loadBlobs($event)"
+  (selectionChange)="change($event)"
+  [globalFilterFields]="['name']"
+  [loading]="loading"
+>
+  <ng-template pTemplate="caption">
+    <form
+      (submit)="dt.filterGlobal(search.value, 'contains')"
+      class="p-inputgroup my-1"
+    >
+      <span class="p-inputgroup-addon"> <i class="pi pi-search"></i></span>
+      <input
+        pInputText
+        type="text"
+        #search
+        placeholder="Từ khóa tìm kiếm..."
+        class="w-100"
+      />
+      <button pButton type="submit" label="Tìm"></button>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 3rem">
+        <p-tableHeaderCheckbox *ngIf="multiple"></p-tableHeaderCheckbox>
+      </th>
+      <th pSortableColumn="name">
+        Tên ảnh <p-sortIcon field="name"></p-sortIcon>
+      </th>
+      <th>Ảnh</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-blob>
+    <tr>
+      <td>
+        <p-tableCheckbox *ngIf="multiple" [value]="blob"></p-tableCheckbox>
+        <p-tableRadioButton
+          *ngIf="!multiple"
+          [value]="blob"
+        ></p-tableRadioButton>
+      </td>
+      <td>{{ blob.name }}</td>
+      <td><img height="75" [src]="getFilePath(blob.file_path)" /></td>
+    </tr>
+  </ng-template>
+</p-table>
