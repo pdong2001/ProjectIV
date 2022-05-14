@@ -1,0 +1,158 @@
+<div *ngIf="!loading" class="row" style="min-height: 50vh">
+  <div class="col-md-4 col-12">
+    <p-galleria
+      [value]="product.images"
+      [responsiveOptions]="responsiveOptions"
+      [containerStyle]="{ 'max-width': '100%' }"
+      [numVisible]="5"
+      [(activeIndex)]="activeImageIndex"
+    >
+      <ng-template pTemplate="item" let-item>
+        <img [src]="item.blob?.file_path | filePath" style="width: 100%" />
+      </ng-template>
+      <ng-template pTemplate="thumbnail" let-item>
+        <div class="d-flex justify-content-center w-100">
+          <img
+            class="m-1 mw-100"
+            height="50"
+            width="75"
+            [src]="item.blob?.file_path | filePath"
+            style="overflow: hidden; object-fit: cover"
+          />
+        </div>
+      </ng-template>
+    </p-galleria>
+  </div>
+  <div class="col-md-8 col-12 d-flex flex-column">
+    <h3>{{ product.name }}</h3>
+    <ul class="list-inline mt-2 mb-3">
+      <li class="list-inline-item">
+        <span style="cursor: default" class="of-ellipsis mx-1">
+          <i class="fa fa-folder-open"></i>
+          {{ product.category?.name }}</span
+        >
+      </li>
+      <li class="list-inline-item">
+        <span style="cursor: default" class="mx-1 of-ellipsis"
+          ><i class="fa fa-calendar"></i>
+          {{ product.updated_at ?? product.created_at | date: "dd/MM/yyyy" }}
+        </span>
+      </li>
+      <li class="list-inline-item">
+        <span style="cursor: default" class="mx-1 of-ellipsis"
+          ><i class="fas fa-user"></i>
+          {{ product?.provider?.name }}
+        </span>
+      </li>
+    </ul>
+    <div
+      *ngFor="let option of Object.keys(options)"
+      class="d-flex my-1 align-items-center"
+    >
+      <strong style="width: 110px" class="of-ellipsis">{{ option }}</strong>
+      <div class="row">
+        <button
+          (click)="selectOption(value)"
+          *ngFor="let value of options[option]"
+          [ngClass]="
+            !checkSelected(selectedOptions, value) ? ' p-button-outlined' : ''
+          "
+          class="col p-2 m-1"
+          pButton
+          [label]="value.value ?? ''"
+        ></button>
+      </div>
+    </div>
+    <div class="d-flex my-1">
+      <strong style="width: 100px">Giá</strong>
+      <div>
+        <ng-container
+          *ngIf="!selectedProductDetail; then rangePrice; else detailPrice"
+        ></ng-container>
+      </div>
+      <ng-template #rangePrice>
+        <strong style="color: red">
+          {{ product.min_price | currency: "VND" }}
+        </strong>
+        <strong
+          *ngIf="product.min_price != product.max_price"
+          style="color: red"
+        >
+          - {{ product.max_price | currency: "VND" }}
+        </strong>
+      </ng-template>
+      <ng-template #detailPrice>
+        <strong style="color: red">
+          {{ selectedProductDetail?.out_price | currency: "VND" }}
+        </strong>
+      </ng-template>
+    </div>
+    <div class="d-flex">
+      <strong></strong>
+    </div>
+    <div class="d-flex my-1 align-items-center">
+      <strong style="width: 100px" class="of-ellipsis">Còn lại</strong>
+      <ng-container
+        *ngIf="selectedProductDetail?.remaining_quantity ?? product.quantity > 0 then remainingQuantity; else outStock"
+      >
+      </ng-container>
+      <ng-template  #remainingQuantity>
+        <span *ngIf="selectedProductDetail">
+          {{ selectedProductDetail?.remaining_quantity }}
+          {{ selectedProductDetail?.unit }}
+        </span>
+        <strong class="text-success" *ngIf="!selectedProductDetail">
+          Còn hàng
+        </strong>
+      </ng-template>
+      <ng-template  #outStock>
+        <strong
+        class="text-danger"
+        *ngIf="
+          (selectedProductDetail?.remaining_quantity ?? product.quantity) == 0
+        "
+      >
+        Hết hàng
+      </strong>
+      </ng-template>
+    </div>
+    <div class="d-flex my-1 align-items-center">
+      <strong style="width: 100px" class="of-ellipsis">Số lượng</strong>
+      <div class="field" style="width: 150px">
+        <p-inputNumber
+          [(ngModel)]="quantity"
+          inputId="minmax"
+          mode="decimal"
+          [min]="
+            (selectedProductDetail?.remaining_quantity ?? product.quantity) > 0
+              ? 1
+              : 0
+          "
+          [showButtons]="true"
+          [max]="selectedProductDetail?.remaining_quantity ?? product.quantity"
+          [disabled]="
+            (selectedProductDetail?.remaining_quantity ?? product.quantity) == 0
+          "
+        >
+        </p-inputNumber>
+      </div>
+    </div>
+    <div class="my-1">
+      <strong>Mô tả sản phẩm</strong>
+      <div [innerHTML]="product.description | sanitizer"></div>
+    </div>
+    <div class="d-flex mt-auto">
+      <button
+        class="w-auto ml-auto p-button-outlined"
+        pButton
+        pRipple
+        [disabled]="
+          !selectedProductDetail ||
+          (selectedProductDetail?.remaining_quantity ?? product.quantity) == 0
+        "
+        (click)="addToCart()"
+        label="Thêm vào giỏ hàng"
+      ></button>
+    </div>
+  </div>
+</div>

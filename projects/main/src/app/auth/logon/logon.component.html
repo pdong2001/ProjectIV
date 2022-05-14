@@ -1,1 +1,106 @@
-<p>logon works!</p>
+<section class="login py-5 border-top-1">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-8 align-item-center">
+        <div class="border border">
+          <h3 class="bg-gray p-4">Đăng ký</h3>
+          <form (submit)="register()" [formGroup]="form">
+            <fieldset class="p-4">
+              <input
+                type="text"
+                placeholder="Tên người dùng*"
+                name="username"
+                class="border p-3 w-100 my-2"
+                formControlName="name"
+              />
+              <small
+                *ngIf="
+                  form.controls['name'].invalid && form.controls['name'].touched
+                "
+                class="p-error"
+                >Tên người dùng là bắt buộc</small
+              >
+              <small *ngIf="emailExists" class="p-error"
+                >Địa chỉ email đã tồn tại, vui lòng sử dụng đỉa chỉ email khác
+                hoặc <a routerLink="/account/login" style="text-decoration: underline;">đăng nhập</a>
+              </small>
+              <input
+                (input)="emailExists = false"
+                type="email"
+                placeholder="Email*"
+                name="email"
+                class="border p-3 w-100 my-2"
+                formControlName="email"
+              />
+              <small
+                *ngIf="
+                  form.controls['email'].invalid &&
+                  form.controls['email'].touched
+                "
+                class="p-error"
+                >Địa chỉ email không hợp lệ</small
+              >
+              <input
+                type="password"
+                placeholder="Mật khẩu*"
+                formControlName="password"
+                name="password"
+                class="border p-3 w-100 my-2"
+              />
+              <small
+                *ngIf="
+                  form.controls['password'].invalid &&
+                  form.controls['password'].touched
+                "
+                class="p-error"
+                >Mật khẩu phải có độ dài tối thiểu là 8 ký tự</small
+              >
+              <input
+                type="password"
+                placeholder="Nhập lại mật khẩu*"
+                formControlName="passwordConfirm"
+                name="password_confirm"
+                class="border p-3 w-100 my-2"
+              />
+              <small
+                *ngIf="
+                  form.value.password != form.value.passwordConfirm &&
+                  form.controls['passwordConfirm'].touched
+                "
+                class="p-error"
+                >Nhập lại mật khẩu không chính xác</small
+              >
+              <div class="loggedin-forgot d-inline-flex my-3">
+                <input
+                  formControlName="accept"
+                  type="checkbox"
+                  id="registering"
+                  class="mt-1"
+                />
+                <label for="registering" class="px-2"
+                  >Bằng việc đăng ký bạn đồng ý
+                  <a
+                    class="text-primary font-weight-bold"
+                    href="terms-condition.html"
+                    >điền khoản của chúng tôi</a
+                  ></label
+                >
+              </div>
+              <button
+                [disabled]="
+                  form.invalid ||
+                  form.value.password != form.value.passwordConfirm
+                "
+                type="submit"
+                [ngClass]="form.valid ? 'bg-primary text-white' : ''"
+                class="d-block py-3 px-4 border-0 rounded font-weight-bold"
+              >
+                Đăng ký
+              </button>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

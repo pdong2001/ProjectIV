@@ -54,12 +54,13 @@
         class="h-100 d-flex justify-content-between flex-column border rounded"
       >
         <p-image
+        
           appendTo="body"
           class="mx-auto h-100"
-          [src]="getFilePath(blob.file_path)"
+          [src]="blob.file_path | filePath"
           [alt]="blob.name"
           [preview]="true"
-          imageClass="h-100 mw-100"
+          imageClass="h-100 mw-100 of-contain"
           styleClass="h-100 mw-100"
         ></p-image>
         <div>
@@ -181,11 +182,11 @@
         <h5>Hình ảnh</h5>
         <image-cropper
           [imageBase64]="base64Image"
-          [maintainAspectRatio]="true"
-          [aspectRatio]="10 / 13"
-          [resizeToWidth]="256"
+          [maintainAspectRatio]="false"
           (imageCropped)="imageCropped($event)"
           format="png"
+          [aspectRatio]="10/13"
+          [containWithinAspectRatio]="true"
         >
         </image-cropper>
       </div>

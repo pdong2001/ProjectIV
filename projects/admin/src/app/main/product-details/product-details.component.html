@@ -101,7 +101,7 @@
             appendTo="body"
             height="100px"
             *ngIf="detail.default_image"
-            [src]="getFilePath(detail.default_image.file_path)"
+            [src]="detail.default_image.file_path | filePath"
           ></p-image>
         </div>
       </td>

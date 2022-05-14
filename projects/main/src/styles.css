@@ -1446,7 +1446,6 @@ ul.pagination .active a {
 
 .product-item {
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
 }
 
 .product-item .card {
@@ -2698,3 +2697,15 @@ form textarea {
 }
 
 /*# sourceMappingURL=maps/style.css.map */
+a {
+  cursor: pointer;
+}
+
+.of-contain {
+  object-fit: contain;
+}
+
+.of-cover {
+  object-fit: cover;
+  object-position: center;
+}

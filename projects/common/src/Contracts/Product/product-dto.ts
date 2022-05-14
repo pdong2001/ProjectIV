@@ -20,4 +20,6 @@ export interface ProductDto extends FullAuditedEntity {
     provider?:any;
     details?: ProductDetailDto[];
     options: ProductOptionDto[];
+    min_price:number;
+    max_price:number;
 }

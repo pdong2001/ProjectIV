@@ -6,7 +6,9 @@ import { MainComponent } from './main.component';
 const routes: Routes = [
   {path : '' , component : MainComponent, children : [
     {path : 'home', component: HomeComponent},
-    {path: '', redirectTo: 'home', pathMatch:'full'}
+    {path : 'category', loadChildren: () => import('./category/category.module').then(m => m.CategoryModule)},
+    {path : 'account', loadChildren: () => import('../auth/auth.module').then(m => m.AuthModule)},
+    {path: '', redirectTo: 'home', pathMatch:'full'},
   ]}
 ];
 

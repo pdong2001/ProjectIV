@@ -51,6 +51,9 @@
       <th pSortableColumn="name">
         Tên loại <p-sortIcon field="name"></p-sortIcon>
       </th>
+      <th pSortableColumn="product_count">
+        Số sản phẩm <p-sortIcon field="product_count"></p-sortIcon>
+      </th>
       <th pSortableColumn="visible">
         Hiển thị <p-sortIcon field="visible"></p-sortIcon>
       </th>
@@ -66,6 +69,7 @@
   <ng-template pTemplate="body" let-cate>
     <tr>
       <td>{{ cate.name }}</td>
+      <td>{{ cate.product_count }}</td>
       <td>{{ cate.visible ? "Có" : "Không" }}</td>
       <td>{{ cate.created_at | date:'HH:mm dd/MM/yyyy' }}</td>
       <td>{{ cate.note}}</td>

@@ -1,0 +1,36 @@
+.product-item {
+    margin-bottom: 0px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;   
+}
+
+.card-body {
+    flex: 0 0 auto;
+}
+
+.card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.thumb-content {
+    flex: 1 1 auto;
+}
+
+.card-title {
+    height: 3rem;
+}
+
+.card-title a {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+img {
+    height: 100%;
+    object-fit: contain;
+}

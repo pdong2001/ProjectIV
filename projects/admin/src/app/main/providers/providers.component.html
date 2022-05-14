@@ -1,0 +1,199 @@
+<p-toolbar>
+  <ng-template pTemplate="left">
+    <button
+      pButton
+      pRipple
+      type="button"
+      icon="fa fa-plus"
+      label="Thêm nhà cung cấp"
+      class="p-button-sm mr-1"
+      (click)="showAddDialog()"
+    ></button>
+    <!-- <p-dropdown [options]="visibleOptions" >
+      </p-dropdown> -->
+  </ng-template>
+  <ng-template pTemplate="right">
+    <form
+      (submit)="dt.filterGlobal(search.value, 'contains')"
+      class="p-inputgroup"
+    >
+      <span class="p-inputgroup-addon"> <i class="pi pi-search"></i></span>
+      <input
+        pInputText
+        type="text"
+        #search
+        placeholder="Từ khóa tìm kiếm..."
+        class="w-100"
+      />
+      <button pButton type="submit" label="Tìm"></button>
+    </form>
+  </ng-template>
+</p-toolbar>
+<p-table
+  #dt
+  [value]="providers"
+  [lazy]="true"
+  (onLazyLoad)="loadCategories($event)"
+  responsiveLayout="scroll"
+  dataKey="id"
+  [selection]="selectedCategories"
+  [selectAll]="selectAll"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[5, 10, 15, 25]"
+  [totalRecords]="totalRecords"
+  [loading]="loading"
+  [globalFilterFields]="['name']"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th pSortableColumn="name">
+        Tên nhà cung cấp <p-sortIcon field="name"></p-sortIcon>
+      </th>
+      <th pSortableColumn="phone">
+        Số điện thoại <p-sortIcon field="phone"></p-sortIcon>
+      </th>
+      <th pSortableColumn="address">
+        Địa chỉ <p-sortIcon field="address"></p-sortIcon>
+      </th>
+      <th pSortableColumn="visible">
+        Hiển thị <p-sortIcon field="visible"></p-sortIcon>
+      </th>
+      <th pSortableColumn="created_at">
+        Thời gian tạo<p-sortIcon field="created_at"></p-sortIcon>
+      </th>
+      <th>Ghi chú</th>
+      <th style="width: 7rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-provider>
+    <tr>
+      <td>
+        <p-image
+          [preview]="false"
+          [src]="provider.file_path | filePath"
+          height="100px"
+          width="100px"
+          imageStyle="object-fit:contain;"
+          alt="ProviderAtl"
+        ></p-image>
+      </td>
+      <td>{{ provider.name }}</td>
+      <td>{{ provider.phone }}</td>
+      <td>{{ provider.address }}</td>
+      <td>{{ provider.visible ? "Có" : "Không" }}</td>
+      <td>{{ provider.created_at | date: "HH:mm dd/MM/yyyy" }}</td>
+      <td>{{ provider.note }}</td>
+      <td class="d-md-flex">
+        <button
+          pButton
+          pRipple
+          type="button"
+          icon="far fa-edit"
+          class="p-button-rounded p-button-sm mr-1"
+          (click)="showEditDialog(provider)"
+        ></button>
+        <button
+          pButton
+          pRipple
+          type="button"
+          icon="far fa-trash-alt"
+          class="p-button-rounded p-button-danger"
+          (click)="delete(provider)"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [draggable]="true"
+  [resizable]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [header]="(displayAddDialog ? 'Thêm' : 'Sửa') + ' nhà cung cấp sản phẩm'"
+  [(visible)]="formVisible"
+  [style]="{ width: '50vw' }"
+  styleClass="p-fluid"
+  [modal]="true"
+>
+  <div class="p-field">
+    <label for="name"><strong>Tên nhà cung cấp</strong></label>
+    <input
+      type="text"
+      [(ngModel)]="provider.name"
+      name="provider-name"
+      id="name"
+      pInputText
+    />
+  </div>
+  <div class="p-field">
+    <label for="phone"><strong>Số điện thoại</strong></label>
+    <input
+      type="text"
+      [(ngModel)]="provider.phone"
+      name="provider-phone"
+      id="phone"
+      pInputText
+    />
+  </div>
+  <div class="p-field">
+    <label for="address"><strong>Địa chỉ</strong></label>
+    <input
+      type="text"
+      [(ngModel)]="provider.address"
+      name="provider-address"
+      id="address"
+      pInputText
+    />
+  </div>
+  <div>
+    <label for="image"><strong>Hình ảnh</strong></label>
+    <p-fileUpload
+      #upload
+      accept="image/*"
+      [showCancelButton]="true"
+      [showUploadButton]="false"
+      [maxFileSize]="10000000"
+      chooseLabel="Chọn ảnh"
+    >
+    </p-fileUpload>
+  </div>
+  <div class="d-flex justify-content-start mt-3">
+    <label class="mr-3" for="visible"
+      ><strong>Hiện thị ở trang chủ</strong></label
+    >
+    <p-inputSwitch id="visible" [(ngModel)]="provider.visible"></p-inputSwitch>
+  </div>
+  <ng-template pTemplate="footer">
+    <button
+      *ngIf="displayAddDialog"
+      pButton
+      pRipple
+      icon="fas fa-check"
+      class="p-button-success p-button-sm"
+      label="Thêm"
+      type="button"
+      (click)="add(upload.files)"
+    ></button>
+    <button
+      *ngIf="displayEditDialog"
+      pButton
+      pRipple
+      icon="fas fa-check"
+      class="p-button-success p-button-sm"
+      label="Lưu"
+      type="button"
+      (click)="save(upload.files)"
+    ></button>
+    <button
+      pButton
+      pRipple
+      class="p-button-danger p-button-sm"
+      label="Hủy"
+      type="button"
+      (click)="formVisible = false; nameInvalid = false"
+    ></button>
+  </ng-template>
+</p-dialog>

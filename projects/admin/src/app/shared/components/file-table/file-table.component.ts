@@ -11,7 +11,7 @@ import { Table } from 'primeng/table';
 import { environment } from 'projects/admin/src/environments/environment';
 import { BlobDto } from '../../../../../../common/src/Contracts/Blob/blob-dto';
 import { SortMode } from '../../../../../../common/src/Contracts/Common/paged-and-sorted-request';
-import { FileService } from '../../../../../../common/src/services/file.service';
+import { FileService } from '../../../../../../common/src/lib/services/file.service';
 
 @Component({
   selector: 'app-file-table',

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { CategoryDto } from '../Contracts/Category/category-dto';
-import { CategoryLookUpDto } from '../Contracts/Category/category-look-up-dto';
-import { InsertUpdateCategoryDto } from '../Contracts/Category/insert-update-category-dto';
+import { CategoryDto } from '../../Contracts/Category/category-dto';
+import { CategoryLookUpDto } from '../../Contracts/Category/category-look-up-dto';
+import { InsertUpdateCategoryDto } from '../../Contracts/Category/insert-update-category-dto';
 import { CRUDService } from './crudservice';
 import { HttpService } from './http.service';
 

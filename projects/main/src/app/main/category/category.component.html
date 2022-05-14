@@ -1,0 +1,268 @@
+<section class="page-search">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Advance Search -->
+        <div class="advance-search">
+          <form (ngSubmit)="searchFormSubmit(searchInput.value)">
+            <div class="form-row">
+              <div class="form-group col-md-10">
+                <input
+                  #searchInput
+                  type="text"
+                  class="form-control my-2 my-lg-0"
+                  id="inputtext4"
+                  placeholder="Bạn đang cần tìm kiếm gì?"
+                />
+              </div>
+              <div class="form-group col-md-2">
+                <button type="submit" class="btn btn-primary">
+                  Tìm ngay
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div *ngIf="search" class="search-result bg-gray">
+          <h2>Kết quả tìm kiếm cho "{{ search }}"</h2>
+          <p>{{ totalProducts }} sản phẩm</p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="category-sidebar">
+          <div class="widget category-list">
+            <h4 class="widget-header">Tất cả các loại</h4>
+            <ul class="category-list">
+              <li>
+                <a
+                  [ngClass]="!selectedCategory ? 'active' : ''"
+                  (click)="selectedCategoryChange($event, undefined)"
+                >
+                  Tất cả <span>{{ maxTotalProducts }}</span></a
+                >
+              </li>
+              <li *ngFor="let cate of categories">
+                <a
+                  [ngClass]="cate.id == selectedCategory?.id ? 'active' : ''"
+                  (click)="selectedCategoryChange($event, cate)"
+                >
+                  {{ cate.name }} <span>{{ cate.product_count }}</span></a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div class="widget price-range w-100">
+            <h4 class="widget-header">Khoảng giá</h4>
+            <div class="block">
+              <h5>
+                {{
+                  (rangeValues[0] | currency: "VND") +
+                    " - " +
+                    (rangeValues[1] | currency: "VND")
+                }}
+              </h5>
+              <p-slider
+                (onSlideEnd)="loadNewData()"
+                [step]="10000"
+                [min]="0"
+                [max]="maxPrice"
+                [(ngModel)]="rangeValues"
+                [range]="true"
+              ></p-slider>
+            </div>
+          </div>
+
+          <!-- <div class="widget product-shorting">
+            <h4 class="widget-header">By Condition</h4>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" value="" />
+                Brand New
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" value="" />
+                Almost New
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" value="" />
+                Gently New
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" value="" />
+                Havely New
+              </label>
+            </div>
+          </div> -->
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="card">
+          <p-dataView
+            [totalRecords]="totalProducts"
+            [lazy]="true"
+            (onLazyLoad)="loadProducts($event)"
+            #dv
+            [value]="products"
+            [paginator]="true"
+            [rows]="9"
+            filterBy="name"
+            layout="grid"
+            emptyMessage="Không có sản phẩm nào phù hợp"
+          >
+            <ng-template pTemplate="header">
+              <div class="d-flex justify-content-between">
+                <p-dropdown
+                  placeholder="Sắp xếp"
+                  [options]="sortOrder"
+                  [(ngModel)]="selectedOrder"
+                  appendTo="body"
+                  optionLabel="display"
+                  [showClear]="true"
+                >
+                </p-dropdown>
+                <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+              </div>
+            </ng-template>
+            <ng-template let-product pTemplate="listItem">
+              <div
+                style="max-height: 25vh"
+                class="col-lg-4 py-3 align-self-center d-flex"
+              >
+                <p-image
+                  [src]="getFilePath(product.default_image.file_path)"
+                  imageClass="w-100 h-100 of-cover"
+                  styleClass="w-100 h-100"
+                  alt=""
+                  [preview]="true"
+                ></p-image>
+              </div>
+              <div style="max-height: 25vh" class="col-lg-8 py-3">
+                <div class="row h-100">
+                  <div
+                    class="col-lg-6 col-md-10 h-100"
+                    style="overflow: hidden"
+                  >
+                    <div class="ad-listing-content">
+                      <div>
+                        <a
+                          [routerLink]="['/category', product.id]"
+                          class="font-weight-bold"
+                        >
+                          {{ product.name }}
+                        </a>
+                      </div>
+                      <ul class="list-inline mt-2 mb-3">
+                        <li class="list-inline-item">
+                          <a
+                            class="of-ellipsis"
+                            (click)="
+                              selectedCategoryChange(
+                                undefined,
+                                product.category
+                              )
+                            "
+                          >
+                            <i class="fa fa-folder-open"></i>
+                            {{ product.category?.name }}</a
+                          >
+                        </li>
+                        <li class="list-inline-item">
+                          <a style="cursor: default"
+                            ><i class="fa fa-calendar"></i>
+                            {{
+                              product.updated_at ?? product.created_at
+                                | date: "dd/MM/yyyy"
+                            }}
+                          </a>
+                        </li>
+                      </ul>
+                      <div
+                        [innerHTML]="getSafeHTML(product.description)"
+                        class="pr-5 q-container"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 align-self-center">
+                    <div class="product-ratings float-lg-right pb-3">
+                      <ul class="list-inline mb-3">
+                        <li class="list-inline-item selected">
+                          <i class="fa fa-star"></i>
+                        </li>
+                        <li class="list-inline-item selected">
+                          <i class="fa fa-star"></i>
+                        </li>
+                        <li class="list-inline-item selected">
+                          <i class="fa fa-star"></i>
+                        </li>
+                        <li class="list-inline-item selected">
+                          <i class="fa fa-star"></i>
+                        </li>
+                        <li class="list-inline-item">
+                          <i class="fa fa-star"></i>
+                        </li>
+                      </ul>
+                      <button
+                        pButton
+                        class="p-button-sm"
+                        icon="pi pi-shopping-cart"
+                        (click)="showAddCartDialog(product)"
+                      ></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+            <ng-template let-product pTemplate="gridItem">
+              <div class="col-sm-12 my-1 col-lg-4 col-md-6">
+                <!-- product card -->
+                <app-product-box
+                  [value]="product"
+                  (addCartClick)="showAddCartDialog($event)"
+                  (categoryChange)="selectedCategoryChange(undefined, $event)"
+                >
+                </app-product-box>
+              </div>
+            </ng-template>
+          </p-dataView>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p-dialog
+    [draggable]="true"
+    [resizable]="true"
+    [maximizable]="true"
+    appendTo="body"
+    [header]="'Thông tin sản phẩm'"
+    [(visible)]="displayAddCartDialog"
+    styleClass="p-fluid"
+    [modal]="true"
+    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+    [style]="{ width: '50vw' }"
+    [dismissableMask]="true"
+  >
+    <app-product-info *ngIf="selectedProduct" [(value)]="selectedProduct">
+    </app-product-info>
+  </p-dialog>
+</section>

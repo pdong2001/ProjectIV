@@ -6,3 +6,6 @@
 {
     font-size: 1rem !important;
 }
+.of-contain {
+    object-fit: contain;
+}

@@ -4,8 +4,12 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class AuthDataService {
+  getCustomerInfo() {
+    return { id: 1 };
+  }
   private readonly TokenKey = 'token';
-  private _token!:string|null;
+  private readonly ExpireKey = 'token-expire';
+  private _token!: string | null;
   constructor() {}
 
   public set token(token: string | null) {
@@ -18,17 +22,17 @@ export class AuthDataService {
   }
 
   public get token(): string | null {
-    if (!this._token) this._token = localStorage.getItem(this.TokenKey);
+    if (!this._token) {
+      this._token = localStorage.getItem(this.TokenKey);
+    }
     return this._token;
   }
 
-  public removeToken()
-  {
+  public removeToken() {
     this.token = null;
   }
 
-  public isLoggedIn() : boolean
-  {
+  public isLoggedIn(): boolean {
     return this.token != null;
   }
 }

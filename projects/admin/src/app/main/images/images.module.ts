@@ -14,6 +14,8 @@ import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { TooltipModule } from 'primeng/tooltip';
+import { environment } from 'projects/admin/src/environments/environment';
+import { CommonPipeModule } from 'projects/common/src/lib/common-pipe/common-pipe.module';
 
 
 @NgModule({
@@ -33,7 +35,8 @@ import { TooltipModule } from 'primeng/tooltip';
     DialogModule,
     FileUploadModule,
     ImageCropperModule,
-    TooltipModule
+    TooltipModule,
+    CommonPipeModule.forRoot(environment)
   ]
 })
 export class ImagesModule { }

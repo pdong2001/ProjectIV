@@ -1,4 +1,4 @@
-export interface Response<T>
+export interface ServiceResponse<T>
 {
     meta?:{
         perPage?:number,

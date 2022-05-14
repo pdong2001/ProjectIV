@@ -7,9 +7,9 @@ import { environment } from 'projects/admin/src/environments/environment';
 import { firstValueFrom } from 'rxjs';
 import { BlobDto } from '../../../../../common/src/Contracts/Blob/blob-dto';
 import { SortMode } from '../../../../../common/src/Contracts/Common/paged-and-sorted-request';
-import { FileService } from '../../../../../common/src/services/file.service';
-import { ConfirmService } from 'projects/common/src/services/confirm.service';
-import { ToastService } from 'projects/common/src/services/toast.service';
+import { FileService } from '../../../../../common/src/lib/services/file.service';
+import { ConfirmService } from 'projects/common/src/lib/services/confirm.service';
+import { ToastService } from 'projects/common/src/lib/services/toast.service';
 import { TitleService } from 'projects/admin/src/app/services/title.service';
 
 @Component({
@@ -28,11 +28,7 @@ export class ImagesComponent implements OnInit {
   selectedBlob: BlobDto | undefined;
   imgChangeEvt: any;
   croppedImage: string | undefined;
-  getFilePath(value: string) {
-    if (!value) return '';
-    return environment.FILE_GET_BY_NAME + value;
-  }
-
+  
   displayAddDialog: boolean = false;
   displayEditDialog: boolean = false;
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserDto } from '../../../../../../common/src/Contracts/User/user-dto';
-import { AuthDataService } from '../../../../../../common/src/services/auth-data.service';
+import { AuthDataService } from '../../../../../../common/src/lib/services/auth-data.service';
 import { OAuthService } from '../../../services/oauth.service';
 
 @Component({

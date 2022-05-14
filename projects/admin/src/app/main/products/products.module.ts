@@ -13,12 +13,15 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { DialogModule } from 'primeng/dialog';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { CardModule } from 'primeng/card';
-import { EditorModule } from 'primeng/editor';
+// import { EditorModule } from 'primeng/editor';
 import { TabViewModule } from 'primeng/tabview';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ComponentsModule } from '../../shared/components/components.module';
 import { ImageModule } from 'primeng/image';
 import { ProductDetailComponent } from './product-detail/product-detail.component';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { CommonPipeModule } from 'projects/common/src/lib/common-pipe/common-pipe.module';
+import { environment } from 'projects/admin/src/environments/environment';
 
 
 @NgModule({
@@ -44,6 +47,10 @@ import { ProductDetailComponent } from './product-detail/product-detail.componen
     FileUploadModule,
     ComponentsModule,
     ImageModule,
+    CommonPipeModule.forRoot(environment)
+  ],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }
   ]
 })
 export class ProductsModule { }

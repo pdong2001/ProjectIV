@@ -1,0 +1,9 @@
+.active {
+    text-decoration: none;
+  outline: 0;
+  color: #5672f9;
+}
+.active span {
+  color: white;
+  background-color: #5672f9;
+}

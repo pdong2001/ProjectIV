@@ -16,6 +16,8 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { ComponentsModule } from '../../shared/components/components.module';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { environment } from 'projects/admin/src/environments/environment';
+import { CommonPipeModule } from 'projects/common/src/lib/common-pipe/common-pipe.module';
 
 
 @NgModule({
@@ -39,6 +41,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
     InputSwitchModule,
     ReactiveFormsModule,
     InputNumberModule,
+    CommonPipeModule.forRoot(environment)
   ]
 })
 export class ProductDetailsModule { }

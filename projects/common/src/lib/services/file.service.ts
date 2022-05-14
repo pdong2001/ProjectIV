@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BlobDto } from '../Contracts/Blob/blob-dto';
-import { BlobLookUpDto } from '../Contracts/Blob/blob-lookup-dto';
-import { ImageAssign as ImageAssignDto } from '../Contracts/Common/image';
-import { InsertImageAssign as InsertImageAssignDto } from '../Contracts/Common/insert-image';
-import { Response } from '../Contracts/Common/response';
+import { BlobDto } from '../../Contracts/Blob/blob-dto';
+import { BlobLookUpDto } from '../../Contracts/Blob/blob-lookup-dto';
+import { ImageAssign as ImageAssignDto } from '../../Contracts/Common/image';
+import { InsertImageAssign as InsertImageAssignDto } from '../../Contracts/Common/insert-image';
+import { ServiceResponse } from '../../Contracts/Common/response';
 import { HttpService } from './http.service';
 
 @Injectable({
@@ -19,15 +19,15 @@ export class FileService {
 
   public getList(request: BlobLookUpDto) {
     const url = 'admin/blobs';
-    return this.httpClient.get<Response<BlobDto[]>>(url, { params: request });
+    return this.httpClient.get<ServiceResponse<BlobDto[]>>(url, { params: request });
   }
 
-  public upload(file: File, name: string): Observable<Response<BlobDto>> {
+  public upload(file: File, name: string): Observable<ServiceResponse<BlobDto>> {
     const url = 'upload';
     const data = new FormData();
     data.append('file', file);
     data.append('name', name);
-    return this.httpClient.post<Response<BlobDto>>(url, data);
+    return this.httpClient.post<ServiceResponse<BlobDto>>(url, data);
   }
 
   public updateBlob(id: number, name: string, blob?: Blob) {
@@ -37,13 +37,13 @@ export class FileService {
       data.append('file', blob);
     }
     data.append('name', name);
-    return this.httpClient.post<Response<number>>(url, data);
+    return this.httpClient.post<ServiceResponse<number>>(url, data);
   }
 
   public uploadRange(
     files: File[],
     fileName?: string
-  ): Observable<Response<BlobDto>> {
+  ): Observable<ServiceResponse<BlobDto>> {
     const url = 'admin/upload';
     const data = new FormData();
     files.forEach((value, index) => {
@@ -52,12 +52,12 @@ export class FileService {
     if (fileName) {
       data.append('name', fileName);
     }
-    return this.httpClient.post<Response<BlobDto>>(url, data);
+    return this.httpClient.post<ServiceResponse<BlobDto>>(url, data);
   }
 
   public delete(id: number) {
     const url = `blobs/${id}`;
-    return this.httpClient.delete<Response<number>>(url);
+    return this.httpClient.delete<ServiceResponse<number>>(url);
   }
 
   public createAssign(input: InsertImageAssignDto) {
@@ -68,17 +68,17 @@ export class FileService {
     if (input.name) payload.append('name', input.name);
     if (input.file) payload.append('file', input.file);
     else if (input.blob_id) payload.append('blob_id', input.blob_id.toString());
-    return this.httpClient.post<Response<ImageAssignDto>>(url, payload);
+    return this.httpClient.post<ServiceResponse<ImageAssignDto>>(url, payload);
   }
 
   public deleteAssign(id: number) {
     const url = `admin/image_assigns/${id}`;
-    return this.httpClient.delete<Response<number>>(url);
+    return this.httpClient.delete<ServiceResponse<number>>(url);
   }
 
   public duplicatedFilter() {
     const url = 'admin/file/duplicated-filter';
-    return this.httpClient.post<Response<any>>(url);
+    return this.httpClient.post<ServiceResponse<any>>(url);
   }
 
   public getFileByBlobId(id: number): Observable<Blob> {
@@ -86,8 +86,8 @@ export class FileService {
     return this.httpClient.get<Blob>(url, { responseType: 'blob' });
   }
 
-  public duplicateBlob(id: number): Observable<Response<BlobDto>> {
+  public duplicateBlob(id: number): Observable<ServiceResponse<BlobDto>> {
     const url = `admin/blobs/duplicate/${id}`;
-    return this.httpClient.post<Response<BlobDto>>(url);
+    return this.httpClient.post<ServiceResponse<BlobDto>>(url);
   }
 }

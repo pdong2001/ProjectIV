@@ -6,6 +6,9 @@ import { MainComponent } from './main.component';
 import { ComponentsModule } from '../shared/components/components.module';
 import { RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { CommonPipeModule } from 'projects/common/src/lib/common-pipe/common-pipe.module';
+import { environment } from '../../environments/environment';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -17,7 +20,9 @@ import { HomeComponent } from './home/home.component';
     CommonModule,
     MainRoutingModule,
     ComponentsModule,
-    RouterModule
+    RouterModule,
+    FormsModule,
+    CommonPipeModule.forRoot(environment)
   ]
 })
 export class MainModule { }

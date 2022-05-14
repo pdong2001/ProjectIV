@@ -7,10 +7,10 @@ import { Image } from 'primeng/image';
 import { Table } from 'primeng/table';
 import { environment } from 'projects/admin/src/environments/environment';
 import { ImageableType } from 'projects/common/src/lib/imageable-type';
-import { ConfirmService } from 'projects/common/src/services/confirm.service';
-import { ProductService } from 'projects/common/src/services/product.service';
+import { ConfirmService } from 'projects/common/src/lib/services/confirm.service';
+import { ProductService } from 'projects/common/src/lib/services/product.service';
 import { TitleService } from 'projects/admin/src/app/services/title.service';
-import { ToastService } from 'projects/common/src/services/toast.service';
+import { ToastService } from 'projects/common/src/lib/services/toast.service';
 import { firstValueFrom } from 'rxjs';
 import { BlobDto } from '../../../../../common/src/Contracts/Blob/blob-dto';
 import { ImageAssign } from '../../../../../common/src/Contracts/Common/image';
@@ -19,8 +19,8 @@ import { ProductDto } from '../../../../../common/src/Contracts/Product/product-
 import { InsertUpdateProductDetailDto } from '../../../../../common/src/Contracts/ProductDetail/insert-update-product-detail-dto';
 import { ProductDetailDto } from '../../../../../common/src/Contracts/ProductDetail/product-detail-dto';
 import { ProductDetailOptionValueDto } from '../../../../../common/src/Contracts/ProductDetail/product-detail-option-value-dto';
-import { FileService } from '../../../../../common/src/services/file.service';
-import { ProductDetailService } from '../../../../../common/src/services/product-detail.service';
+import { FileService } from '../../../../../common/src/lib/services/file.service';
+import { ProductDetailService } from '../../../../../common/src/lib/services/product-detail.service';
 
 @Component({
   selector: 'app-product-details',
@@ -33,10 +33,6 @@ export class ProductDetailsComponent implements OnInit {
   @ViewChild('editor') editor!: Editor;
   selectedProductDetail!: ProductDetailDto;
   files: BlobDto[] = [];
-  getFilePath(value: string) {
-    if (!value) return '';
-    return environment.FILE_GET_BY_NAME + value;
-  }
   chosingDefaultImage: boolean = false;
   products: ProductDto[] = [];
   productDetails: ProductDetailDto[] = [];
@@ -85,10 +81,6 @@ export class ProductDetailsComponent implements OnInit {
     this.displayAddDialog = value;
   }
 
-  getSafeHTML(value: string) {
-    if (!value) return '';
-    return this.sanitizer.bypassSecurityTrustHtml(value);
-  }
   tabActiveIndex: number = 0;
 
   formGroup: FormGroup;
@@ -127,7 +119,7 @@ export class ProductDetailsComponent implements OnInit {
   loadProduct(search?: string) {
     this.productService
       .getList({
-        limit: 1,
+        limit: 0,
         page: 1,
         column: 'id',
         sort: SortMode.DESC,
@@ -135,6 +127,8 @@ export class ProductDetailsComponent implements OnInit {
         consumeable_only: false,
         with_detail: false,
         with_images: false,
+        has_image_only: false,
+        visible_only: false
       })
       .subscribe({
         next: (res) => {
@@ -150,6 +144,8 @@ export class ProductDetailsComponent implements OnInit {
                   consumeable_only: false,
                   with_detail: false,
                   with_images: false,
+                  has_image_only: false,
+                  visible_only: false
                 })
                 .subscribe({
                   next: (res) => {

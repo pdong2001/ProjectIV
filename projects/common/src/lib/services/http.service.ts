@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { catchError, Observable, throwError } from 'rxjs';
-import { environment } from '../../../admin/src/environments/environment';
+import { environment } from '../../../../admin/src/environments/environment';
 
 @Injectable({
   providedIn: 'root'

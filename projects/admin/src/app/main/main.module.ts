@@ -7,17 +7,14 @@ import { ComponentsModule } from '../shared/components/components.module';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
-
-
 @NgModule({
-  declarations: [
-    MainComponent,  ],
+  declarations: [MainComponent],
   imports: [
     CommonModule,
     MainRoutingModule,
     ComponentsModule,
     ToastModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
   ],
 })
-export class MainModule { }
+export class MainModule {}

@@ -2701,3 +2701,8 @@ form textarea {
 }
 
 /*# sourceMappingURL=maps/style.css.map */
+.of-ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

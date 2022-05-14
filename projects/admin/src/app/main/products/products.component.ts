@@ -7,10 +7,10 @@ import { Image } from 'primeng/image';
 import { Table } from 'primeng/table';
 import { environment } from 'projects/admin/src/environments/environment';
 import { ImageableType } from 'projects/common/src/lib/imageable-type';
-import { ConfirmService } from 'projects/common/src/services/confirm.service';
-import { ProductService } from 'projects/common/src/services/product.service';
+import { ConfirmService } from 'projects/common/src/lib/services/confirm.service';
+import { ProductService } from 'projects/common/src/lib/services/product.service';
 import { TitleService } from 'projects/admin/src/app/services/title.service';
-import { ToastService } from 'projects/common/src/services/toast.service';
+import { ToastService } from 'projects/common/src/lib/services/toast.service';
 import { BlobDto } from '../../../../../common/src/Contracts/Blob/blob-dto';
 import { CategoryDto } from '../../../../../common/src/Contracts/Category/category-dto';
 import { ImageAssign } from '../../../../../common/src/Contracts/Common/image';
@@ -18,8 +18,10 @@ import { SortMode } from '../../../../../common/src/Contracts/Common/paged-and-s
 import { InsertUpdateProductDto } from '../../../../../common/src/Contracts/Product/insert-update-product-dto';
 import { ProductDto } from '../../../../../common/src/Contracts/Product/product-dto';
 import { ProductOptionDto } from '../../../../../common/src/Contracts/Product/product-option-dto';
-import { CategoryService } from '../../../../../common/src/services/category.service';
-import { FileService } from '../../../../../common/src/services/file.service';
+import { CategoryService } from '../../../../../common/src/lib/services/category.service';
+import { FileService } from '../../../../../common/src/lib/services/file.service';
+import { ProviderService } from 'projects/common/src/lib/services/provider.service';
+import { ProviderDto } from 'projects/common/src/Contracts/Provider/provider-dto';
 
 @Component({
   selector: 'app-products',
@@ -31,14 +33,8 @@ export class ProductsComponent implements OnInit {
   @ViewChild('dt') dt!: Table;
   @ViewChild('editor') editor!: Editor;
   @ViewChild('fileUpload') fileUpload!: FileUpload;
-
   chosingDefaultImage: boolean = false;
-
-  getFilePath(value: string) {
-    if (!value) return '';
-    return environment.FILE_GET_BY_NAME + value;
-  }
-  providers = [];
+  providers : ProviderDto[] =[];
   categories: CategoryDto[] = [];
   products: ProductDto[] = [];
   selectedProducts: ProductDto[] = [];
@@ -54,12 +50,12 @@ export class ProductsComponent implements OnInit {
   selectedVisibleOption = this.visibleOptions[0];
   selectedFiles: BlobDto[] = [];
 
-  product: InsertUpdateProductDto = { name: '', visible: true };
+  product: InsertUpdateProductDto = { name: '', visible: true, description: '' };
   nameInvalid: boolean = false;
 
   displayAddDialog: boolean = false;
   displayEditDialog: boolean = false;
-  options : ProductOptionDto[] = [];
+  options: ProductOptionDto[] = [];
   get formVisible(): boolean {
     return this.displayAddDialog || this.displayEditDialog;
   }
@@ -69,10 +65,6 @@ export class ProductsComponent implements OnInit {
     this.displayAddDialog = value;
   }
 
-  getSafeHTML(value: string) {
-    if (!value) return '';
-    return this.sanitizer.bypassSecurityTrustHtml(value);
-  }
   tabActiveIndex: number = 0;
 
   constructor(
@@ -81,8 +73,8 @@ export class ProductsComponent implements OnInit {
     private toastService: ToastService,
     private confirmService: ConfirmService,
     private categoryService: CategoryService,
-    private sanitizer: DomSanitizer,
-    private fileService: FileService
+    private fileService: FileService,
+    private providerService:ProviderService
   ) {
     this.breadCrumpService.setPageTitle('Danh sách sản phẩm');
     this.breadCrumpService.setTitle('Admin - Sản phẩm');
@@ -90,6 +82,19 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCategories();
+    this.loadProviders();
+  }
+
+  loadProviders()
+  {
+    this.providerService.getList({
+      limit: 100
+    }).subscribe(res => {
+      if (res.status)
+      {
+        this.providers = res.data??[];
+      }
+    })
   }
 
   loadCategories() {
@@ -124,6 +129,8 @@ export class ProductsComponent implements OnInit {
         with_detail: false,
         consumeable_only: false,
         with_images: true,
+        has_image_only: false,
+        visible_only: false,
       })
       .subscribe({
         next: (res) => {
@@ -176,7 +183,7 @@ export class ProductsComponent implements OnInit {
                       imageable_id: res.data ?? 0,
                       imageable_type: ImageableType.Product,
                       file: file,
-                      name : this.product.name
+                      name: this.product.name,
                     })
                     .toPromise();
                 }
@@ -203,9 +210,7 @@ export class ProductsComponent implements OnInit {
             this.toastService.addSuccess(
               `Đã thêm ${this.product.name.toLocaleLowerCase()}.`
             );
-          }
-          else
-          {
+          } else {
             this.loading = false;
           }
         });
@@ -234,7 +239,7 @@ export class ProductsComponent implements OnInit {
                     imageable_id: res.data ?? 0,
                     imageable_type: ImageableType.Product,
                     file: file,
-                    name: this.product.name
+                    name: this.product.name,
                   })
                   .toPromise();
               }
@@ -360,11 +365,10 @@ export class ProductsComponent implements OnInit {
     );
   }
 
-  addNewOption(name:string)
-  {
+  addNewOption(name: string) {
     this.options.push({
-      name:name,
-      product_id: this.selectedProduct?.id
+      name: name,
+      product_id: this.selectedProduct?.id,
     });
   }
 }

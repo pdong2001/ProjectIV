@@ -1,0 +1,293 @@
+<section>
+  <p-toolbar>
+    <ng-template pTemplate="left">
+      <button
+        pRipple
+        pButton
+        label="Thêm"
+        icon="pi pi-plus"
+        (click)="showAddDialog()"
+      ></button>
+    </ng-template>
+    <ng-template pTemplate="right">
+      <span class="p-input-icon-left ml-auto">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          ngModel
+          (ngModelChange)="dt.filterGlobal($event, 'contains')"
+          placeholder="Search keyword"
+        />
+      </span>
+    </ng-template>
+  </p-toolbar>
+</section>
+
+<section>
+  <p-table
+    #dt
+    [value]="webinfos"
+    [scrollable]="true"
+    scrollHeight="500px"
+    [globalFilterFields]="[
+      'name',
+      'title',
+      'content',
+      'link',
+      'icon',
+      'image.name'
+    ]"
+    dataKey="id"
+    [paginator]="true"
+    breakpoint="992px"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 15, 25, 50]"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="d-lg-table-cell d-none"></th>
+        <th>STT</th>
+        <th pSortableColumn="name">
+          Tên <p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th>Ảnh</th>
+        <th pSortableColumn="title">
+          Tiêu đề <p-sortIcon field="title"></p-sortIcon>
+        </th>
+        <th pSortableColumn="link">
+          Link <p-sortIcon field="link"></p-sortIcon>
+        </th>
+        <th pSortableColumn="icon">
+          Icon <p-sortIcon field="icon"></p-sortIcon>
+        </th>
+        <th pSortableColumn="created_at">
+          Thời gian tạo<p-sortIcon field="created_at"></p-sortIcon>
+        </th>
+        <th style="width: 7rem"></th>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-info
+      let-index="rowIndex"
+      let-expanded="expanded"
+    >
+      <tr>
+        <td class="d-lg-table-cell d-none">
+          <button
+            type="button"
+            pButton
+            (click)="(expanded)"
+            pRipple
+            [pRowToggler]="info"
+            class="p-button-text p-button-rounded p-button-plain"
+            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+          ></button>
+        </td>
+        <td><span class="p-column-title">STT</span>{{ index + 1 }}</td>
+        <td><span class="p-column-title">Tên</span>{{ getName(info.name) }}</td>
+        <td>
+          <span class="p-column-title">Ảnh</span>
+          <p-image
+            [preview]="true"
+            *ngIf="info.image"
+            height="50"
+            [src]="info.image.file_path | filePath"
+            appendTo="body"
+          >
+          </p-image>
+        </td>
+        <td><span class="p-column-title">Tiêu đề</span>{{ info.title }}</td>
+        <td><span class="p-column-title">Link</span>{{ info.link }}</td>
+        <td>
+          <span class="p-column-title">Icon</span>
+          <i *ngIf="info.icon" [class]="info.icon"></i>
+        </td>
+        <td>
+          <span class="p-column-title">Thời gian tạo</span
+          >{{ info.created_at | date: "dd/MM/yyyy" }}
+        </td>
+        <td>
+          <div class="d-flex justify-content-between w-100">
+            <button
+              type="button"
+              pButton
+              pRipple
+              (click)="(expanded)"
+              [pRowToggler]="info"
+              class="p-button-text p-button-rounded p-button-plain d-lg-none"
+              [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+            ></button>
+            <button
+            pButton
+            pRipple
+            type="button"
+            icon="far fa-edit"
+            class="p-button-rounded p-button-sm mr-1"
+            (click)="showEditDialog(info)"
+          ></button>
+          <button
+
+            pButton
+            pRipple
+            type="button"
+            icon="far fa-trash-alt"
+            class="p-button-rounded p-button-danger p-button-sm"
+            (click)="delete(info)"
+          ></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-info>
+      <tr>
+        <td colspan="10">
+          <div class="p-fluid">
+            <div class="my-1 p-field">
+              <strong>Nội dung</strong>
+              <div
+                class="ql-editor"
+                [innerHTML]="info.content | sanitizer"
+              ></div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</section>
+
+<section>
+  <p-dialog
+    [draggable]="true"
+    [resizable]="true"
+    [maximizable]="true"
+    appendTo="body"
+    [header]="(displayAddDialog ? 'Thêm' : 'Sửa') + ' sản phẩm'"
+    [(visible)]="formVisible"
+    styleClass="p-fluid"
+    [modal]="true"
+    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+    [style]="{ width: '50vw' }"
+  >
+    <form class="p-fluid" [formGroup]="form">
+      <div class="p-field">
+        <label><strong>Tên</strong><span style="color: #ff0000">*</span></label>
+        <p-dropdown
+          [options]="names"
+          optionLabel="name"
+          optionValue="value"
+          emptyMessage="Không có loại sản phẩm"
+          emptyFilterMessage="Không có loại sản phẩm"
+          appendTo="body"
+          formControlName="name"
+        >
+        </p-dropdown>
+      </div>
+      <div class="p-field">
+        <label><strong>Tiêu đề</strong></label>
+        <input pInputText placeholder="Tiêu đề" formControlName="title" />
+      </div>
+      <div class="p-field">
+        <label><strong>Đường dẫn</strong></label>
+        <input pInputText placeholder="Tiêu đề" formControlName="title" />
+      </div>
+      <div class="p-field">
+        <label><strong>Icon</strong></label>
+        <input
+          appendTo="body"
+          pTooltip="Truy cập https://fontawesome.com/v5/search"
+          tooltipPosition="bottom"
+          pInputText
+          placeholder="Icon"
+          formControlName="icon"
+        />
+      </div>
+      <div class="p-field">
+        <label><strong>Ảnh</strong></label>
+        <p-tabView [(activeIndex)]="tabActiveIndex">
+          <p-tabPanel header="Tải lên">
+            <p-fileUpload
+              #upload
+              [multiple]="true"
+              chooseLabel="Chọn ảnh"
+              cancelLabel="Hủy"
+              accept="image/*"
+            >
+            </p-fileUpload>
+          </p-tabPanel>
+          <p-tabPanel header="Có sẵn">
+            <app-file-table
+              *ngIf="tabActiveIndex == 1"
+              [(selection)]="selectedBlobs"
+              [multiple]="false"
+            ></app-file-table>
+          </p-tabPanel>
+        </p-tabView>
+      </div>
+      <div class="p-field">
+        <label><strong>Nội dung</strong></label>
+        <editor
+        formArrayName="content"
+        apiKey="rglayxcy5hcrxaw5dxmaqlj6dq62qkwingzm05qh0b1snnur"
+        [init]="{
+          base_url: 'tinymce',
+          suffix: '.min',
+          height: 500,
+          menubar: true,
+          plugins: [
+            'advlist',
+            'autolink',
+            'lists',
+            'link',
+            'charmap',
+            'preview',
+            'anchor',
+            'codesample',
+            'searchreplace',
+            'visualblocks',
+            'code',
+            'fullscreen',
+            'image',
+            'insertdatetime',
+            'media',
+            'table',
+            'code',
+            'help',
+            'wordcount'
+          ],
+          codesample_languages: [
+            { text: 'TypeScript', value: 'typescript' },
+            { text: 'JavaScript', value: 'javascript' },
+            { text: 'HTML/XML', value: 'markup' },
+            { text: 'CSS', value: 'css' }
+          ],
+          toolbar:
+            'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image media codesample'
+        }"
+      >
+      </editor>
+      </div>
+    </form>
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        pRipple
+        icon="fas fa-check"
+        class="p-button-success p-button-sm"
+        label="Lưu"
+        type="button"
+        (click)="save(upload.files[0])"
+      ></button>
+      <button
+        pButton
+        pRipple
+        class="p-button-danger p-button-sm"
+        label="Hủy"
+        type="button"
+        (click)="formVisible = false"
+      ></button>
+    </ng-template>
+  </p-dialog>
+</section>

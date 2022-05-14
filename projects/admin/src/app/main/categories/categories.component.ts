@@ -7,11 +7,11 @@ import {
 import { CategoryDto } from '../../../../../common/src/Contracts/Category/category-dto';
 import { SortMode } from '../../../../../common/src/Contracts/Common/paged-and-sorted-request';
 import { TitleService } from '../../services/title.service';
-import { CategoryService } from '../../../../../common/src/services/category.service';
+import { CategoryService } from '../../../../../common/src/lib/services/category.service';
 import { InsertUpdateCategoryDto } from '../../../../../common/src/Contracts/Category/insert-update-category-dto';
 import { Table } from 'primeng/table';
-import { ConfirmService } from 'projects/common/src/services/confirm.service';
-import { ToastService } from 'projects/common/src/services/toast.service';
+import { ConfirmService } from 'projects/common/src/lib/services/confirm.service';
+import { ToastService } from 'projects/common/src/lib/services/toast.service';
 
 @Component({
   selector: 'app-categories',
@@ -128,7 +128,7 @@ export class CategoriesComponent implements OnInit {
               this.loadCategories(this.dt.createLazyLoadMetadata());
             } else {
               this.loading = false;
-              if (res?.meta.name) {
+              if (res?.meta?.name) {
                 this.nameInvalid = true;
               }
               this.toastService.addError(
