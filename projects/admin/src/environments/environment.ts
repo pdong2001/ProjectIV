@@ -4,7 +4,7 @@
 
 import { Environment } from "projects/common/src/Contracts/Common/environment";
 
-// const SERVER_ADDRESS = 'http://192.168.1.99';
+// const SERVER_ADDRESS = 'https://localhost:44394';
 const SERVER_ADDRESS = 'https://php.pdong-vps.tk';
 export const environment : Environment= {
   production: false,

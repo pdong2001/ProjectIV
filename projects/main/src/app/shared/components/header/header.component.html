@@ -1,116 +1,79 @@
-<section>
+<div class="py-1 bg-black">
   <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <nav class="navbar navbar-expand-lg navbar-light navigation">
-          <a class="navbar-brand" href="index.html">
-            <img src="../../../../assets/images/logo.png" alt="" />
-          </a>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ml-auto main-nav">
-              <li routerLinkActive="active" class="nav-item">
-                <a class="nav-link" routerLink="/home">Trang chủ</a>
-              </li>
-              <li routerLinkActive="active" class="nav-item">
-                <a class="nav-link" routerLink="/category">Sản phẩm</a>
-              </li>
-              <li class="nav-item dropdown dropdown-slide">
-                <a
-                  class="nav-link dropdown-toggle"
-                  data-toggle="dropdown"
-                  href=""
-                  >Dashboard<span><i class="fa fa-angle-down"></i></span>
-                </a>
-
-                <!-- Dropdown list -->
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="dashboard.html">Dashboard</a>
-                  <a class="dropdown-item" href="dashboard-my-ads.html"
-                    >Dashboard My Ads</a
-                  >
-                  <a class="dropdown-item" href="dashboard-favourite-ads.html"
-                    >Dashboard Favourite Ads</a
-                  >
-                  <a class="dropdown-item" href="dashboard-archived-ads.html"
-                    >Dashboard Archived Ads</a
-                  >
-                  <a class="dropdown-item" href="dashboard-pending-ads.html"
-                    >Dashboard Pending Ads</a
-                  >
-                </div>
-              </li>
-              <li class="nav-item dropdown dropdown-slide">
-                <a
-                  class="nav-link dropdown-toggle"
-                  href="#"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  Pages <span><i class="fa fa-angle-down"></i></span>
-                </a>
-                <!-- Dropdown list -->
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="about-us.html">About Us</a>
-                  <a class="dropdown-item" href="contact-us.html">Contact Us</a>
-                  <a class="dropdown-item" href="user-profile.html"
-                    >User Profile</a
-                  >
-                  <a class="dropdown-item" href="404.html">404 Page</a>
-                  <a class="dropdown-item" href="package.html">Package</a>
-                  <a class="dropdown-item" href="single.html">Single Page</a>
-                  <a class="dropdown-item" href="store.html">Store Single</a>
-                  <a class="dropdown-item" href="single-blog.html"
-                    >Single Post</a
-                  >
-                  <a class="dropdown-item" href="blog.html">Blog</a>
-                </div>
-              </li>
-              <li class="nav-item dropdown dropdown-slide">
-                <a
-                  class="nav-link dropdown-toggle"
-                  href=""
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  Listing <span><i class="fa fa-angle-down"></i></span>
-                </a>
-                <!-- Dropdown list -->
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="category.html">Ad-Gird View</a>
-                  <a class="dropdown-item" href="ad-listing-list.html"
-                    >Ad-List View</a
-                  >
-                </div>
-              </li>
-            </ul>
-            <ul class="navbar-nav ml-auto mt-10">
-              <li class="nav-item mr-1">
-                <a class="nav-link text-white add-button" routerLink="/cart"
-                  ><i class="fas fa-shopping-cart"></i> Giỏ hàng</a
-                >
-              </li>
-              <li class="nav-item" *ngIf="!isLoggedIn">
-                <a class="nav-link login-button" routerLink="/account/login"
-                  >Đăng nhập</a
-                >
-              </li>
-            </ul>
+    <div
+      class="row no-gutters d-flex align-items-start align-items-center px-md-0"
+    >
+      <div class="col-lg-12 d-block">
+        <div class="row d-flex">
+          <div class="col-md pr-4 d-flex topper align-items-center">
+            <div
+              class="icon mr-2 d-flex justify-content-center align-items-center"
+            >
+              <span class="icon-phone2"></span>
+            </div>
+            <span class="text"> {{ getOne(infoType.Phone)?.content }} </span>
           </div>
-        </nav>
+          <div class="col-md pr-4 d-flex topper align-items-center">
+            <div
+              class="icon mr-2 d-flex justify-content-center align-items-center"
+            >
+              <span class="icon-paper-plane"></span>
+            </div>
+            <span class="text">{{ getOne(infoType.Email)?.content }}</span>
+          </div>
+          <div
+            class="col-md-5 pr-4 d-flex topper align-items-center text-lg-right"
+          >
+            <span class="text"
+              >{{ getOne(infoType.Header)?.content }}</span
+            >
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</section>
+</div>
+<nav
+  class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light"
+  id="ftco-navbar"
+>
+  <div class="container">
+    <a class="navbar-brand" href="index.html">Minishop</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#ftco-nav"
+      aria-controls="ftco-nav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="oi oi-menu"></span> Menu
+    </button>
+
+    <div class="collapse navbar-collapse" id="ftco-nav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item active">
+          <a routerLink="/" class="nav-link">Trang chủ</a>
+        </li>
+        <li class="nav-item active">
+          <a routerLink="/category" class="nav-link">Sản phẩm</a>
+        </li>
+        <li class="nav-item">
+          <a href="about.html" class="nav-link">About</a>
+        </li>
+        <li class="nav-item">
+          <a href="blog.html" class="nav-link">Blog</a>
+        </li>
+        <li class="nav-item">
+          <a href="contact.html" class="nav-link">Contact</a>
+        </li>
+        <li class="nav-item cta cta-colored">
+          <a href="cart.html" class="nav-link"
+            ><span class="icon-shopping_cart"></span>[0]</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

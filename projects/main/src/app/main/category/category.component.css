@@ -1,9 +1,24 @@
 .active {
-    text-decoration: none;
+  text-decoration: none;
   outline: 0;
   color: #5672f9;
 }
 .active span {
   color: white;
   background-color: #5672f9;
+}
+
+.cate-title {
+  padding: 10px 0;
+  display: block;
+  width: 100%;
+  font-size: 12px;
+  text-transform: uppercase;
+  background: transparent;
+  color: #dbcc8f;
+  position: relative;
+}
+
+.active a {
+  color : black !important;
 }

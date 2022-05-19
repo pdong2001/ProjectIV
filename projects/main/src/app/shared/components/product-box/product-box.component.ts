@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CategoryDto } from 'projects/common/src/Contracts/Category/category-dto';
 import { ProductDto } from 'projects/common/src/Contracts/Product/product-dto';
+import { UserDto } from 'projects/common/src/Contracts/User/user-dto';
 
 @Component({
   selector: 'app-product-box',

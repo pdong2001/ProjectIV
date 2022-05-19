@@ -1,34 +1,180 @@
-<section class="hero-area bg-1 text-center overly" [ngStyle]="{ 'background-image': 'url(' + (slide?.image?.file_path | filePath) + ')'}" >
-  <!-- Container Start -->
+<section id="home-section" class="hero">
+  <div
+    class="home-slider owl-carousel"
+    style="background-size: cover !important;background-image : url('{{ slides[0]?.image?.file_path | filePath }}')"
+  >
+    <div *ngFor="let slide of slides" class="slider-item js-fullheight">
+      <div class="overlay"></div>
+      <div class="container-fluid p-0">
+        <div
+          class="row d-md-flex no-gutters slider-text align-items-center justify-content-end"
+          data-scrollax-parent="true"
+        >
+          <div
+            class="one-forth d-flex align-items-center ftco-animate"
+            data-scrollax=" properties: { translateY: '70%' }"
+          >
+            <div [innerHTML]="slide.content | sanitizer" class="text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 
+<section class="ftco-section ftco-no-pt ftco-no-pb">
+  <div class="container">
+    <div class="row no-gutters ftco-services">
+      <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+        <div class="media block-6 services p-4 py-md-5">
+          <div
+            class="icon d-flex justify-content-center align-items-center mb-4"
+          >
+            <span class="flaticon-bag"></span>
+          </div>
+          <div class="media-body">
+            <h3 class="heading">Free Shipping</h3>
+            <p>
+              Far far away, behind the word mountains, far from the countries
+              Vokalia and Consonantia, there live the blind texts.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+        <div class="media block-6 services p-4 py-md-5">
+          <div
+            class="icon d-flex justify-content-center align-items-center mb-4"
+          >
+            <span class="flaticon-customer-service"></span>
+          </div>
+          <div class="media-body">
+            <h3 class="heading">Support Customer</h3>
+            <p>
+              Far far away, behind the word mountains, far from the countries
+              Vokalia and Consonantia, there live the blind texts.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+        <div class="media block-6 services p-4 py-md-5">
+          <div
+            class="icon d-flex justify-content-center align-items-center mb-4"
+          >
+            <span class="flaticon-payment-security"></span>
+          </div>
+          <div class="media-body">
+            <h3 class="heading">Secure Payments</h3>
+            <p>
+              Far far away, behind the word mountains, far from the countries
+              Vokalia and Consonantia, there live the blind texts.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<section class="ftco-section bg-light">
+  <div class="container">
+    <div class="row justify-content-center mb-3 pb-3">
+      <div class="col-md-12 heading-section text-center ftco-animate">
+        <h2 class="mb-4">Sản phẩm mới ra mắt</h2>
+        <p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus doloribus harum, placeat facilis quos, accusantium tenetur aperiam a ab, necessitatibus earum deleniti quis nihil esse illum ex? Earum, quae hic.
+        </p>
+      </div>
+    </div>
+  </div>
   <div class="container">
     <div class="row">
-      <div class="col-md-12">
-        <!-- Header Contetnt -->
-        <div [innerHTML]="slide?.content| sanitizer" class="content-block">
+      <div *ngFor="let prod of trendingProds" class="col-sm-12 col-md-6 col-lg-3 ftco-animate d-flex">
+        <app-product-box [value]="prod"></app-product-box>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ftco-section ftco-choose ftco-no-pb ftco-no-pt">
+  <div class="container">
+    <div class="row no-gutters">
+      <div class="col-lg-4">
+        <div
+          class="choose-wrap divider-one img p-5 d-flex align-items-end"
+          style="background-image: url(assets/images/choose-1.jpg)"
+        >
+          <div class="text text-center text-white px-2">
+            <span class="subheading">Men's Shoes</span>
+            <h2>Men's Collection</h2>
+            <p>
+              Separated they live in Bookmarksgrove right at the coast of the
+              Semantics, a large language ocean.
+            </p>
+            <p><a href="#" class="btn btn-black px-3 py-2">Shop now</a></p>
+          </div>
         </div>
-        <!-- Advance Search -->
-        <div class="advance-search">
-          <div class="container">
-            <div class="row justify-content-center">
-              <div class="col-lg-12 col-md-12 align-content-center">
-                <form (submit)="searchProduct(search.value)">
-                  <div class="form-row">
-                    <div class="form-group col-md-10">
-                      <input
-                      #search
-                        type="text"
-                        class="form-control my-2 my-lg-1"
-                        id="inputtext4"
-                        placeholder="Bạn đang cần tìm gì?"
-                      />
-                    </div>
-                    <div class="form-group col-md-2 align-self-center">
-                      <button  type="submit" class="btn btn-primary">
-                        Tìm kiếm
-                      </button>
-                    </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="row no-gutters choose-wrap divider-two align-items-stretch">
+          <div class="col-md-12">
+            <div
+              class="choose-wrap full-wrap img align-self-stretch d-flex align-item-center justify-content-end"
+              style="background-image: url(assets/images/choose-2.jpg)"
+            >
+              <div class="col-md-7 d-flex align-items-center">
+                <div class="text text-white px-5">
+                  <span class="subheading">Women's Shoes</span>
+                  <h2>Women's Collection</h2>
+                  <p>
+                    Separated they live in Bookmarksgrove right at the coast of
+                    the Semantics, a large language ocean.
+                  </p>
+                  <p>
+                    <a href="#" class="btn btn-black px-3 py-2">Shop now</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row no-gutters">
+              <div class="col-md-6">
+                <div
+                  class="choose-wrap wrap img align-self-stretch bg-light d-flex align-items-center"
+                >
+                  <div class="text text-center px-5">
+                    <span class="subheading">Summer Sale</span>
+                    <h2>Extra 50% Off</h2>
+                    <p>
+                      Separated they live in Bookmarksgrove right at the coast
+                      of the Semantics, a large language ocean.
+                    </p>
+                    <p>
+                      <a href="#" class="btn btn-black px-3 py-2">Shop now</a>
+                    </p>
                   </div>
-                </form>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div
+                  class="choose-wrap wrap img align-self-stretch d-flex align-items-center"
+                  style="background-image: url(assets/images/choose-3.jpg)"
+                >
+                  <div class="text text-center text-white px-5">
+                    <span class="subheading">Shoes</span>
+                    <h2>Best Sellers</h2>
+                    <p>
+                      Separated they live in Bookmarksgrove right at the coast
+                      of the Semantics, a large language ocean.
+                    </p>
+                    <p>
+                      <a href="#" class="btn btn-black px-3 py-2">Shop now</a>
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -36,24 +182,177 @@
       </div>
     </div>
   </div>
-  <!-- Container End -->
 </section>
-
-<section class="popular-deals section bg-gray">
+<section class="ftco-section testimony-section">
   <div class="container">
     <div class="row">
-      <div class="col-md-12">
-        <div class="section-title">
-          <h2>Sản phẩm nổi bật</h2>
+      <div class="col-lg-5">
+        <div class="services-flow">
+          <div class="services-2 p-4 d-flex ftco-animate">
+            <div class="icon">
+              <span class="flaticon-bag"></span>
+            </div>
+            <div class="text">
+              <h3>Free Shipping</h3>
+              <p class="mb-0">
+                Separated they live in. A small river named Duden flows
+              </p>
+            </div>
+          </div>
+          <div class="services-2 p-4 d-flex ftco-animate">
+            <div class="icon">
+              <span class="flaticon-heart-box"></span>
+            </div>
+            <div class="text">
+              <h3>Valuable Gifts</h3>
+              <p class="mb-0">
+                Separated they live in. A small river named Duden flows
+              </p>
+            </div>
+          </div>
+          <div class="services-2 p-4 d-flex ftco-animate">
+            <div class="icon">
+              <span class="flaticon-payment-security"></span>
+            </div>
+            <div class="text">
+              <h3>All Day Support</h3>
+              <p class="mb-0">
+                Separated they live in. A small river named Duden flows
+              </p>
+            </div>
+          </div>
+          <div class="services-2 p-4 d-flex ftco-animate">
+            <div class="icon">
+              <span class="flaticon-customer-service"></span>
+            </div>
+            <div class="text">
+              <h3>All Day Support</h3>
+              <p class="mb-0">
+                Separated they live in. A small river named Duden flows
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <!-- offer 01 -->
-      <div class="col-lg-12">
-        <div class="trending-ads-slide">
-          <div *ngFor="let pro of trendingProds" class="col-sm-12 col-lg-4">
-            <app-product-box [style]="{height: '100%'}" [value]="pro"></app-product-box>
+      <div class="col-lg-7">
+        <div class="heading-section ftco-animate mb-5">
+          <h2 class="mb-4">Our satisfied customer says</h2>
+          <p>
+            Far far away, behind the word mountains, far from the countries
+            Vokalia and Consonantia, there live the blind texts. Separated they
+            live in
+          </p>
+        </div>
+        <div class="carousel-testimony owl-carousel">
+          <div class="item">
+            <div class="testimony-wrap">
+              <div
+                class="user-img mb-4"
+                style="background-image: url(assets/images/person_1.jpg)"
+              >
+                <span
+                  class="quote d-flex align-items-center justify-content-center"
+                >
+                  <i class="icon-quote-left"></i>
+                </span>
+              </div>
+              <div class="text">
+                <p class="mb-4 pl-4 line">
+                  Far far away, behind the word mountains, far from the
+                  countries Vokalia and Consonantia, there live the blind texts.
+                </p>
+                <p class="name">Garreth Smith</p>
+                <span class="position">Marketing Manager</span>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="testimony-wrap">
+              <div
+                class="user-img mb-4"
+                style="background-image: url(assets/images/person_2.jpg)"
+              >
+                <span
+                  class="quote d-flex align-items-center justify-content-center"
+                >
+                  <i class="icon-quote-left"></i>
+                </span>
+              </div>
+              <div class="text">
+                <p class="mb-4 pl-4 line">
+                  Far far away, behind the word mountains, far from the
+                  countries Vokalia and Consonantia, there live the blind texts.
+                </p>
+                <p class="name">Garreth Smith</p>
+                <span class="position">Interface Designer</span>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="testimony-wrap">
+              <div
+                class="user-img mb-4"
+                style="background-image: url(assets/images/person_3.jpg)"
+              >
+                <span
+                  class="quote d-flex align-items-center justify-content-center"
+                >
+                  <i class="icon-quote-left"></i>
+                </span>
+              </div>
+              <div class="text">
+                <p class="mb-4 pl-4 line">
+                  Far far away, behind the word mountains, far from the
+                  countries Vokalia and Consonantia, there live the blind texts.
+                </p>
+                <p class="name">Garreth Smith</p>
+                <span class="position">UI Designer</span>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="testimony-wrap">
+              <div
+                class="user-img mb-4"
+                style="background-image: url(assets/images/person_1.jpg)"
+              >
+                <span
+                  class="quote d-flex align-items-center justify-content-center"
+                >
+                  <i class="icon-quote-left"></i>
+                </span>
+              </div>
+              <div class="text">
+                <p class="mb-4 pl-4 line">
+                  Far far away, behind the word mountains, far from the
+                  countries Vokalia and Consonantia, there live the blind texts.
+                </p>
+                <p class="name">Garreth Smith</p>
+                <span class="position">Web Developer</span>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="testimony-wrap">
+              <div
+                class="user-img mb-4"
+                style="background-image: url(assets/images/person_1.jpg)"
+              >
+                <span
+                  class="quote d-flex align-items-center justify-content-center"
+                >
+                  <i class="icon-quote-left"></i>
+                </span>
+              </div>
+              <div class="text">
+                <p class="mb-4 pl-4 line">
+                  Far far away, behind the word mountains, far from the
+                  countries Vokalia and Consonantia, there live the blind texts.
+                </p>
+                <p class="name">Garreth Smith</p>
+                <span class="position">System Analyst</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -61,20 +360,99 @@
   </div>
 </section>
 
-
-<section class="call-to-action overly bg-3 section-sm">
-	<!-- Container Start -->
-	<div class="container">
-		<div class="row justify-content-md-center text-center">
-			<div class="col-md-8">
-				<div class="content-holder">
-					<h2>Bắt đầu ngay hôm nay để nhận nhiều ưu đãi</h2>
-					<ul class="list-inline mt-30">
-						<li class="list-inline-item"><a class="btn btn-secondary" [routerLink]="['/category']">Xem sản phẩm</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Container End -->
+<section class="ftco-gallery">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 heading-section text-center mb-4 ftco-animate">
+        <h2 class="mb-4">Follow Us On Instagram</h2>
+        <p>
+          Far far away, behind the word mountains, far from the countries
+          Vokalia and Consonantia, there live the blind texts. Separated they
+          live in
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid px-0">
+    <div class="row no-gutters">
+      <div class="col-md-4 col-lg-2 ftco-animate">
+        <a
+          href="assets/images/gallery-1.jpg"
+          class="gallery image-popup img d-flex align-items-center"
+          style="background-image: url(assets/images/gallery-1.jpg)"
+        >
+          <div
+            class="icon mb-4 d-flex align-items-center justify-content-center"
+          >
+            <span class="icon-instagram"></span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-4 col-lg-2 ftco-animate">
+        <a
+          href="assets/images/gallery-2.jpg"
+          class="gallery image-popup img d-flex align-items-center"
+          style="background-image: url(assets/images/gallery-2.jpg)"
+        >
+          <div
+            class="icon mb-4 d-flex align-items-center justify-content-center"
+          >
+            <span class="icon-instagram"></span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-4 col-lg-2 ftco-animate">
+        <a
+          href="assets/images/gallery-3.jpg"
+          class="gallery image-popup img d-flex align-items-center"
+          style="background-image: url(assets/images/gallery-3.jpg)"
+        >
+          <div
+            class="icon mb-4 d-flex align-items-center justify-content-center"
+          >
+            <span class="icon-instagram"></span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-4 col-lg-2 ftco-animate">
+        <a
+          href="assets/images/gallery-4.jpg"
+          class="gallery image-popup img d-flex align-items-center"
+          style="background-image: url(assets/images/gallery-4.jpg)"
+        >
+          <div
+            class="icon mb-4 d-flex align-items-center justify-content-center"
+          >
+            <span class="icon-instagram"></span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-4 col-lg-2 ftco-animate">
+        <a
+          href="assets/images/gallery-5.jpg"
+          class="gallery image-popup img d-flex align-items-center"
+          style="background-image: url(assets/images/gallery-5.jpg)"
+        >
+          <div
+            class="icon mb-4 d-flex align-items-center justify-content-center"
+          >
+            <span class="icon-instagram"></span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-4 col-lg-2 ftco-animate">
+        <a
+          href="assets/images/gallery-6.jpg"
+          class="gallery image-popup img d-flex align-items-center"
+          style="background-image: url(assets/images/gallery-6.jpg)"
+        >
+          <div
+            class="icon mb-4 d-flex align-items-center justify-content-center"
+          >
+            <span class="icon-instagram"></span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
 </section>

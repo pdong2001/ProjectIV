@@ -14,7 +14,6 @@ export class FooterComponent implements OnInit {
     this.webSettings[InfoType.Slide] = value.filter(v => v.name == InfoType.Slide.toString());
     this.webSettings[InfoType.Footer] = value.filter(v => v.name == InfoType.Footer.toString());
     this.webSettings[InfoType.Header] = value.filter(v => v.name == InfoType.Header.toString());
-    console.log(this.webSettings);
   };
   public InfoTypes = InfoType;
   webSettings : { [index:string] : WebInfoDto[] } = {};

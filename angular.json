@@ -142,16 +142,7 @@
               "projects/main/src/web.config"
             ],
             "styles": [
-              "projects/main/src/assets/plugins/bootstrap/css/bootstrap.min.css",
-              "projects/main/src/assets/plugins/bootstrap/css/bootstrap-slider.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
-              "projects/main/src/assets/plugins/slick-carousel/slick/slick.css",
-              "node_modules/quill/dist/quill.core.css",
-              "node_modules/quill/dist/quill.snow.css",
-              "projects/main/src/assets/plugins/slick-carousel/slick/slick-theme.css",
-              "projects/main/src/assets/plugins/fancybox/jquery.fancybox.pack.css",
-              "projects/main/src/assets/plugins/jquery-nice-select/css/nice-select.css",
-              "projects/main/src/assets/css/style.css",
               "node_modules/primeicons/primeicons.css",
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
@@ -260,5 +251,5 @@
       }
     }
   },
-  "defaultProject": "admin"
+  "defaultProject": "main"
 }

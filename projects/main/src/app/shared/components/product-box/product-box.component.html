@@ -1,70 +1,41 @@
-<div [style]="style" class="product-item bg-light">
-  <div class="card">
-    <div class="thumb-content">
-      <!-- <div class="price">$200</div> -->
-      <a [routerLink]="['/category', product.id]">
-        <img
-          class="card-img-top img-fluid"
-          [src]="product.default_image?.file_path | filePath"
-          alt="Card image cap"
-        />
-      </a>
-    </div>
-    <div class="card-body">
-      <h4 class="card-title">
-        <a [routerLink]="['/category', product.id]">{{ product.name }}</a>
-      </h4>
-      <ul class="list-inline product-meta d-flex justify-content-between">
-        <li class="of-ellipsis list-inline-item">
-          <a
-            (click)="selectedCategoryChange(product.category)"
-            ><i class="fa fa-folder-open"></i>
-            {{ product.category?.name }}
-          </a>
-        </li>
-        <li class="list-inline-item">
-          <a href="#"
-            style="white-space: nowrap;"
-            ><i class="fa fa-calendar"></i
-            >{{
-              product.updated_at ?? product.created_at | date: "dd/MM/yyyy"
-            }}</a
-          >
-        </li>
-      </ul>
-      <ul class="list-inline product-meta d-flex justify-content-between">
-        <li class="of-ellipsis list-inline-item" style="color: red;">
-          <strong> {{product.min_price | currency : 'VND'}}</strong>
-          <strong *ngIf="product.min_price != product.max_price"> - {{product.max_price | currency : 'VND'}}</strong>
-        </li>
-      </ul>
-      <div class="d-flex justify-content-between">
-        <div class="product-ratings">
-          <ul class="list-inline">
-            <li class="list-inline-item selected">
-              <i class="fa fa-star"></i>
-            </li>
-            <li class="list-inline-item selected">
-              <i class="fa fa-star"></i>
-            </li>
-            <li class="list-inline-item selected">
-              <i class="fa fa-star"></i>
-            </li>
-            <li class="list-inline-item selected">
-              <i class="fa fa-star"></i>
-            </li>
-            <li class="list-inline-item">
-              <i class="fa fa-star"></i>
-            </li>
-          </ul>
-        </div>
-        <button
-          pButton
-          class="p-button-sm"
-          icon="pi pi-shopping-cart"
-          (click)="showAddCartDialog()"
-        ></button>
+<div class="product d-flex flex-column h-100">
+  <a  class="img-prod" style="flex-grow: 1;"
+    ><img
+      class="img-fluid"
+      [src]="product.default_image?.file_path | filePath"
+      alt="Colorlib Template"
+    />
+    <div class="overlay"></div>
+  </a>
+  <div class="text py-3 pb-4 px-3">
+    <div class="d-flex">
+      <div class="cat">
+        <span style="cursor:pointer;" (click)="selectedCategoryChange(product.category)">{{product?.category?.name }}</span>
+      </div>
+      <div class="rating">
+        <p class="text-right mb-0">
+          <a><span class="ion-ios-star-outline"></span></a>
+          <a><span class="ion-ios-star-outline"></span></a>
+          <a><span class="ion-ios-star-outline"></span></a>
+          <a><span class="ion-ios-star-outline"></span></a>
+          <a><span class="ion-ios-star-outline"></span></a>
+        </p>
       </div>
     </div>
+    <h3><a [routerLink]="['/category', product.id]" class="product-title" > {{ product.name }} </a></h3>
+    <div class="pricing">
+      <p class="price">
+        <span> {{ product.min_price | currency : 'VND' }} </span>
+        <span *ngIf="product.min_price != product.max_price" >- {{ product.max_price | currency : 'VND' }} </span>
+      </p>
+    </div>
+    <p class="bottom-area d-flex px-3">
+      <a (click)="showAddCartDialog()" class="add-to-cart text-center py-2 mr-1"
+        ><span>Add to cart <i class="ion-ios-add ml-1"></i></span
+      ></a>
+      <a class="buy-now text-center py-2" (click)="showAddCartDialog()"
+        >Buy now<span><i class="ion-ios-cart ml-1"></i></span
+      ></a>
+    </p>
   </div>
 </div>

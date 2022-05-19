@@ -16,8 +16,7 @@ declare var layoutInit: any;
 export class HomeComponent implements OnInit, AfterViewChecked {
   trendingProds: ProductDto[] = [];
   init: boolean = false;
-  slide: WebInfoDto | undefined;
-
+  slides: WebInfoDto[] = [];
   constructor(
     private productService: ProductService,
     private webInfoService: WebInfoService,
@@ -49,7 +48,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
       next : res => {
         if (res.status == true && res.data)
         {
-          this.slide = res.data[0];
+          this.slides = res.data;
         }
       }
     })
@@ -58,7 +57,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   loadProduct() {
     this.productService
       .getList({
-        limit: 6,
+        limit: 8,
         page: 1,
         with_detail: false,
         with_images: false,
@@ -74,7 +73,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
       .subscribe((res) => {
         if (res.status) {
           if (res.data) {
-            while (res.data?.length < 6) {
+            while (res.data?.length < 8) {
               res.data = res.data?.concat(res.data);
             }
           }

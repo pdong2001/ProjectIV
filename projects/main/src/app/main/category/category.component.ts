@@ -9,6 +9,8 @@ import { ProductDto } from 'projects/common/src/Contracts/Product/product-dto';
 import { CategoryService } from 'projects/common/src/lib/services/category.service';
 import { ProductService } from 'projects/common/src/lib/services/product.service';
 
+declare var layoutInit: any;
+
 @Component({
   selector: 'app-category',
   templateUrl: './category.component.html',
@@ -27,8 +29,8 @@ export class CategoryComponent implements OnInit {
   public selectedCategory: CategoryDto | undefined;
   public maxPrice = 9999000;
   public sortOrder: { sort: SortMode; column: string; display: string }[] = [
-    { sort: SortMode.ACS, column: 'out_price', display: 'Giá tăng dần' },
-    { sort: SortMode.DESC, column: 'out_price', display: 'Giá giảm dần' },
+    { sort: SortMode.ACS, column: 'min_price', display: 'Giá tăng dần' },
+    { sort: SortMode.DESC, column: 'min_price', display: 'Giá giảm dần' },
   ];
   private _selectedOrder:
     | { sort: SortMode; column: string; display: string }
@@ -50,7 +52,7 @@ export class CategoryComponent implements OnInit {
     private productService: ProductService,
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
-    private router : Router
+    private router: Router
   ) {}
 
   public getSafeHTML(html: string | undefined) {
@@ -113,20 +115,18 @@ export class CategoryComponent implements OnInit {
         next: (res) => {
           if (res.status == true) {
             this.totalProducts = res.meta.total;
-            if (this.maxTotalProducts == 0) this.maxTotalProducts = res.meta.total;
+            if (this.maxTotalProducts == 0)
+              this.maxTotalProducts = res.meta.total;
             this.products = res.data ?? [];
             if (res.meta?.maxPrice) {
               this.maxPrice = res.meta.maxPrice;
               if (this.rangeValues[1] > this.maxPrice)
                 this.rangeValues[1] = this.maxPrice;
             }
-            if (this.selectedCategory)
-            {
+            if (this.selectedCategory) {
               this.selectedCategory.product_count = res.meta.total;
-            }
-            else
-            {
-              this.maxTotalProducts =  res.meta.total;
+            } else {
+              this.maxTotalProducts = res.meta.total;
             }
           }
         },
@@ -154,12 +154,11 @@ export class CategoryComponent implements OnInit {
     this.loadNewData();
   }
 
-  public searchFormSubmit(value:string) {
-    this.router.navigate(['/', 'category'],{queryParams: {s : value} });
+  public searchFormSubmit(value: string) {
+    this.router.navigate(['/', 'category'], { queryParams: { s: value } });
   }
 
-  public showAddCartDialog(prod:ProductDto)
-  {
+  public showAddCartDialog(prod: ProductDto) {
     this.selectedProduct = prod;
     this.displayAddCartDialog = true;
   }

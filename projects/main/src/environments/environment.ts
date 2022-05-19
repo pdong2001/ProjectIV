@@ -4,8 +4,8 @@
 
 import { Environment } from 'projects/common/src/Contracts/Common/environment';
 
-const SERVER_ADDRESS = 'https://php.pdong-vps.tk';
-// const SERVER_ADDRESS = 'http://192.168.1.99';
+// const SERVER_ADDRESS = 'https://php.pdong-vps.tk';
+const SERVER_ADDRESS = 'http://192.168.1.99';
 export const environment: Environment = {
   production: false,
   REST_API_SERVER: `${SERVER_ADDRESS}/api`,

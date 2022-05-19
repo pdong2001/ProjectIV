@@ -1,14 +1,9 @@
+<div class="goto-here">
 
-<div class="body-wrapper">
+  <app-header></app-header>
+  <!-- END nav -->
 
-<app-header></app-header>
-
-<div style="min-height: 50vh;">
   <router-outlet></router-outlet>
-</div>
-<!--============================
-=            Footer            =
-=============================-->
-<app-footer [settings]="webSettings"></app-footer>
 
+  <app-footer [settings]="webSettings"></app-footer>
 </div>

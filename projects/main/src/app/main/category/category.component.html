@@ -1,33 +1,21 @@
-<section class="page-search">
+<div
+  class="hero-wrap hero-bread"
+  style="background-image: url('assets/images/bg_6.jpg')"
+>
   <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <!-- Advance Search -->
-        <div class="advance-search">
-          <form (ngSubmit)="searchFormSubmit(searchInput.value)">
-            <div class="form-row">
-              <div class="form-group col-md-10">
-                <input
-                  #searchInput
-                  type="text"
-                  class="form-control my-2 my-lg-0"
-                  id="inputtext4"
-                  placeholder="Bạn đang cần tìm kiếm gì?"
-                />
-              </div>
-              <div class="form-group col-md-2">
-                <button type="submit" class="btn btn-primary">
-                  Tìm ngay
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
+    <div
+      class="row no-gutters slider-text align-items-center justify-content-center"
+    >
+      <div class="col-md-9 ftco-animate text-center">
+        <p class="breadcrumbs">
+          <span class="mr-2"><a href="index.html">Home</a></span>
+          <span>Shop</span>
+        </p>
+        <h1 class="mb-0 bread">Shop</h1>
       </div>
     </div>
   </div>
-</section>
-
+</div>
 <section class="section-sm">
   <div class="container">
     <div class="row">
@@ -41,38 +29,54 @@
     <div class="row">
       <div class="col-md-3">
         <div class="category-sidebar">
-          <div class="widget category-list">
-            <h4 class="widget-header">Tất cả các loại</h4>
-            <ul class="category-list">
-              <li>
-                <a
-                  [ngClass]="!selectedCategory ? 'active' : ''"
-                  (click)="selectedCategoryChange($event, undefined)"
-                >
-                  Tất cả <span>{{ maxTotalProducts }}</span></a
-                >
-              </li>
-              <li *ngFor="let cate of categories">
-                <a
-                  [ngClass]="cate.id == selectedCategory?.id ? 'active' : ''"
-                  (click)="selectedCategoryChange($event, cate)"
-                >
-                  {{ cate.name }} <span>{{ cate.product_count }}</span></a
-                >
-              </li>
-            </ul>
+          <div class="sidebar-box-2">
+            <h2 class="heading">Categories</h2>
+            <div class="fancy-collapse-panel">
+              <div
+              class="panel-group"
+              [ngClass]="!selectedCategory?.id ? 'active' : '' "
+            >
+              <div class="panel panel-default">
+                <div class="cate-title d-flex justify-content-between">
+                  <div class="panel-title">
+                    <a
+                      href=""
+                      (click)="selectedCategoryChange($event, undefined)"
+                      >Tất cả
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+              <div
+                *ngFor="let cate of categories"
+                class="panel-group"
+                [ngClass]=" cate.id == selectedCategory?.id ? 'active' : '' "
+              >
+                <div class="panel panel-default">
+                  <div class="cate-title d-flex justify-content-between">
+                    <div class="panel-title">
+                      <a
+                        href=""
+                        (click)="selectedCategoryChange($event, cate)"
+                        >{{ cate.name }}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <div class="widget price-range w-100">
+          <div class="widget price-range w-100 mb-3">
             <h4 class="widget-header">Khoảng giá</h4>
             <div class="block">
-              <h5>
+              <span>
                 {{
                   (rangeValues[0] | currency: "VND") +
                     " - " +
                     (rangeValues[1] | currency: "VND")
                 }}
-              </h5>
+              </span>
               <p-slider
                 (onSlideEnd)="loadNewData()"
                 [step]="10000"
@@ -83,34 +87,6 @@
               ></p-slider>
             </div>
           </div>
-
-          <!-- <div class="widget product-shorting">
-            <h4 class="widget-header">By Condition</h4>
-            <div class="form-check">
-              <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" value="" />
-                Brand New
-              </label>
-            </div>
-            <div class="form-check">
-              <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" value="" />
-                Almost New
-              </label>
-            </div>
-            <div class="form-check">
-              <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" value="" />
-                Gently New
-              </label>
-            </div>
-            <div class="form-check">
-              <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" value="" />
-                Havely New
-              </label>
-            </div>
-          </div> -->
         </div>
       </div>
       <div class="col-md-9">
@@ -194,6 +170,18 @@
                           </a>
                         </li>
                       </ul>
+                      <div class="product-meta">
+                        <strong
+                          *ngIf="product.quantity > 0"
+                          class="text-success"
+                          >Còn hàng</strong
+                        >
+                        <strong
+                          *ngIf="product.quantity <= 0"
+                          class="text-danger"
+                          >Hết hàng</strong
+                        >
+                      </div>
                       <div
                         [innerHTML]="getSafeHTML(product.description)"
                         class="pr-5 q-container"
@@ -232,7 +220,6 @@
             </ng-template>
             <ng-template let-product pTemplate="gridItem">
               <div class="col-sm-12 my-1 col-lg-4 col-md-6">
-                <!-- product card -->
                 <app-product-box
                   [value]="product"
                   (addCartClick)="showAddCartDialog($event)"

@@ -36,14 +36,9 @@ export class NavbarComponent implements OnInit {
   logout(e:Event)
   {
     e.preventDefault();
-    this.authService.logout().toPromise()
-    .then(res => {
-      if (res?.status == true)
-      {
-        this.authDataService.token = null;
-        this.router.navigate(['account', 'login']);
-      }
-    })
+    this.authService.logout().subscribe();
+    this.authDataService.token = null;
+    this.router.navigate(['account', 'login']);
   }
 
 }

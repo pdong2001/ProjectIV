@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ServiceResponse } from '../../Contracts/Common/response';
 import { InsertUpdateWebInfoDto } from '../../Contracts/WebInfo/insert-update-webinfo-dto';
 import { WebInfoDto } from '../../Contracts/WebInfo/webinfo-dto';
@@ -8,11 +8,33 @@ import { CRUDService } from './crudservice';
 import { HttpService } from './http.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class WebInfoService extends CRUDService<WebInfoDto, InsertUpdateWebInfoDto, WebInfoLookUpDto>  {
+export class WebInfoService extends CRUDService<
+  WebInfoDto,
+  InsertUpdateWebInfoDto,
+  WebInfoLookUpDto
+> {
   protected override controller: string = 'admin/webinfos';
-  constructor(httpClient:HttpService) {
+  constructor(httpClient: HttpService) {
     super(httpClient);
+  }
+  protected webInfos: WebInfoDto[] | undefined;
+
+  public override getList(
+    request: WebInfoLookUpDto
+  ): Observable<ServiceResponse<WebInfoDto[]>> {
+    if (this.webInfos) {
+      return new Observable<ServiceResponse<WebInfoDto[]>>((sub) => {
+        sub.next({ status: true, code: 200, data: this.webInfos });
+      });
+    }
+    return super.getList(request).pipe(map(res => {
+      if (res.data && res.status === true)
+      {
+        this.webInfos = res.data;
+      }
+      return res;
+    }));
   }
 }

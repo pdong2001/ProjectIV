@@ -1,0 +1,199 @@
+<section class="user-profile section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-10 offset-md-1 col-lg-3 offset-lg-0">
+        <div class="sidebar">
+          <!-- User Widget -->
+          <div class="widget user">
+            <!-- User Image -->
+            <div class="image d-flex justify-content-center">
+              <img
+                style="overflow: hidden"
+                [src]="
+                  user?.customer?.image?.file_path
+                    ? (user?.customer?.image?.file_path | filePath)
+                    : 'assets/images/user/default-user-image.png'
+                "
+                alt=""
+                class=""
+              />
+            </div>
+            <!-- User Name -->
+            <h5 class="text-center">{{ user?.customer?.name }}</h5>
+          </div>
+          <!-- Dashboard Links -->
+          <div class="widget dashboard-links">
+            <ul>
+              <li>
+                <a
+                  class="my-1 d-inline-block"
+                  routerLinkActive="active"
+                  routerLink="/user"
+                  >Tài khoản</a
+                >
+              </li>
+              <li>
+                <a
+                  class="my-1 d-inline-block"
+                  routerLinkActive="active"
+                  routerLink="/user/cart"
+                  >Giỏ hàng <span>(5)</span></a
+                >
+              </li>
+              <li>
+                <a
+                  class="my-1 d-inline-block"
+                  routerLinkActive="active"
+                  routerLink="/user/order"
+                  >Đơn đặt hàng <span>(3)</span></a
+                >
+              </li>
+              <li>
+                <a class="my-1 d-inline-block" (click)="logout()">Đăng xuất</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-10 offset-md-1 col-lg-9 offset-lg-0">
+        <!-- Edit Profile Welcome Text -->
+        <div class="widget welcome-message">
+          <h2>Thông tin tài khoản</h2>
+          <!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p> -->
+        </div>
+        <!-- Edit Personal Info -->
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <div class="widget personal-info">
+              <h3 class="widget-header user">Chỉnh sửa thông tin cá nhân</h3>
+              <form [formGroup]="form">
+                <!-- Last Name -->
+                <div class="form-group">
+                  <label for="last-name">Họ và tên</label>
+                  <input type="text" class="form-control" formControlName="name" name="customer-name" />
+                </div>
+                <div class="form-group">
+                  <label for="last-name">Ngày sinh</label>
+                  <input type="date" class="form-control" formControlName="birth" 
+                  name="date-of-birth" />
+                </div>
+                <div class="form-group">
+                  <label for="last-name">Họ và tên</label>
+                  <input type="text" class="form-control" formControlName="name" name="customer-name" />
+                </div>
+                <!-- File chooser -->
+                <div class="form-group choose-file d-inline-flex">
+                  <i
+                    style="font-size: 22px"
+                    class="fa fa-user text-center px-3"
+                  ></i>
+                  <input
+                    type="file"
+                    class="form-control-file mt-2 pt-1"
+                    id="input-file"
+                  />
+                </div>
+                <!-- Zip Code -->
+                <div class="form-group">
+                  <label for="zip-code">Tỉnh / Thành phố</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="province"
+                    formControlName="province"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="zip-code">Quận / Huyện</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="district"
+                    formControlName="district"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="zip-code">Xã / Phường</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="commune"
+                    name="commune"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="zip-code">Địa chỉ chi tiết</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="address"
+                    formControlName="address"
+                  />
+                </div>
+                <!-- Submit button -->
+                <button class="btn btn-transparent">Lưu thay đổi</button>
+              </form>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6">
+            <!-- Change Password -->
+            <div class="widget change-password">
+              <h3 class="widget-header user">Đổi mật khẩu</h3>
+              <form action="#">
+                <!-- Current Password -->
+                <div class="form-group">
+                  <label for="current-password">Mật khẩu hiện tại</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="current-password"
+                  />
+                </div>
+                <!-- New Password -->
+                <div class="form-group">
+                  <label for="new-password">Mật khẩu mới</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="new-password"
+                  />
+                </div>
+                <!-- Confirm New Password -->
+                <div class="form-group">
+                  <label for="confirm-password">Nhập lại mật khẩu</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="confirm-password"
+                  />
+                </div>
+                <!-- Submit Button -->
+                <button class="btn btn-transparent">Đổi mật khẩu</button>
+              </form>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6">
+            <!-- Change Email Address -->
+            <div class="widget change-email mb-0">
+              <h3 class="widget-header user">Edit Email Address</h3>
+              <form action="#">
+                <!-- Current Password -->
+                <div class="form-group">
+                  <label for="current-email">Current Email</label>
+                  <input type="email" class="form-control" id="current-email" />
+                </div>
+                <!-- New email -->
+                <div class="form-group">
+                  <label for="new-email">New email</label>
+                  <input type="email" class="form-control" id="new-email" />
+                </div>
+                <!-- Submit Button -->
+                <button class="btn btn-transparent">Change email</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
