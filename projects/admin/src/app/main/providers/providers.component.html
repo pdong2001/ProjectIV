@@ -85,23 +85,25 @@
       <td>{{ provider.visible ? "Có" : "Không" }}</td>
       <td>{{ provider.created_at | date: "HH:mm dd/MM/yyyy" }}</td>
       <td>{{ provider.note }}</td>
-      <td class="d-md-flex">
-        <button
-          pButton
-          pRipple
-          type="button"
-          icon="far fa-edit"
-          class="p-button-rounded p-button-sm mr-1"
-          (click)="showEditDialog(provider)"
-        ></button>
-        <button
-          pButton
-          pRipple
-          type="button"
-          icon="far fa-trash-alt"
-          class="p-button-rounded p-button-danger"
-          (click)="delete(provider)"
-        ></button>
+      <td>
+        <div class="d-md-flex">
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="far fa-edit"
+            class="p-button-rounded p-button-sm mr-1"
+            (click)="showEditDialog(provider)"
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="far fa-trash-alt"
+            class="p-button-rounded p-button-danger"
+            (click)="delete(provider)"
+          ></button>
+        </div>
       </td>
     </tr>
   </ng-template>

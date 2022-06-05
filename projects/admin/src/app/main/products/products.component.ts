@@ -318,11 +318,12 @@ export class ProductsComponent implements OnInit {
       code: value.code,
       visible: value.visible,
       provider_id: value.provider_id,
-      default_image: value.default_image?.id,
+      default_image: value.image?.id,
       category_id: value.category_id,
       description: value.description,
+      short_description: value.short_description,
     };
-    this.selectedFiles = value.images.map((assign) => assign.blob);
+    this.selectedFiles = value.images?.map((assign) => assign.blob)??[];
     this.displayEditDialog = true;
     this.displayAddDialog = false;
   }
@@ -357,6 +358,7 @@ export class ProductsComponent implements OnInit {
           default_image: blob.id,
           category_id: prod.category_id,
           description: prod.description,
+          short_description: prod.short_description,
         };
         this.selectedFiles = prod.images.map((assign) => assign.blob);
         this.save();

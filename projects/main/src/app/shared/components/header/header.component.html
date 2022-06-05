@@ -11,7 +11,11 @@
             >
               <span class="icon-phone2"></span>
             </div>
-            <span class="text"> {{ getOne(infoType.Phone)?.content }} </span>
+            <span
+              class="text"
+              [innerHTML]="getOne(infoType.Phone)?.content | sanitizer"
+            >
+            </span>
           </div>
           <div class="col-md pr-4 d-flex topper align-items-center">
             <div
@@ -19,14 +23,18 @@
             >
               <span class="icon-paper-plane"></span>
             </div>
-            <span class="text">{{ getOne(infoType.Email)?.content }}</span>
+            <span
+              class="text"
+              [innerHTML]="getOne(infoType.Email)?.content | sanitizer"
+            ></span>
           </div>
           <div
             class="col-md-5 pr-4 d-flex topper align-items-center text-lg-right"
           >
-            <span class="text"
-              >{{ getOne(infoType.Header)?.content }}</span
-            >
+            <span
+              class="text"
+              [innerHTML]="getOne(infoType.Header)?.content | sanitizer"
+            ></span>
           </div>
         </div>
       </div>
@@ -38,7 +46,7 @@
   id="ftco-navbar"
 >
   <div class="container">
-    <a class="navbar-brand" href="index.html">Minishop</a>
+    <a class="navbar-brand" routerLink="/home">Minishop</a>
     <button
       class="navbar-toggler"
       type="button"
@@ -53,24 +61,37 @@
 
     <div class="collapse navbar-collapse" id="ftco-nav">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item active">
-          <a routerLink="/" class="nav-link">Trang chủ</a>
+        <li
+          class="nav-item"
+          [routerLinkActiveOptions]="{ exact: true }"
+          routerLinkActive="active"
+        >
+          <a routerLink="/home" class="nav-link">Trang chủ</a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item" routerLinkActive="active">
           <a routerLink="/category" class="nav-link">Sản phẩm</a>
         </li>
         <li class="nav-item">
-          <a href="about.html" class="nav-link">About</a>
+          <a class="nav-link">About</a>
         </li>
         <li class="nav-item">
-          <a href="blog.html" class="nav-link">Blog</a>
+          <a class="nav-link">Blog</a>
         </li>
-        <li class="nav-item">
-          <a href="contact.html" class="nav-link">Contact</a>
+        <li *ngIf="!isLoggedIn" class="nav-item cta cta-colored">
+          <a routerLink="/account/login" class="nav-link">Đăng nhập</a>
+        </li>
+        <li *ngIf="isLoggedIn" class="nav-item cta cta-colored">
+          <a
+            routerLink="/user"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLinkActive="active"
+            class="nav-link"
+            ><i class="fas fa-user"></i>{{ user?.name }}</a
+          >
         </li>
         <li class="nav-item cta cta-colored">
-          <a href="cart.html" class="nav-link"
-            ><span class="icon-shopping_cart"></span>[0]</a
+          <a routerLink="/user/cart" routerLinkActive="active" class="nav-link"
+            ><span class="icon-shopping_cart"></span>[{{ cartCount }}]</a
           >
         </li>
       </ul>

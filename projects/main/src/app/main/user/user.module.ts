@@ -9,12 +9,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { environment } from 'projects/main/src/environments/environment';
+import { ImageModule } from 'primeng/image';
+import { CheckoutComponent } from './checkout/checkout.component';
+import { OrdersComponent } from './orders/orders.component';
+import { InvoicesModule } from 'projects/admin/src/app/main/invoices/invoices.module';
 
 
 @NgModule({
   declarations: [
     ProfileComponent,
-    CartComponent
+    CartComponent,
+    CheckoutComponent,
+    OrdersComponent
   ],
   imports: [
     CommonModule,
@@ -24,6 +30,8 @@ import { environment } from 'projects/main/src/environments/environment';
     ReactiveFormsModule,
     InputTextModule,
     InputNumberModule,
+    ImageModule,
+    InvoicesModule
   ]
 })
 export class UserModule { }

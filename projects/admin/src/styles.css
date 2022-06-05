@@ -1,11 +1,9 @@
-.ql-editor img{
-    max-width: 100%;
+.ql-editor img {
+  max-width: 100%;
 }
-
-.p-button.p-button-sm .p-button-icon
-{
-    font-size: 1rem !important;
+.p-button.p-button-sm .p-button-icon {
+  font-size: 1rem !important;
 }
 .of-contain {
-    object-fit: contain;
+  object-fit: contain;
 }

@@ -91,7 +91,7 @@
       <td><span class="p-column-title">STT</span>{{ index + 1 }}</td>
       <td>
         <span class="p-column-title">Tên sản phẩm</span
-        >{{ detail.product.name }}
+        >{{ detail.product?.name }}
       </td>
       <td>
         <span class="p-column-title">Ảnh</span>
@@ -100,8 +100,8 @@
             [preview]="true"
             appendTo="body"
             height="100px"
-            *ngIf="detail.default_image"
-            [src]="detail.default_image.file_path | filePath"
+            *ngIf="detail.image"
+            [src]="detail.image.file_path | filePath"
           ></p-image>
         </div>
       </td>
@@ -177,7 +177,7 @@
                 ></p-inputSwitch>
               </div>
             </div>
-            <div class="p-field col-12 col-sm-6">
+            <div *ngIf="detail.in_price" class="p-field col-12 col-sm-6">
               <label for="in_price"><strong>Giá nhập</strong></label>
               <input
                 type="text"
@@ -297,7 +297,7 @@
         >
         </p-inputNumber>
       </div>
-      <div class="p-field col-sm-6 col-12">
+      <!-- <div class="p-field col-sm-6 col-12">
         <label class="mr-3">
           <strong>Tổng số lượng</strong>
         </label>
@@ -306,8 +306,8 @@
           formControlName="total_quantity"
         >
         </p-inputNumber>
-      </div>
-      <div class="p-field col-sm-6 col-12">
+      </div> -->
+      <!-- <div class="p-field col-sm-6 col-12">
         <label class="mr-3">
           <strong>Giá nhập</strong>
         </label>
@@ -319,7 +319,7 @@
           placeholder="Giá nhập"
         >
         </p-inputNumber>
-      </div>
+      </div> -->
       <div class="p-field col-sm-6 col-12">
         <label class="mr-3">
           <strong>Giá bán</strong>

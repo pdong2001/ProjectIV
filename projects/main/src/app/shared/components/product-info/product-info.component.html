@@ -93,10 +93,14 @@
     <div class="d-flex my-1 align-items-center">
       <strong style="width: 100px" class="of-ellipsis">Còn lại</strong>
       <ng-container
-        *ngIf="selectedProductDetail?.remaining_quantity ?? product.quantity > 0 then remainingQuantity; else outStock"
+        *ngIf="
+          selectedProductDetail?.remaining_quantity ?? product.quantity > 0;
+          then remainingQuantity;
+          else outStock
+        "
       >
       </ng-container>
-      <ng-template  #remainingQuantity>
+      <ng-template #remainingQuantity>
         <span *ngIf="selectedProductDetail">
           {{ selectedProductDetail?.remaining_quantity }}
           {{ selectedProductDetail?.unit }}
@@ -105,15 +109,15 @@
           Còn hàng
         </strong>
       </ng-template>
-      <ng-template  #outStock>
+      <ng-template #outStock>
         <strong
-        class="text-danger"
-        *ngIf="
-          (selectedProductDetail?.remaining_quantity ?? product.quantity) == 0
-        "
-      >
-        Hết hàng
-      </strong>
+          class="text-danger"
+          *ngIf="
+            (selectedProductDetail?.remaining_quantity ?? product.quantity) == 0
+          "
+        >
+          Hết hàng
+        </strong>
       </ng-template>
     </div>
     <div class="d-flex my-1 align-items-center">

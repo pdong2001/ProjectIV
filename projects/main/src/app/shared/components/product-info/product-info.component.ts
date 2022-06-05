@@ -39,7 +39,7 @@ export class ProductInfoComponent implements OnInit {
     this._selectedProducttDetail = value;
     if (value?.default_image) {
       this.activeImageIndex = this.product.images.findIndex((img) => {
-        const image = value.default_image as any;
+        const image = value.image as any;
         return img.blob.id == image.id;
       });
     }
@@ -65,7 +65,7 @@ export class ProductInfoComponent implements OnInit {
   }
   constructor(
     private productService: ProductService,
-    private cartService: CartService,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {}
@@ -78,10 +78,7 @@ export class ProductInfoComponent implements OnInit {
     this.selectedOptions = [];
   }
 
-  loadRelatedProduct()
-  {
-    
-  }
+  loadRelatedProduct() {}
 
   loadProductData() {
     this.renewData();
@@ -121,7 +118,7 @@ export class ProductInfoComponent implements OnInit {
 
   public addToCart() {
     if (this.selectedProductDetail) {
-      const request = this.cartService.createOrEdit({
+      const request = this.cartService.create({
         product_detail_id: this.selectedProductDetail.id,
         quantity: this.quantity,
       });
@@ -212,7 +209,6 @@ export class ProductInfoComponent implements OnInit {
       this.selectedProductDetail = undefined;
     }
   }
-
 
   responsiveOptions: any[] = [
     {

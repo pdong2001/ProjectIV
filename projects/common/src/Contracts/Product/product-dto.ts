@@ -8,7 +8,8 @@ import { ProductOptionDto } from "./product-option-dto";
 export interface ProductDto extends FullAuditedEntity {
     category_id ?:number;
     code?:string;
-    default_image?:BlobDto;
+    default_image?:number;
+    image?:BlobDto;
     name:string;
     option_count:number;
     provider_id?:number;
@@ -16,6 +17,7 @@ export interface ProductDto extends FullAuditedEntity {
     visible:boolean;
     images: ImageAssign[];
     description?:string;
+    short_description?:string;
     category?:CategoryDto;
     provider?:any;
     details?: ProductDetailDto[];

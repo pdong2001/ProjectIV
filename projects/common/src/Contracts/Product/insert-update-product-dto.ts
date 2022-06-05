@@ -8,5 +8,6 @@ export interface InsertUpdateProductDto {
     provider_id?:number;
     visible:boolean;
     description?:string;
+    short_description?:string;
     options?: ProductOptionDto[];
 }

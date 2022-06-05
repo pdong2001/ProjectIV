@@ -1,123 +1,191 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnChanges, SimpleChanges } from '@angular/core';
 import { CartDto } from '../../Contracts/Cart/cart-dto';
 import { ProductDetailDto } from '../../Contracts/ProductDetail/product-detail-dto';
 import { AuthDataService } from './auth-data.service';
 import { AuthService } from './auth.service';
 import { ServiceResponse } from '../../Contracts/Common/response';
 import { HttpService } from './http.service';
-import { Observable } from 'rxjs';
+import { map, Observable, Subscriber } from 'rxjs';
 import { CRUDService } from './crudservice';
 import { UpSertCartDto } from '../../Contracts/Cart/up-set-cart-dto';
 import { PagedAndSortedRequest } from '../../Contracts/Common/paged-and-sorted-request';
 import { HttpParams } from '@angular/common/http';
+import { CartLookUpDto } from '../../Contracts/Cart/cart-look-up-dto';
+import { ProductDetailService } from './product-detail.service';
 
+const CartLocalKey: string = 'cart';
+const CartIdentityLocalKey: string = 'cartidentity';
 @Injectable({
   providedIn: 'root',
 })
-export class CartService {
-  public cartItems: CartDto[] = [];
-  CART_STORAGE_KEY: string = 'carts';
-  CART_IDENTITY_STORAGE_KEY: string = 'cart_identity';
+export class CartService extends CRUDService<
+  CartDto,
+  UpSertCartDto,
+  CartLookUpDto
+> {
+  protected override controller: string = 'admin/carts';
+  public $cartCount: Observable<number>;
+  protected $cartCountSub: Subscriber<number> | undefined;
   constructor(
-    private httpClient: HttpService,
-    private authDataService: AuthDataService
-  ) {}
-  
-  public createOrEditRange()
-  {
-    
+    httpClient: HttpService,
+    private authDataService: AuthDataService,
+    private productDetailService: ProductDetailService
+  ) {
+    super(httpClient);
+    this.$cartCount = new Observable<number>(
+      (sub) => (this.$cartCountSub = sub)
+    );
+    this.authDataService.$token.subscribe({
+      next: (token) => {
+        this.refreshCount();
+      },
+    });
+  }
+  private _cart: CartDto[] = [];
+  public get cart(): CartDto[] {
+    return this._cart;
+  }
+  public set cart(value: CartDto[]) {
+    this._cart = value;
+    this.saveToLocal();
+  }
+  protected loadFormLocal() {
+    this.cart = JSON.parse(localStorage.getItem(CartLocalKey) ?? '[]');
+  }
+  protected addToLocal(input: UpSertCartDto) {
+    if (this.cart.length == 0) this.loadFormLocal();
+
+    const id = JSON.parse(localStorage.getItem(CartIdentityLocalKey) ?? '1');
+    localStorage.setItem(CartLocalKey, JSON.stringify(id + 1));
+    let item = this.cart.find(
+      (i) => i.product_detail_id == input.product_detail_id
+    );
+    if (item) item.quantity += input.quantity;
+    else {
+      item = {
+        product_detail_id: input.product_detail_id,
+        quantity: input.quantity,
+        created_at: new Date(),
+        id: id,
+      };
+    }
+    this.cart.push(item);
+    this.$cartCountSub?.next(this.cart.length);
+    this.saveToLocal();
+    return item;
+  }
+  protected saveToLocal() {
+    localStorage.setItem(CartLocalKey, JSON.stringify(this.cart));
+  }
+  protected updateLocal(id: number, input: UpSertCartDto) {
+    if (this.cart.length == 0) this.loadFormLocal();
   }
 
-  public createOrEdit(
-    cart: UpSertCartDto
-  ): CartDto | Observable<ServiceResponse<number>> | undefined {
-    if (this.authDataService.isLoggedIn()) {
-      const payload = {
-        product_detail_id: cart.product_detail_id,
-        quantity: cart.quantity,
-      };
-      const url = 'admin/carts';
-      return this.httpClient.post<ServiceResponse<number>>(url, payload);
-    } else {
-      let cartDto: CartDto | undefined = this.cartItems.find(
-        (c) => c.product_detail_id == cart.product_detail_id
-      );
-      if (cartDto) {
-        cartDto.quantity += cart.quantity;
-      } else {
-        const id = JSON.parse(
-          localStorage.getItem(this.CART_IDENTITY_STORAGE_KEY) ?? '1'
-        ) as number;
-        cartDto = {
-          ...cart,
-          id: id,
-          created_at: new Date(),
-        };
-        this.cartItems.push(cartDto);
-      }
+  protected deleteLocal(id: number): ServiceResponse<number> {
+    const itemIndex = this.cart.findIndex((i) => i.id == id);
+    if (itemIndex >= 0) {
+      this.cart.splice(itemIndex, 1);
       this.saveToLocal();
-      return cartDto;
+      return {
+        status: true,
+        data: id,
+      };
+    } else {
+      return {
+        status: false,
+      };
     }
   }
 
-  public getList({
-    request,
-  }: {
-    request: PagedAndSortedRequest;
-  }): CartDto[] | Observable<ServiceResponse<CartDto[]>> {
-    if (!this.authDataService.isLoggedIn()) {
-      if (!this.cartItems) {
-        this.cartItems = JSON.parse(
-          localStorage.getItem(this.CART_STORAGE_KEY) ?? '[]'
-        );
-      }
-      return this.cartItems;
+  public override create(
+    input: UpSertCartDto
+  ): Observable<ServiceResponse<number>> {
+    if (this.authDataService.isLoggedIn()) return super.create(input);
+    return new Observable<ServiceResponse<number>>((sub) => {
+      const item = this.addToLocal(input);
+      sub.next({ status: true, data: item.id });
+    });
+  }
+
+  public override update(
+    id: any,
+    input: UpSertCartDto
+  ): Observable<ServiceResponse<number>> {
+    if (this.authDataService.isLoggedIn()) return super.update(id, input);
+    return new Observable<ServiceResponse<number>>((sub) => {
+      const item = this.addToLocal(input);
+      sub.next({ status: true, data: item.id });
+    });
+  }
+
+  public refreshCount() {
+    if (this.authDataService.isLoggedIn()) {
+      this.getList({ page: 1, limit: 0 });
     } else {
-      const url = 'admin/carts';
-      let params: HttpParams = new HttpParams();
-      let value: keyof PagedAndSortedRequest;
-      for (value in request) {
-        if (request[value] != undefined) {
-          params = params.append(value, request[value] as any);
+      this.loadFormLocal();
+    }
+  }
+
+  public override getList(
+    request: CartLookUpDto
+  ): Observable<ServiceResponse<CartDto[]>> {
+    if (this.authDataService.isLoggedIn())
+      return super.getList(request).pipe(
+        map((res) => {
+          if (res.status == true) {
+            this.$cartCountSub?.next(res.meta.total??0);
+          }
+          return res;
+        })
+      );
+    return new Observable<ServiceResponse<CartDto[]>>((sub) => {
+      const limit = request.limit ?? 99999;
+      const page = request.page ?? 1;
+      this.loadFormLocal();
+      const data = this.cart.slice((page - 1) * limit, page * limit);
+      let sent = 0;
+      data.forEach((i) => {
+        if (!i.product_detail) {
+          sent++;
+          this.productDetailService.get(i.product_detail_id).subscribe({
+            next: (res) => {
+              if (res.status == true) {
+                i.product_detail = res.data;
+              }
+              sent--;
+              if (sent == 0) {
+                sub.next({
+                  status: true,
+                  data: data,
+                  meta: { total: this.cart.length },
+                });
+              }
+            },
+          });
         }
-      }
-      return this.httpClient.get<ServiceResponse<CartDto[]>>(url, {
-        params: params,
+      });
+    });
+  }
+
+  public override delete(id: any): Observable<ServiceResponse<number>> {
+    if (this.authDataService.isLoggedIn()) {
+      return super.delete(id);
+    } else {
+      return new Observable<ServiceResponse<number>>((sub) => {
+        sub.next(this.deleteLocal(id));
       });
     }
   }
 
-  public update(id: number, cart: UpSertCartDto) {
-    if (!this.authDataService.isLoggedIn()) {
-      const cartIndex = this.cartItems.findIndex((c) => c.id == id);
-      if (cartIndex >= 0) {
-        const cartDto = this.cartItems[cartIndex];
-        cartDto.quantity = cart.quantity;
-        cartDto.product_detail_id = cart.product_detail_id;
-        this.saveToLocal();
-      }
-      return true;
-    } else {
-      const url = `admin/carts/${id}`;
-      return this.httpClient.put<ServiceResponse<number>>(url, cart);
-    }
+  public checkout() {
+    const url = this.controller + '/checkout';
+    this.clearCache();
+    localStorage.removeItem(CartLocalKey);
+    localStorage.removeItem(CartIdentityLocalKey);
+    return this.httpClient.post<ServiceResponse<any>>(url);
   }
 
-  public delete(id: number) {
-    if (!this.authDataService.isLoggedIn()) {
-      const cartIndex = this.cartItems.findIndex((c) => c.id == id);
-      if (cartIndex >= 0) {
-        this.cartItems.splice(cartIndex, 1);
-        this.saveToLocal();
-      }
-      return id;
-    } else {
-      const url = `admin/carts/${id}`;
-      return this.httpClient.delete<ServiceResponse<boolean>>(url);
-    }
-  }
-
-  protected saveToLocal() {
-    localStorage.setItem(this.CART_STORAGE_KEY, JSON.stringify(this.cartItems));
+  public clearCache() {
+    this.cart = [];
   }
 }

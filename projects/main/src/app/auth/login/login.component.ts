@@ -38,7 +38,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  public login() {
+  public login(e:any) {
+    e.preventDefault();
     if (this.form.valid) {
       this.oauthService
         .login({

@@ -6,4 +6,5 @@ export enum InfoType {
     Phone = 'phone',
     Email = 'email',
     Banner = 'banner',
+    Gallery = 'gallery'
 }

@@ -1,0 +1,270 @@
+<p-toolbar>
+  <ng-template pTemplate="left">
+    <button
+      pButton
+      pRipple
+      type="button"
+      icon="fa fa-plus"
+      label="Thêm khách hàng"
+      class="p-button-sm mr-1"
+      (click)="showAddDialog()"
+    ></button>
+  </ng-template>
+  <ng-template pTemplate="right">
+    <form
+      (submit)="dt.filterGlobal(search.value, 'contains')"
+      class="p-inputgroup"
+    >
+      <span class="p-inputgroup-addon"> <i class="pi pi-search"></i></span>
+      <input
+        pInputText
+        type="text"
+        #search
+        placeholder="Từ khóa tìm kiếm..."
+        class="w-100"
+      />
+      <button pButton type="submit" label="Tìm"></button>
+    </form>
+  </ng-template>
+</p-toolbar>
+<p-table
+  #dt
+  [value]="customers"
+  [lazy]="true"
+  (onLazyLoad)="loadData($event)"
+  responsiveLayout="scroll"
+  dataKey="id"
+  [selection]="selectedCategories"
+  [selectAll]="selectAll"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[5, 10, 15, 25]"
+  [totalRecords]="totalRecords"
+  [loading]="loading"
+  [globalFilterFields]="['name']"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th class="text-nowrap" pSortableColumn="name">
+        Tên khách hàng <p-sortIcon field="name"></p-sortIcon>
+      </th>
+      <th class="text-nowrap" pSortableColumn="phone_number">
+        Số điện thoại <p-sortIcon field="phone_number"></p-sortIcon>
+      </th>
+      <th class="text-nowrap" pSortableColumn="address">
+        Địa chỉ <p-sortIcon field="address"></p-sortIcon>
+      </th>
+      <th class="text-nowrap" pSortableColumn="debt">
+        Nợ <p-sortIcon field="debt"></p-sortIcon>
+      </th>
+      <th class="text-nowrap">Ghi chú</th>
+      <th style="width: 7rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-customer>
+    <tr>
+      <td>
+        <p-image
+          [preview]="true"
+          [src]="customer.image ? (customer.image.file_path | filePath) : 'assets/img/default-user-image.png'"
+          height="100px"
+          width="100px"
+          imageClass="of-contain"
+          alt="CustomerAtl"
+          appendTo="body"
+        ></p-image>
+        
+      </td>
+      <td>{{ customer.name }}</td>
+      <td>{{ customer.phone_number }}</td>
+      <td>{{ processAddress(customer) }}</td>
+      <td>{{ customer.debt | currency: "VND" }}</td>
+      <td style="max-width: 200px">{{ customer.note }}</td>
+      <td>
+        <div class="d-md-flex">
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="fas fa-info"
+            (click)="showInfoDialog(customer)"
+            class="p-button-rounded p-button-sm p-button-success mr-1"
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="far fa-edit"
+            class="p-button-rounded p-button-sm mr-1"
+            (click)="showEditDialog(customer)"
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="far fa-trash-alt"
+            class="p-button-rounded p-button-danger"
+            (click)="delete(customer)"
+          ></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [draggable]="true"
+  [resizable]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [header]="(displayAddDialog ? 'Thêm' : 'Sửa') + ' khách hàng'"
+  [(visible)]="formVisible"
+  [style]="{ width: '50vw' }"
+  styleClass="p-fluid"
+  [modal]="true"
+  [formGroup]="form"
+>
+  <div class="p-field">
+    <label><strong>Tên khách hàng</strong></label>
+    <input type="text" name="customer-name" pInputText formControlName="name" />
+  </div>
+  <div class="p-field">
+    <label><strong>Ngày sinh</strong></label>
+    <input type="date" name="customer-name" pInputText formControlName="birth" />
+  </div>
+  <div class="p-field">
+    <label><strong>Số điện thoại</strong></label>
+    <p-inputMask
+      mask="(999) 999-999-999"
+      placeholder="Số điện thoại"
+      formControlName="phone_number"
+    ></p-inputMask>
+  </div>
+  <div class="p-field">
+    <label><strong>Tỉnh</strong></label>
+    <input
+      type="text"
+      name="customer-province"
+      pInputText
+      formControlName="province"
+    />
+  </div>
+  <div class="p-field">
+    <label><strong>Huyện</strong></label>
+    <input
+      type="text"
+      name="customer-district"
+      pInputText
+      formControlName="district"
+    />
+  </div>
+  <div class="p-field">
+    <label><strong>Xã</strong></label>
+    <input
+      type="text"
+      name="customer-commune"
+      pInputText
+      formControlName="commune"
+    />
+  </div>
+  <div class="p-field">
+    <label><strong>Địa chỉ</strong></label>
+    <input
+      type="text"
+      name="customer-address"
+      pInputText
+      formControlName="address"
+    />
+  </div>
+  <div class="row">
+    <div class="p-field col-4">
+      <label><strong>Tên ngân hàng</strong></label>
+      <input
+        type="text"
+        name="bank-name"
+        pInputText
+        formControlName="bank_name"
+        #bankName
+      />
+    </div>
+    <div class="p-field col-8">
+      <label><strong>Số tài khoản</strong></label>
+      <input
+        type="text"
+        name="bank-number"
+        pInputText
+        formControlName="bank_number"
+        [disabled]="bankName.value == ''"
+      />
+    </div>
+  </div>
+  <div class="p-field">
+    <label><strong>Ghi chú</strong></label>
+    <textarea
+      type="text"
+      name="customer-note"
+      pInputText
+      formControlName="note"
+    ></textarea>
+  </div>
+  <div>
+    <label for="image"><strong>Hình ảnh</strong></label>
+    <p-fileUpload
+      #upload
+      accept="image/*"
+      [showCancelButton]="true"
+      [showUploadButton]="false"
+      [maxFileSize]="10000000"
+      chooseLabel="Chọn ảnh"
+      [multiple]="false"
+    >
+    </p-fileUpload>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button
+      *ngIf="displayAddDialog"
+      pButton
+      pRipple
+      icon="fas fa-check"
+      class="p-button-success p-button-sm"
+      label="Thêm"
+      type="button"
+      (click)="save(upload.files)"
+    ></button>
+    <button
+      *ngIf="displayEditDialog"
+      pButton
+      pRipple
+      icon="fas fa-check"
+      class="p-button-success p-button-sm"
+      label="Lưu"
+      type="button"
+      (click)="save(upload.files)"
+    ></button>
+    <button
+      pButton
+      pRipple
+      class="p-button-danger p-button-sm"
+      label="Hủy"
+      type="button"
+      (click)="formVisible = false; nameInvalid = false"
+    ></button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  [draggable]="true"
+  [resizable]="true"
+  [maximizable]="true"
+  appendTo="body"
+  header="Hóa đơn"
+  [(visible)]="displayInforDialog"
+  [style]="{ width: '50vw' }"
+  styleClass="p-fluid"
+  [modal]="true"
+  [formGroup]="form"
+>
+  <app-invoices [customer]="selectedCustomer"></app-invoices>
+</p-dialog>

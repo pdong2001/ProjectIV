@@ -13,6 +13,7 @@ import { ImageModule } from 'primeng/image';
 import { CommonPipeModule } from 'projects/common/src/lib/common-pipe/common-pipe.module';
 import { environment } from 'projects/main/src/environments/environment';
 import { DialogModule } from 'primeng/dialog';
+import { CarouselModule } from 'primeng/carousel';
 import { ComponentsModule } from '../../shared/components/components.module';
 
 @NgModule({
@@ -28,7 +29,8 @@ import { ComponentsModule } from '../../shared/components/components.module';
     ImageModule,
     CommonPipeModule.forRoot(environment),
     DialogModule,
-    ComponentsModule
+    ComponentsModule,
+    CarouselModule
   ],
 })
 export class CategoryModule {}

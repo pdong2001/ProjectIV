@@ -177,6 +177,7 @@ export class ProvidersComponent implements OnInit {
       phone: value.phone,
       address: value.address,
       visible: value.visible ?? true,
+      file_path : value.file_path,
     };
     this.displayEditDialog = true;
     this.displayAddDialog = false;

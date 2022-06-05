@@ -8,7 +8,7 @@
     >
       <div class="col-md-9 ftco-animate text-center">
         <p class="breadcrumbs">
-          <span class="mr-2"><a href="index.html">Home</a></span>
+          <span class="mr-2"><a routerLink="/">Home</a></span>
           <span>Shop</span>
         </p>
         <h1 class="mb-0 bread">Shop</h1>
@@ -33,32 +33,30 @@
             <h2 class="heading">Categories</h2>
             <div class="fancy-collapse-panel">
               <div
-              class="panel-group"
-              [ngClass]="!selectedCategory?.id ? 'active' : '' "
-            >
-              <div class="panel panel-default">
-                <div class="cate-title d-flex justify-content-between">
-                  <div class="panel-title">
-                    <a
-                      href=""
-                      (click)="selectedCategoryChange($event, undefined)"
-                      >Tất cả
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-              <div
-                *ngFor="let cate of categories"
                 class="panel-group"
-                [ngClass]=" cate.id == selectedCategory?.id ? 'active' : '' "
+                [ngClass]="!selectedCategory?.id ? 'active' : ''"
               >
                 <div class="panel panel-default">
                   <div class="cate-title d-flex justify-content-between">
                     <div class="panel-title">
                       <a
                         href=""
-                        (click)="selectedCategoryChange($event, cate)"
+                        (click)="selectedCategoryChange($event, undefined)"
+                        >Tất cả
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                *ngFor="let cate of categories"
+                class="panel-group"
+                [ngClass]="cate.id == selectedCategory?.id ? 'active' : ''"
+              >
+                <div class="panel panel-default">
+                  <div class="cate-title d-flex justify-content-between">
+                    <div class="panel-title">
+                      <a href="" (click)="selectedCategoryChange($event, cate)"
                         >{{ cate.name }}
                       </a>
                     </div>
@@ -123,7 +121,7 @@
                 class="col-lg-4 py-3 align-self-center d-flex"
               >
                 <p-image
-                  [src]="getFilePath(product.default_image.file_path)"
+                  [src]="product.image.file_path | filePath"
                   imageClass="w-100 h-100 of-cover"
                   styleClass="w-100 h-100"
                   alt=""

@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from 'projects/admin/src/environments/environment';
 import { SortMode } from 'projects/common/src/Contracts/Common/paged-and-sorted-request';
@@ -14,17 +14,21 @@ declare var layoutInit: any;
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit, AfterViewChecked {
+  public settings: WebInfoDto[] = [];
   trendingProds: ProductDto[] = [];
-  init: boolean = false;
+  init: boolean = true;
   slides: WebInfoDto[] = [];
+  public infoType = InfoType;
+  public loadedTrending = false;
+  public loadedSettings = false;
   constructor(
     private productService: ProductService,
     private webInfoService: WebInfoService,
-    private router : Router
+    private router: Router
   ) {}
 
   ngAfterViewChecked(): void {
-    if (this.init) {
+    if (this.loadedSettings && this.loadedTrending && this.init) {
       layoutInit();
       this.init = false;
     }
@@ -39,19 +43,24 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     this.loadProduct();
   }
 
-  public loadInfo()
-  {
-    this.webInfoService.getList({
-      name : InfoType.Slide
-    })
-    .subscribe({
-      next : res => {
-        if (res.status == true && res.data)
-        {
-          this.slides = res.data;
+  public getSettings(name: string) {
+    return this.settings.filter((s) => s.name == name);
+  }
+
+  public getOne(name: string) {
+    return this.settings.find((s) => s.name == name);
+  }
+
+  public loadInfo() {
+    this.webInfoService.getList({}).subscribe({
+      next: (res) => {
+        if (res.status == true && res.data) {
+          this.settings = res.data;
+          this.slides = this.getSettings(this.infoType.Slide);
         }
-      }
-    })
+        this.loadedSettings = true;
+      },
+    });
   }
 
   loadProduct() {
@@ -79,17 +88,15 @@ export class HomeComponent implements OnInit, AfterViewChecked {
           }
           this.trendingProds = res.data ?? [];
         }
-        this.init = true;
+        this.loadedTrending = true;
       });
   }
-  searchProduct(search : string)
-  {
-    const url = this.router.createUrlTree(['/category'],
-    {
-      queryParams : {
-        s : search
-      }
-    })
+  searchProduct(search: string) {
+    const url = this.router.createUrlTree(['/category'], {
+      queryParams: {
+        s: search,
+      },
+    });
     this.router.navigateByUrl(url);
   }
 }

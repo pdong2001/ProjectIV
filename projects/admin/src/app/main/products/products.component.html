@@ -53,6 +53,7 @@
         Tên sản phẩm <p-sortIcon field="name"></p-sortIcon>
       </th>
       <th>Ảnh</th>
+      <th>Khoảng giá</th>
       <th pSortableColumn="quantity">
         Số lượng <p-sortIcon field="quantity"></p-sortIcon>
       </th>
@@ -89,12 +90,19 @@
         <span class="p-column-title">Ảnh</span>
         <p-image
           [preview]="true"
-          *ngIf="product.default_image"
+          *ngIf="product.image"
           height="50"
-          [src]="product.default_image.file_path | filePath"
+          [src]="product.image.file_path | filePath"
           appendTo="body"
         >
         </p-image>
+      </td>
+      <td>
+        <span class="p-column-title">Khoảng giá</span
+        >{{ product.min_price | currency: "VND"
+        }}<span *ngIf="product.min_price != product.max_price">
+          - {{ product.max_price | currency: "VND" }}</span
+        >
       </td>
       <td>
         <span class="p-column-title">Số lượng</span
@@ -195,6 +203,13 @@
                 [readonly]="true"
               ></app-product-option-table>
             </div>
+          </div>
+          <div class="my-1 p-field">
+            <strong>Mô tả ngắn</strong>
+            <div
+              class="ql-editor"
+              [innerHTML]="product.short_description | sanitizer"
+            ></div>
           </div>
           <div class="my-1 p-field">
             <strong>Mô tả</strong>
@@ -345,9 +360,57 @@
     </p-dropdown>
   </div>
   <div class="p-field">
+    <label><strong>Mô tả ngắn</strong></label>
+    <editor
+      *ngIf="formVisible"
+      [(ngModel)]="product.short_description"
+      apiKey="rglayxcy5hcrxaw5dxmaqlj6dq62qkwingzm05qh0b1snnur"
+      initialValue=""
+      cloudChannel="6"
+      plugins=""
+      toolbar=""
+      [init]="{
+        base_url: 'tinymce',
+        suffix: '.min',
+        height: 300,
+        menubar: true,
+        plugins: [
+          'advlist',
+          'autolink',
+          'lists',
+          'link',
+          'charmap',
+          'preview',
+          'anchor',
+          'codesample',
+          'searchreplace',
+          'visualblocks',
+          'code',
+          'fullscreen',
+          'image',
+          'insertdatetime',
+          'media',
+          'table',
+          'code',
+          'help',
+          'wordcount'
+        ],
+        codesample_languages: [
+          { text: 'TypeScript', value: 'typescript' },
+          { text: 'JavaScript', value: 'javascript' },
+          { text: 'HTML/XML', value: 'markup' },
+          { text: 'CSS', value: 'css' }
+        ],
+        toolbar:
+          'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image media codesample'
+      }"
+    >
+    </editor>
+  </div>
+  <div class="p-field">
     <label><strong>Mô tả sản phẩm</strong></label>
     <editor
-    *ngIf="formVisible"
+      *ngIf="formVisible"
       [(ngModel)]="product.description"
       apiKey="rglayxcy5hcrxaw5dxmaqlj6dq62qkwingzm05qh0b1snnur"
       initialValue=""
@@ -378,7 +441,7 @@
           'table',
           'code',
           'help',
-          'wordcount',
+          'wordcount'
         ],
         codesample_languages: [
           { text: 'TypeScript', value: 'typescript' },

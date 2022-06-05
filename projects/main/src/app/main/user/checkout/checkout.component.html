@@ -1,0 +1,225 @@
+<div
+  class="hero-wrap hero-bread"
+  style="background-image: url('assets/images/bg_6.jpg')"
+>
+  <div class="container">
+    <div
+      class="row no-gutters slider-text align-items-center justify-content-center"
+    >
+      <div class="col-md-9 text-center">
+        <p class="breadcrumbs">
+          <span class="mr-2"><a routerLink="/">Trang chủ</a></span>
+          <span class="mr-2"><a routerLink="/user">/ Người dùng</a></span>
+          <span>Đặt hàng</span>
+        </p>
+        <h1 class="mb-0 bread">Đặt hàng</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="ftco-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-10">
+        <form [formGroup]="form" class="billing-form">
+          <h3 class="mb-4 billing-heading">Thông tin đơn hàng</h3>
+          <div class="row align-items-end">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="firstname">Họ và tên</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="customer_name"
+                  placeholder=""
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="lastname">Số điện thoại</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="phone_number"
+                  formControlName="phone_number"
+                  placeholder=""
+                />
+              </div>
+            </div>
+            <div class="w-100"></div>
+            <div class="w-100"></div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="streetaddress">Tỉnh/Thành phố</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Tỉnh/Thành phố"
+                  name="province"
+                  formControlName="province"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="streetaddress">Quận/Huyện</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Quận/Huyện"
+                  name="district"
+                  formControlName="district"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="streetaddress">Phường/Xã</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Phường/Xã"
+                  name="commune"
+                  formControlName="commune"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="streetaddress">Địa chỉ</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Số nhà hoặc tên đường"
+                  name="address"
+                  formControlName="address"
+                />
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label for="streetaddress">Ghi chú</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Ghi chú"
+                  name="note"
+                  formControlName="note"
+                />
+              </div>
+            </div>
+            <div class="w-100"></div>
+            <ng-container *ngIf="!user">
+              <div class="col-md-12">
+                <div class="form-group mt-4">
+                  <div class="radio">
+                    <label class="mr-3"
+                      ><input #createAccount type="checkbox" /> Tạo tài khoản
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <ng-container *ngIf="createAccount.checked">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="emailaddress">Địa chỉ Email</label>
+                    <input type="text" class="form-control" placeholder="" />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="emailaddress">Ngày sinh</label>
+                    <input type="text" class="form-control" placeholder="" />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="emailaddress">Mật khẩu</label>
+                    <input type="password" name="password" class="form-control" placeholder="" />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="emailaddress">Nhập lại mật khẩu</label>
+                    <input type="password" name="confirm_password" class="form-control" placeholder="" />
+                  </div>
+                </div>
+                <div class="w-100"></div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </form>
+        <!-- END -->
+
+        <div class="row mt-5 pt-3 d-flex">
+          <div class="col-md-6 d-flex">
+            <div class="w-100 cart-detail cart-total bg-light p-3 p-md-4">
+              <h3 class="billing-heading mb-4">Tổng giỏ hàng</h3>
+              <p class="d-flex">
+                <span>Tạm tính</span>
+                <span>{{ subTotals | currency: "VND" }}</span>
+              </p>
+              <p class="d-flex">
+                <span>Vận chuyển</span>
+                <span>{{ subTotals * 0.1 | currency: "VND" }}</span>
+              </p>
+              <p class="d-flex">
+                <span>Giảm giá</span>
+                <span>{{ 0 | currency: "VND" }}</span>
+              </p>
+              <hr />
+              <p class="d-flex total-price">
+                <span> Tổng </span>
+                <span> {{ subTotals * 1.1 | currency: "VND" }} </span>
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="w-100 cart-detail bg-light p-3 p-md-4">
+              <h3 class="billing-heading mb-4">Thương thức thanh toán</h3>
+              <div class="form-group">
+                <div class="col-md-12">
+                  <div class="radio">
+                    <label
+                      ><input
+                        type="radio"
+                        name="optradio"
+                        checked
+                        class="mr-2"
+                      />
+                      Thanh toán khi nhận hàng</label
+                    >
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="form-group">
+                <div class="col-md-12">
+                  <div class="checkbox">
+                    <label
+                      ><input #accept type="checkbox" value="" class="mr-2" />
+                      Tôi đã đọc và đồng ý với các điều khoản của cửa
+                      hàng</label
+                    >
+                  </div>
+                </div>
+              </div> -->
+              <p class="text-center">
+                <a
+                (click)="placeOrder()"
+                  [ngClass]="{ disabled: form.invalid }"
+                  class="btn btn-primary py-3 px-4"
+                >
+                  <strong> Đặt hàng</strong></a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- .col-md-8 -->
+    </div>
+  </div>
+</section>
+<!-- .section -->

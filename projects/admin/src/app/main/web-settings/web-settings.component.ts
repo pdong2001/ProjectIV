@@ -44,6 +44,9 @@ export class WebSettingsComponent implements OnInit {
     { value: InfoType.Slide, name: 'Slide' },
     { value: InfoType.Header, name: 'Đầu trang' },
     { value: InfoType.Footer, name: 'Cuối trang' },
+    { value: InfoType.Phone, name: 'Số điện thoại' },
+    { value: InfoType.Email, name: 'Email' },
+    { value: InfoType.Gallery, name: 'Bộ sưu tập' },
   ];
 
   constructor(
@@ -51,7 +54,6 @@ export class WebSettingsComponent implements OnInit {
     private fileService: FileService,
     private toastService: ToastService,
     private comfirmService: ConfirmService,
-    private domSanitizer: DomSanitizer,
     formBuilder: FormBuilder,
     titleService: TitleService
   ) {
@@ -76,7 +78,7 @@ export class WebSettingsComponent implements OnInit {
 
   loadWebinfos() {
     this.loading = true;
-    this.webinfoService.getList({}).subscribe({
+    this.webinfoService.getList({}, false).subscribe({
       next: (res) => {
         if (res.status == true) {
           this.webinfos = res.data ?? [];

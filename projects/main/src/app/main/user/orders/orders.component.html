@@ -1,0 +1,19 @@
+<section class="user-profile section my-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <!-- Edit Profile Welcome Text -->
+        <div class="widget welcome-message">
+          <h2>Danh sách đơn hàng</h2>
+          <!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p> -->
+        </div>
+        <!-- Edit Personal Info -->
+
+            <app-invoices
+            [customer]="user?.customer"
+            [readonly]="true"
+            ></app-invoices>
+      </div>
+    </div>
+  </div>
+</section>

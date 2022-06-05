@@ -26,7 +26,7 @@
           ><i class="fas fa-sliders-h"></i> <span>Thông tin website</span></a
         >
       </li>
-      <li class="menu-header">Quản lý sản phẩm</li>
+      <li class="menu-header">Quản lý khách hàng</li>
       <!-- <li class="nav-item dropdown">
             <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Layout</span></a>
             <ul class="dropdown-menu">
@@ -36,8 +36,19 @@
             </ul>
           </li> -->
       <li routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['customers']"
+          ><i class="fas fa-users"></i> <span>Khách hàng</span></a
+        >
+      </li>
+      <li routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['orders']"
+          ><i class="fas fa-file-alt"></i> <span>Đơn đặt hàng</span></a
+        >
+      </li>
+      <li class="menu-header">Quản lý sản phẩm</li>
+      <li routerLinkActive="active">
         <a class="nav-link" [routerLink]="['providers']"
-          ><i class="fas fa-book"></i> <span>Nhà cung cấp</span></a
+          ><i class="fas fa-copyright"></i> <span>Nhà cung cấp</span></a
         >
       </li>
       <li routerLinkActive="active">
@@ -55,6 +66,11 @@
           ><i class="fas fa-box-open"></i> <span>Chi tiết sản phẩm</span></a
         >
       </li>
+      <li routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['receipt']"
+          ><i class="fas fa-receipt"></i> <span>Nhập hàng</span></a
+        >
+      </li>
       <li class="menu-header">Lưu trữ</li>
       <li routerLinkActive="active">
         <a class="nav-link" [routerLink]="['images']"
@@ -63,13 +79,13 @@
       </li>
     </ul>
 
-    <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
+    <!-- <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
       <a
         href="https://getstisla.com/docs"
         class="btn btn-primary btn-lg btn-block btn-icon-split"
       >
         <i class="fas fa-rocket"></i> Documentation
       </a>
-    </div>
+    </div> -->
   </aside>
 </div>

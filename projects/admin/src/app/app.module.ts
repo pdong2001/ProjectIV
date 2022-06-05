@@ -11,6 +11,7 @@ import { AuthInterceptor } from '../../../common/src/lib/auth.interceptor';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,6 +33,10 @@ import { TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
       multi: true,
     },
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    {
+      provide: 'REST_API_SERVER',
+      useValue: environment.REST_API_SERVER,
+    },
   ],
   bootstrap: [AppComponent],
 })

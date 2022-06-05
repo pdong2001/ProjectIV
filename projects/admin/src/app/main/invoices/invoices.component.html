@@ -1,0 +1,381 @@
+<p-toolbar>
+  <ng-template pTemplate="left">
+    <button
+      pButton
+      pRipple
+      type="button"
+      icon="fa fa-plus"
+      label="Thêm"
+      class="p-button-sm mr-1"
+      (click)="showAddDialog()"
+      *ngIf="!readonly"
+    ></button>
+    <!-- <p-dropdown [options]="visibleOptions" >
+      </p-dropdown> -->
+  </ng-template>
+  <ng-template pTemplate="right">
+    <form
+      (submit)="dt.filterGlobal(search.value, 'contains')"
+      class="p-inputgroup"
+    >
+      <span class="p-inputgroup-addon"> <i class="pi pi-search"></i></span>
+      <input
+        pInputText
+        type="text"
+        #search
+        placeholder="Từ khóa tìm kiếm..."
+        class="w-100"
+      />
+      <button pButton type="submit" label="Tìm"></button>
+    </form>
+  </ng-template>
+</p-toolbar>
+<p-table
+  #dt
+  [value]="invoices"
+  [lazy]="true"
+  (onLazyLoad)="loadInvoices($event)"
+  responsiveLayout="scroll"
+  dataKey="id"
+  [selection]="selectedInvoices"
+  [selectAll]="selectAll"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[5, 10, 15, 25]"
+  [totalRecords]="totalRecords"
+  [loading]="loading"
+  [globalFilterFields]="['name']"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="customer_name">
+        Tên khách hàng <p-sortIcon field="customer_name"></p-sortIcon>
+      </th>
+      <th pSortableColumn="phone_number">
+        Số điện thoại <p-sortIcon field="phone_number"></p-sortIcon>
+      </th>
+      <th pSortableColumn="option_count">
+        Số loại hàng <p-sortIcon field="option_count"></p-sortIcon>
+      </th>
+      <th pSortableColumn="status">
+        Trạng thái <p-sortIcon field="status"></p-sortIcon>
+      </th>
+      <th pSortableColumn="created_at">
+        Thời gian tạo<p-sortIcon field="created_at"></p-sortIcon>
+      </th>
+      <th>Ghi chú</th>
+      <th style="width: 7rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-invoice>
+    <tr>
+      <td>{{ invoice.customer_name }}</td>
+      <td>{{ invoice.phone_number }}</td>
+      <td>{{ invoice.option_count }}</td>
+      <td>{{ invoice.status_name }}</td>
+      <td>{{ invoice.created_at | date: "HH:mm dd/MM/yyyy" }}</td>
+      <td>{{ invoice.note }}</td>
+      <td class="d-md-flex">
+        <button
+          pButton
+          pRipple
+          type="button"
+          icon="far fa-edit"
+          class="p-button-rounded p-button-sm mr-1"
+          (click)="showEditDialog(invoice)"
+        ></button>
+        <button
+          pButton
+          pRipple
+          type="button"
+          icon="far fa-trash-alt"
+          class="p-button-rounded p-button-danger"
+          (click)="delete(invoice)"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [draggable]="true"
+  [resizable]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [header]="(displayAddDialog ? 'Thêm' : 'Sửa') + ' loại sản phẩm'"
+  [(visible)]="formVisible"
+  [style]="{ width: '100vw' }"
+  [modal]="true"
+>
+  <form class="p-fluid" [formGroup]="form">
+    <div class="row p-0">
+      <div *ngIf="!readonly" class="field my-1 col-12 col-md-6">
+        <label for="">Khách hàng</label>
+        <p-dropdown
+          appendTo="body"
+          [options]="customers"
+          [ngModelOptions]="{ standalone: true }"
+          [(ngModel)]="selectedCustomer"
+          placeholder="Khách hàng"
+          emptyMessage="Không có khách hàng phù hợp"
+          [showClear]="!isReadonly"
+          [filter]="true"
+          filterBy="name,province,district,commune,phone_number,address"
+          dataKey="id"
+          [readonly]="isReadonly"
+          
+        >
+          <ng-template pTemplate="selectedItem" let-customer>
+            {{ customer.name }}
+            <span *ngIf="customer.province">- {{ customer.province }}</span>
+          </ng-template>
+          <ng-template pTemplate="item" let-customer>
+            {{ customer.name }}
+            <span *ngIf="customer.province">- {{ customer.province }}</span>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div *ngIf="readonly" class="field my-1 col-12 col-md-6">
+        <label for="customer_name">Tên khách hàng</label>
+        <input
+          [readonly]="isReadonly"
+          type="text"
+          pInputText
+          formControlName="customer_name"
+        />
+      </div>
+      <div class="field my-1 col-12 col-md-6">
+        <label for="">Trạng thái</label>
+        <p-dropdown
+          appendTo="body"
+          [options]="statusOptions"
+          [ngModelOptions]="{ standalone: true }"
+          [(ngModel)]="selectedStatus"
+          placeholder="Trạng thái"
+          dataKey="value"
+          optionLabel="label"
+          [readonly]="readonly"
+        >
+        </p-dropdown>
+      </div>
+      <div *ngIf="!readonly" class="field my-1 col-12">
+        <label for="customer_name">Tên khách hàng</label>
+        <input
+          [readonly]="isReadonly"
+          type="text"
+          pInputText
+          formControlName="customer_name"
+        />
+      </div>
+      <div class="field my-1 col-12 col-md-6">
+        <label for="phone_number">Số điện thoại</label>
+        <input
+          [readonly]="isReadonly"
+          type="text"
+          pInputText
+          formControlName="phone_number"
+        />
+      </div>
+      <div class="field my-1 col-12 col-md-6">
+        <label for="province">Tỉnh/TP</label>
+        <input
+          [readonly]="isReadonly"
+          type="text"
+          pInputText
+          formControlName="province"
+        />
+      </div>
+      <div class="field my-1 col-12 col-md-6">
+        <label for="district">Quận/Huyện</label>
+        <input
+          [readonly]="isReadonly"
+          type="text"
+          pInputText
+          formControlName="district"
+        />
+      </div>
+      <div class="field my-1 col-12 col-md-6">
+        <label for="commune">Phường/Xã</label>
+        <input
+          [readonly]="isReadonly"
+          type="text"
+          pInputText
+          formControlName="commune"
+        />
+      </div>
+      <div class="field my-1 col-12">
+        <label for="address">Địa chỉ</label>
+        <input
+          [readonly]="isReadonly"
+          type="text"
+          pInputText
+          formControlName="address"
+        />
+      </div>
+      <div class="field my-1 col-12 col-md-6">
+        <label for="paid">Đã thanh toán</label>
+        <div class="p-inputgroup">
+          <p-inputNumber
+            type="text"
+            mode="currency"
+            currency="VND"
+            locale="vn"
+            formControlName="paid"
+            [readonly]="readonly"
+          ></p-inputNumber>
+          <button
+            type="button"
+            pButton
+            pRipple
+            icon="pi pi-check"
+            label="Đủ"
+            *ngIf="!readonly"
+            (click)="form.patchValue({ paid: total })"
+            styleClass="p-button-success"
+          ></button>
+        </div>
+      </div>
+      <div class="field my-1 col-12 col-md-6">
+        <label for="paid">Tổng tiền</label>
+        <p-inputNumber
+          type="text"
+          mode="currency"
+          currency="VND"
+          locale="vn"
+          [ngModel]="total"
+          [ngModelOptions]="{ standalone: true }"
+          [readonly]="true"
+        ></p-inputNumber>
+      </div>
+      <div class="field my-1 col-12">
+        <label for="note">Ghi chú</label>
+        <input type="text" pInputText formControlName="note" />
+      </div>
+    </div>
+  </form>
+  <div class="row p-0 my-1" *ngIf="!isReadonly && !readonly">
+    <p-dropdown
+      appendTo="body"
+      [options]="productDetails"
+      [ngModelOptions]="{ standalone: true }"
+      [(ngModel)]="selectedProduct"
+      placeholder="Sản phẩm"
+      emptyMessage="Không có sản phẩm phù hợp"
+      emptyFilterMessage="Không có sản phẩm phù hợp"
+      [showClear]="true"
+      [filter]="true"
+      filterBy="name,remaining_quantity,out_price"
+      dataKey="id"
+      styleClass="col-12"
+      class="col-12"
+    >
+      <ng-template pTemplate="selectedItem" let-prod>
+        {{ prod.name }}
+        <span *ngFor="let opt of prod.options"> | {{ opt.value }}</span>
+      </ng-template>
+      <ng-template pTemplate="item" let-prod>
+        {{ prod.name }}
+        <span *ngFor="let opt of prod.options"> | {{ opt.value }}</span>
+      </ng-template>
+    </p-dropdown>
+    <form [formGroup]="detailForm" class="d-flex col-12 my-1">
+      <p-inputNumber
+        formControlName="quantity"
+        placeholder="Số lượng"
+        class="flex-grow-1"
+        styleClass="flex-grow-1"
+      ></p-inputNumber>
+      <p-inputNumber
+        formControlName="price"
+        mode="currency"
+        currency="VND"
+        locale="vn"
+        placeholder="Giá"
+        class="flex-grow-1"
+        styleClass="flex-grow-1"
+      ></p-inputNumber>
+      <button
+        pButton
+        class="p-button p-button-outlined"
+        label="Thêm"
+        [disabled]="detailForm.invalid || !selectedProduct"
+        (click)="addDetail()"
+      ></button>
+    </form>
+  </div>
+  <p-table
+    [value]="details"
+    responsiveLayout="scroll"
+    dataKey="id"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[5, 10, 15, 25]"
+    [globalFilterFields]="['product_detail.name', 'quantity', 'price']"
+    [scrollable]="true"
+    scrollHeight="400px"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="product_detail.name">
+          Tên sản phẩm <p-sortIcon field="product_detail.name"></p-sortIcon>
+        </th>
+        <th>Chi tiết</th>
+        <th pSortableColumn="quantity">
+          Số lượng<p-sortIcon field="quantity"></p-sortIcon>
+        </th>
+        <th pSortableColumn="price">
+          Đơn giá <p-sortIcon field="price"></p-sortIcon>
+        </th>
+        <th pSortableColumn="total">
+          Tổng <p-sortIcon field="total"></p-sortIcon>
+        </th>
+        <th *ngIf="!isReadonly || readonly"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-detail>
+      <tr>
+        <td>{{ detail.product_detail?.name }}</td>
+        <td>
+          <ul style="padding-inline-start: 10px">
+            <li *ngFor="let opt of detail.product_detail?.options">
+              {{ opt.name }} : {{ opt.value }}
+            </li>
+          </ul>
+        </td>
+        <td class="text-end">{{ detail.quantity | number }}</td>
+        <td class="text-end">{{ detail.price | currency: "VND" }}</td>
+        <td class="text-end">{{ detail.total | currency: "VND" }}</td>
+        <td *ngIf="!isReadonly || readonly">
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-danger p-button-sm mr-1"
+            (click)="deleteDetail(detail)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  <ng-template pTemplate="footer">
+    <button
+      [disabled]="form.invalid || !details.length"
+      pButton
+      pRipple
+      icon="fas fa-check"
+      class="p-button-success p-button-sm"
+      [label]="displayAddDialog ? 'Thêm' : 'Lưu'"
+      type="button"
+      (click)="save()"
+    ></button>
+    <button
+      pButton
+      pRipple
+      class="p-button-danger p-button-sm"
+      label="Hủy"
+      type="button"
+      (click)="formVisible = false"
+    ></button>
+  </ng-template>
+</p-dialog>

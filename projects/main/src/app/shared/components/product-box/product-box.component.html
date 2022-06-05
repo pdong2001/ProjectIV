@@ -2,7 +2,7 @@
   <a  class="img-prod" style="flex-grow: 1;"
     ><img
       class="img-fluid"
-      [src]="product.default_image?.file_path | filePath"
+      [src]="product.image?.file_path | filePath"
       alt="Colorlib Template"
     />
     <div class="overlay"></div>
@@ -31,11 +31,11 @@
     </div>
     <p class="bottom-area d-flex px-3">
       <a (click)="showAddCartDialog()" class="add-to-cart text-center py-2 mr-1"
-        ><span>Add to cart <i class="ion-ios-add ml-1"></i></span
+        ><span>Thêm vào giỏ hàng <i class="ion-ios-add ml-1"></i></span
       ></a>
-      <a class="buy-now text-center py-2" (click)="showAddCartDialog()"
+      <!-- <a class="buy-now text-center py-2" (click)="showAddCartDialog()"
         >Buy now<span><i class="ion-ios-cart ml-1"></i></span
-      ></a>
+      ></a> -->
     </p>
   </div>
 </div>

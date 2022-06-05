@@ -1,7 +1,7 @@
 <section id="home-section" class="hero">
   <div
     class="home-slider owl-carousel"
-    style="background-size: cover !important;background-image : url('{{ slides[0]?.image?.file_path | filePath }}')"
+    style="background-size: cover !important;background-image : url('{{ getOne(infoType.Slide)?.image?.file_path | filePath }}')"
   >
     <div *ngFor="let slide of slides" class="slider-item js-fullheight">
       <div class="overlay"></div>
@@ -183,7 +183,8 @@
     </div>
   </div>
 </section>
-<section class="ftco-section testimony-section">
+
+<!-- <section class="ftco-section testimony-section">
   <div class="container">
     <div class="row">
       <div class="col-lg-5">
@@ -358,93 +359,26 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
 <section class="ftco-gallery">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-8 heading-section text-center mb-4 ftco-animate">
-        <h2 class="mb-4">Follow Us On Instagram</h2>
+        <h2 class="mb-4">Theo dõi chúng tôi</h2>
         <p>
-          Far far away, behind the word mountains, far from the countries
-          Vokalia and Consonantia, there live the blind texts. Separated they
-          live in
+          
         </p>
       </div>
     </div>
   </div>
   <div class="container-fluid px-0">
     <div class="row no-gutters">
-      <div class="col-md-4 col-lg-2 ftco-animate">
+      <div *ngFor="let item of getSettings(infoType.Gallery)" class="col-md-4 col-lg-2 ftco-animate">
         <a
-          href="assets/images/gallery-1.jpg"
+          href="{{ item?.image?.file_path | filePath }}"
           class="gallery image-popup img d-flex align-items-center"
-          style="background-image: url(assets/images/gallery-1.jpg)"
-        >
-          <div
-            class="icon mb-4 d-flex align-items-center justify-content-center"
-          >
-            <span class="icon-instagram"></span>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-4 col-lg-2 ftco-animate">
-        <a
-          href="assets/images/gallery-2.jpg"
-          class="gallery image-popup img d-flex align-items-center"
-          style="background-image: url(assets/images/gallery-2.jpg)"
-        >
-          <div
-            class="icon mb-4 d-flex align-items-center justify-content-center"
-          >
-            <span class="icon-instagram"></span>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-4 col-lg-2 ftco-animate">
-        <a
-          href="assets/images/gallery-3.jpg"
-          class="gallery image-popup img d-flex align-items-center"
-          style="background-image: url(assets/images/gallery-3.jpg)"
-        >
-          <div
-            class="icon mb-4 d-flex align-items-center justify-content-center"
-          >
-            <span class="icon-instagram"></span>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-4 col-lg-2 ftco-animate">
-        <a
-          href="assets/images/gallery-4.jpg"
-          class="gallery image-popup img d-flex align-items-center"
-          style="background-image: url(assets/images/gallery-4.jpg)"
-        >
-          <div
-            class="icon mb-4 d-flex align-items-center justify-content-center"
-          >
-            <span class="icon-instagram"></span>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-4 col-lg-2 ftco-animate">
-        <a
-          href="assets/images/gallery-5.jpg"
-          class="gallery image-popup img d-flex align-items-center"
-          style="background-image: url(assets/images/gallery-5.jpg)"
-        >
-          <div
-            class="icon mb-4 d-flex align-items-center justify-content-center"
-          >
-            <span class="icon-instagram"></span>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-4 col-lg-2 ftco-animate">
-        <a
-          href="assets/images/gallery-6.jpg"
-          class="gallery image-popup img d-flex align-items-center"
-          style="background-image: url(assets/images/gallery-6.jpg)"
+          style="background-image: url('{{ item?.image?.file_path | filePath }}')"
         >
           <div
             class="icon mb-4 d-flex align-items-center justify-content-center"

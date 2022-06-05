@@ -22,9 +22,9 @@ export class WebInfoService extends CRUDService<
   protected webInfos: WebInfoDto[] | undefined;
 
   public override getList(
-    request: WebInfoLookUpDto
+    request: WebInfoLookUpDto, cache:boolean = true
   ): Observable<ServiceResponse<WebInfoDto[]>> {
-    if (this.webInfos) {
+    if (this.webInfos && cache) {
       return new Observable<ServiceResponse<WebInfoDto[]>>((sub) => {
         sub.next({ status: true, code: 200, data: this.webInfos });
       });

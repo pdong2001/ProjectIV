@@ -8,7 +8,7 @@ export interface InsertUpdateProductDetailDto {
     default_image?:number;
     product_id:number;
     out_price:number;
-    in_price:number;
+    in_price?:number;
     unit:string;
     options: UpSertDetailOptionValueDto[];
 }

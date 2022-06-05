@@ -229,7 +229,8 @@
       <div class="p-field">
         <label><strong>Nội dung</strong></label>
         <editor
-        formArrayName="content"
+        *ngIf="formVisible"
+        formControlName="content"
         apiKey="rglayxcy5hcrxaw5dxmaqlj6dq62qkwingzm05qh0b1snnur"
         [init]="{
           base_url: 'tinymce',
