@@ -55,13 +55,13 @@ export class CartService extends CRUDService<
   protected addToLocal(input: UpSertCartDto) {
     if (this.cart.length == 0) this.loadFormLocal();
 
-    const id = JSON.parse(localStorage.getItem(CartIdentityLocalKey) ?? '1');
-    localStorage.setItem(CartLocalKey, JSON.stringify(id + 1));
     let item = this.cart.find(
       (i) => i.product_detail_id == input.product_detail_id
     );
     if (item) item.quantity += input.quantity;
     else {
+      const id = JSON.parse(localStorage.getItem(CartIdentityLocalKey) ?? '1');
+      localStorage.setItem(CartLocalKey, JSON.stringify(id + 1));
       item = {
         product_detail_id: input.product_detail_id,
         quantity: input.quantity,
@@ -100,18 +100,36 @@ export class CartService extends CRUDService<
   public override create(
     input: UpSertCartDto
   ): Observable<ServiceResponse<number>> {
-    if (this.authDataService.isLoggedIn()) return super.create(input);
-    return new Observable<ServiceResponse<number>>((sub) => {
+    let response;
+    if (this.authDataService.isLoggedIn())
+      response = super.create(input).pipe(
+        map((res) => {
+          if (res.status == true) {
+            this.refreshCount();
+          }
+          return res;
+        })
+      );
+    response = new Observable<ServiceResponse<number>>((sub) => {
       const item = this.addToLocal(input);
       sub.next({ status: true, data: item.id });
     });
+    return response;
   }
 
   public override update(
     id: any,
     input: UpSertCartDto
   ): Observable<ServiceResponse<number>> {
-    if (this.authDataService.isLoggedIn()) return super.update(id, input);
+    if (this.authDataService.isLoggedIn())
+      return super.update(id, input).pipe(
+        map((res) => {
+          if (res.status == true) {
+            this.refreshCount();
+          }
+          return res;
+        })
+      );
     return new Observable<ServiceResponse<number>>((sub) => {
       const item = this.addToLocal(input);
       sub.next({ status: true, data: item.id });
@@ -133,7 +151,7 @@ export class CartService extends CRUDService<
       return super.getList(request).pipe(
         map((res) => {
           if (res.status == true) {
-            this.$cartCountSub?.next(res.meta.total??0);
+            this.$cartCountSub?.next(res.meta.total ?? 0);
           }
           return res;
         })
@@ -182,7 +200,13 @@ export class CartService extends CRUDService<
     this.clearCache();
     localStorage.removeItem(CartLocalKey);
     localStorage.removeItem(CartIdentityLocalKey);
-    return this.httpClient.post<ServiceResponse<any>>(url);
+    return this.httpClient.post<ServiceResponse<any>>(url).pipe(
+      map((res) => {
+        if (res.status == true) {
+          this.refreshCount();
+        }
+      })
+    );
   }
 
   public clearCache() {

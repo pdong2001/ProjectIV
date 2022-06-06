@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainComponent } from './main.component';
+import { ReceiptsComponent } from './receipts/receipts.component';
 
 const routes: Routes = [
   {path : '', component: MainComponent, children: [
@@ -12,6 +13,8 @@ const routes: Routes = [
     {path: 'images', loadChildren :() => import('./images/images.module').then(m => m.ImagesModule)},
     {path: 'settings', loadChildren :() => import('./web-settings/web-settings.module').then(m => m.WebSettingsModule)},
     {path: 'customers', loadChildren :() => import('./customers/customers.module').then(m => m.CustomersModule)},
+    {path: 'blogs', loadChildren :() => import('./blogs/blogs.module').then(m => m.BlogsModule)},
+    {path: 'receipts', component: ReceiptsComponent},
     {path: '', loadChildren :() => import('./dashboard/dashboard.module').then(m => m.DashboardModule)},
   ]}
 ];

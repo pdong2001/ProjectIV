@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'projects/admin/src/app/auth.guard';
+import { BlogComponent } from './blog/blog.component';
+import { BlogsComponent } from './blogs/blogs.component';
 import { HomeComponent } from './home/home.component';
 import { MainComponent } from './main.component';
 
@@ -24,6 +26,14 @@ const routes: Routes = [
         path: 'user',
         loadChildren: () =>
           import('./user/user.module').then((m) => m.UserModule),
+      },
+      {
+        path: 'blogs',
+        component: BlogsComponent
+      },
+      {
+        path: 'blogs/:id',
+        component: BlogComponent
       },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
     ],

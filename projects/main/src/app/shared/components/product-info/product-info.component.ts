@@ -6,6 +6,7 @@ import { ProductDetailOptionValueDto } from 'projects/common/src/Contracts/Produ
 import { CartService } from 'projects/common/src/lib/services/cart.service';
 import { ProductDetailService } from 'projects/common/src/lib/services/product-detail.service';
 import { ProductService } from 'projects/common/src/lib/services/product.service';
+import { ToastService } from 'projects/common/src/lib/services/toast.service';
 import { firstValueFrom, Observable } from 'rxjs';
 
 @Component({
@@ -65,7 +66,8 @@ export class ProductInfoComponent implements OnInit {
   }
   constructor(
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {}
@@ -122,9 +124,12 @@ export class ProductInfoComponent implements OnInit {
         product_detail_id: this.selectedProductDetail.id,
         quantity: this.quantity,
       });
-      if (request instanceof Observable) {
-        firstValueFrom(request);
-      }
+        firstValueFrom(request).then(res => {
+          if (res.status == true)
+          {
+            this.toastService.addSuccess("Thêm vào giỏ hàng thành công")
+          }
+        });
     }
   }
 

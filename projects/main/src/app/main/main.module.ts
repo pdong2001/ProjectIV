@@ -9,12 +9,16 @@ import { HomeComponent } from './home/home.component';
 import { CommonPipeModule } from 'projects/common/src/lib/common-pipe/common-pipe.module';
 import { environment } from '../../environments/environment';
 import { FormsModule } from '@angular/forms';
+import { BlogsComponent } from './blogs/blogs.component';
+import { BlogComponent } from './blog/blog.component';
 
 
 @NgModule({
   declarations: [
     MainComponent,
-    HomeComponent
+    HomeComponent,
+    BlogsComponent,
+    BlogComponent
   ],
   imports: [
     CommonModule,

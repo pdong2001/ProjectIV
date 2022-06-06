@@ -1,0 +1,284 @@
+<p-toolbar>
+  <ng-template pTemplate="left">
+    <button
+      pButton
+      pRipple
+      type="button"
+      icon="fa fa-plus"
+      label="Thêm blog"
+      class="p-button-sm mr-1"
+      (click)="showAddDialog()"
+    ></button>
+  </ng-template>
+  <ng-template pTemplate="right">
+    <form
+      (submit)="dt.filterGlobal(search.value, 'contains')"
+      class="p-inputgroup"
+    >
+      <span class="p-inputgroup-addon"> <i class="pi pi-search"></i></span>
+      <input
+        pInputText
+        type="text"
+        #search
+        placeholder="Từ khóa tìm kiếm..."
+        class="w-100"
+      />
+      <button pButton type="submit" label="Tìm"></button>
+    </form>
+  </ng-template>
+</p-toolbar>
+<p-table
+  #dt
+  [value]="blogs"
+  [lazy]="true"
+  (onLazyLoad)="loadData($event)"
+  responsiveLayout="scroll"
+  dataKey="id"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[5, 10, 15, 25]"
+  [totalRecords]="totalRecords"
+  [loading]="loading"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th class="text-nowrap" pSortableColumn="title">
+        Tiêu đề <p-sortIcon field="title"></p-sortIcon>
+      </th>
+      <th class="text-nowrap" pSortableColumn="image_id">
+        Ảnh <p-sortIcon field="image_id"></p-sortIcon>
+      </th>
+      <th class="text-nowrap" pSortableColumn="short_description">
+        Mô tả ngắn <p-sortIcon field="short_description"></p-sortIcon>
+      </th>
+      <th style="width: 7rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-blog
+    let-index="rowIndex"
+    let-expanded="expanded"
+  >
+    <tr>
+      <td class="d-lg-table-cell d-none">
+        <button
+          type="button"
+          pButton
+          pRipple
+          [pRowToggler]="blog"
+          class="p-button-text p-button-rounded p-button-plain"
+          [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+        ></button>
+      </td>
+
+      <td>{{ blog.title }}</td>
+      <td>
+        <p-image
+          [preview]="true"
+          [src]="blog.image?.file_path | filePath"
+          height="100px"
+          width="100px"
+          imageClass="of-contain"
+          alt="CustomerAtl"
+          appendTo="body"
+        ></p-image>
+      </td>
+      <td [innerHTML]="blog.short_description | sanitizer"></td>
+      <td>
+        <div class="d-flex justify-content-between w-100">
+          <button
+            type="button"
+            pButton
+            pRipple
+            [pRowToggler]="blog"
+            class="p-button-text p-button-rounded p-button-plain d-lg-none"
+            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="far fa-edit"
+            class="p-button-rounded p-button-sm mr-1"
+            (click)="showEditDialog(blog)"
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="far fa-trash-alt"
+            class="p-button-rounded p-button-danger"
+            (click)="delete(blog)"
+          ></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="rowexpansion" let-blog>
+    <tr>
+      <td colspan="10">
+        <div class="w-100" [innerHTML]="blog.content | sanitizer"></div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [draggable]="true"
+  [resizable]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [header]="(displayAddDialog ? 'Thêm' : 'Sửa') + ' blog'"
+  [(visible)]="formVisible"
+  [style]="{ width: '50vw' }"
+  styleClass="p-fluid"
+  [modal]="true"
+  [formGroup]="form"
+>
+  <div class="p-field">
+    <label><strong>Tiêu đề</strong></label>
+    <input type="text" name="title" pInputText formControlName="title" />
+  </div>
+  <div class="p-field">
+    <label><strong>Mô tả ngắn</strong></label>
+    <editor
+      *ngIf="formVisible"
+      formControlName="short_description"
+      apiKey="rglayxcy5hcrxaw5dxmaqlj6dq62qkwingzm05qh0b1snnur"
+      initialValue=""
+      cloudChannel="6"
+      plugins=""
+      toolbar=""
+      [init]="{
+        base_url: 'tinymce',
+        suffix: '.min',
+        height: 300,
+        menubar: true,
+        plugins: [
+          'advlist',
+          'autolink',
+          'lists',
+          'link',
+          'charmap',
+          'preview',
+          'anchor',
+          'codesample',
+          'searchreplace',
+          'visualblocks',
+          'code',
+          'fullscreen',
+          'image',
+          'insertdatetime',
+          'media',
+          'table',
+          'code',
+          'help',
+          'wordcount'
+        ],
+        codesample_languages: [
+          { text: 'TypeScript', value: 'typescript' },
+          { text: 'JavaScript', value: 'javascript' },
+          { text: 'HTML/XML', value: 'markup' },
+          { text: 'CSS', value: 'css' }
+        ],
+        toolbar:
+          'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image media codesample'
+      }"
+    >
+    </editor>
+  </div>
+  <div class="p-field">
+    <label><strong>Nội dung</strong></label>
+    <editor
+      *ngIf="formVisible"
+      formControlName="content"
+      apiKey="rglayxcy5hcrxaw5dxmaqlj6dq62qkwingzm05qh0b1snnur"
+      initialValue=""
+      cloudChannel="6"
+      plugins=""
+      toolbar=""
+      [init]="{
+        base_url: 'tinymce',
+        suffix: '.min',
+        height: 700,
+        menubar: true,
+        plugins: [
+          'advlist',
+          'autolink',
+          'lists',
+          'link',
+          'charmap',
+          'preview',
+          'anchor',
+          'codesample',
+          'searchreplace',
+          'visualblocks',
+          'code',
+          'fullscreen',
+          'image',
+          'insertdatetime',
+          'media',
+          'table',
+          'code',
+          'help',
+          'wordcount'
+        ],
+        codesample_languages: [
+          { text: 'TypeScript', value: 'typescript' },
+          { text: 'JavaScript', value: 'javascript' },
+          { text: 'HTML/XML', value: 'markup' },
+          { text: 'CSS', value: 'css' }
+        ],
+        toolbar:
+          'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image media codesample'
+      }"
+    >
+    </editor>
+  </div>
+  <div>
+    <label for="image"><strong>Hình ảnh</strong></label>
+    <p-fileUpload
+      #upload
+      accept="image/*"
+      [showCancelButton]="true"
+      [showUploadButton]="false"
+      [maxFileSize]="10000000"
+      chooseLabel="Chọn ảnh"
+      [multiple]="false"
+    >
+    </p-fileUpload>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button
+      *ngIf="displayAddDialog"
+      pButton
+      pRipple
+      icon="fas fa-check"
+      class="p-button-success p-button-sm"
+      label="Thêm"
+      type="button"
+      (click)="save()"
+    ></button>
+    <button
+      *ngIf="displayEditDialog"
+      pButton
+      pRipple
+      icon="fas fa-check"
+      class="p-button-success p-button-sm"
+      label="Lưu"
+      type="button"
+      (click)="save()"
+    ></button>
+    <button
+      pButton
+      pRipple
+      class="p-button-danger p-button-sm"
+      label="Hủy"
+      type="button"
+      (click)="formVisible = false; nameInvalid = false"
+    ></button>
+  </ng-template>
+</p-dialog>

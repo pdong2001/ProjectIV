@@ -1,7 +1,7 @@
 <section id="home-section" class="hero">
   <div
     class="home-slider owl-carousel"
-    style="background-size: cover !important;background-image : url('{{ getOne(infoType.Slide)?.image?.file_path | filePath }}')"
+    style="background-size: cover !important;background-image : url('{{ getOne(infoType.Slide)?.image?.file_path | filePath }}'); height: 80vh !important;"
   >
     <div *ngFor="let slide of slides" class="slider-item js-fullheight">
       <div class="overlay"></div>
@@ -11,7 +11,7 @@
           data-scrollax-parent="true"
         >
           <div
-            class="one-forth d-flex align-items-center ftco-animate"
+            class="one-forth d-flex align-items-center "
             data-scrollax=" properties: { translateY: '70%' }"
           >
             <div [innerHTML]="slide.content | sanitizer" class="text"></div>
@@ -26,7 +26,7 @@
 <section class="ftco-section ftco-no-pt ftco-no-pb">
   <div class="container">
     <div class="row no-gutters ftco-services">
-      <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+      <div class="col-lg-4 text-center d-flex align-self-stretch ">
         <div class="media block-6 services p-4 py-md-5">
           <div
             class="icon d-flex justify-content-center align-items-center mb-4"
@@ -42,7 +42,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+      <div class="col-lg-4 text-center d-flex align-self-stretch ">
         <div class="media block-6 services p-4 py-md-5">
           <div
             class="icon d-flex justify-content-center align-items-center mb-4"
@@ -58,7 +58,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+      <div class="col-lg-4 text-center d-flex align-self-stretch ">
         <div class="media block-6 services p-4 py-md-5">
           <div
             class="icon d-flex justify-content-center align-items-center mb-4"
@@ -81,7 +81,7 @@
 <section class="ftco-section bg-light">
   <div class="container">
     <div class="row justify-content-center mb-3 pb-3">
-      <div class="col-md-12 heading-section text-center ftco-animate">
+      <div class="col-md-12 heading-section text-center ">
         <h2 class="mb-4">Sản phẩm mới ra mắt</h2>
         <p>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus doloribus harum, placeat facilis quos, accusantium tenetur aperiam a ab, necessitatibus earum deleniti quis nihil esse illum ex? Earum, quae hic.
@@ -91,14 +91,14 @@
   </div>
   <div class="container">
     <div class="row">
-      <div *ngFor="let prod of trendingProds" class="col-sm-12 col-md-6 col-lg-3d-flex">
+      <div *ngFor="let prod of trendingProds" class="col-sm-12 col-md-6 col-lg-3 d-flex">
         <app-product-box [value]="prod"></app-product-box>
       </div>
     </div>
   </div>
 </section>
 
-<section class="ftco-section ftco-choose ftco-no-pb ftco-no-pt">
+<!-- <section class="ftco-section ftco-choose ftco-no-pb ftco-no-pt">
   <div class="container">
     <div class="row no-gutters">
       <div class="col-lg-4">
@@ -182,14 +182,14 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
 <!-- <section class="ftco-section testimony-section">
   <div class="container">
     <div class="row">
       <div class="col-lg-5">
         <div class="services-flow">
-          <div class="services-2 p-4 d-flex ftco-animate">
+          <div class="services-2 p-4 d-flex ">
             <div class="icon">
               <span class="flaticon-bag"></span>
             </div>
@@ -200,7 +200,7 @@
               </p>
             </div>
           </div>
-          <div class="services-2 p-4 d-flex ftco-animate">
+          <div class="services-2 p-4 d-flex ">
             <div class="icon">
               <span class="flaticon-heart-box"></span>
             </div>
@@ -211,7 +211,7 @@
               </p>
             </div>
           </div>
-          <div class="services-2 p-4 d-flex ftco-animate">
+          <div class="services-2 p-4 d-flex ">
             <div class="icon">
               <span class="flaticon-payment-security"></span>
             </div>
@@ -222,7 +222,7 @@
               </p>
             </div>
           </div>
-          <div class="services-2 p-4 d-flex ftco-animate">
+          <div class="services-2 p-4 d-flex ">
             <div class="icon">
               <span class="flaticon-customer-service"></span>
             </div>
@@ -364,7 +364,7 @@
 <section class="ftco-gallery">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-md-8 heading-section text-center mb-4 ftco-animate">
+      <div class="col-md-8 heading-section text-center mb-4 ">
         <h2 class="mb-4">Theo dõi chúng tôi</h2>
         <p>
           
@@ -374,7 +374,7 @@
   </div>
   <div class="container-fluid px-0">
     <div class="row no-gutters">
-      <div *ngFor="let item of getSettings(infoType.Gallery)" class="col-md-4 col-lg-2 ftco-animate">
+      <div *ngFor="let item of getSettings(infoType.Gallery)" class="col-md-4 col-lg-2 ">
         <a
           href="{{ item?.image?.file_path | filePath }}"
           class="gallery image-popup img d-flex align-items-center"

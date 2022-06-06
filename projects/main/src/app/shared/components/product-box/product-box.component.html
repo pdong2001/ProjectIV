@@ -1,5 +1,5 @@
 <div class="product d-flex flex-column h-100">
-  <a  class="img-prod" style="flex-grow: 1;"
+  <a [routerLink]="['/category', product.id]" class="img-prod" style="flex-grow: 1;"
     ><img
       class="img-fluid"
       [src]="product.image?.file_path | filePath"

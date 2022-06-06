@@ -1,0 +1,24 @@
+<div
+  class="hero-wrap hero-bread"
+  style="background-image: url('assets/images/bg_6.jpg')"
+>
+  <div class="container">
+    <div
+      class="row no-gutters slider-text align-items-center justify-content-center"
+    >
+      <div class="col-md-9 ftco-animate text-center">
+        <p class="breadcrumbs">
+          <span class="mr-2"><a routerLink="/">Trang chủ</a></span>
+          <span class="mr-2"><a routerLink="/blogs">/ Blogs</a></span>
+        </p>
+        <h1 class="mb-0 bread">{{ blog?.title }}</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container" style="margin-bottom: -20px;">
+  <h3 [innerHTML]="blog?.short_description"></h3>
+</div>
+<section class="ftco-section">
+  <div class="container" [innerHTML]="blog?.content | sanitizer"></div>
+</section>
