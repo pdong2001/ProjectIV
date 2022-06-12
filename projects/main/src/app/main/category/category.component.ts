@@ -65,6 +65,7 @@ export class CategoryComponent implements OnInit {
       const search = params['s'];
       if (search) {
         this.search = search;
+        console.log(search)
         this.selectedCategory = undefined;
         this.loadNewData();
       }
@@ -96,6 +97,7 @@ export class CategoryComponent implements OnInit {
 
   loadProducts(e: any) {
     this.loading = true;
+    if (!e) e = {first : 0, rows: 9, }
     this.productService
       .getList({
         page: e.first / e.rows + 1,
@@ -140,11 +142,11 @@ export class CategoryComponent implements OnInit {
   public loadNewData() {
     if (this.loading) {
       this.whenLoadComplete = () => {
-        this.loadProducts(this.dv.createLazyLoadMetadata());
+        this.loadProducts(this.dv?.createLazyLoadMetadata());
         this.whenLoadComplete = () => {};
       };
     } else {
-      this.loadProducts(this.dv.createLazyLoadMetadata());
+      this.loadProducts(this.dv?.createLazyLoadMetadata());
     }
   }
 

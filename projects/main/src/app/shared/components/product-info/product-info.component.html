@@ -52,6 +52,7 @@
       <strong style="width: 110px" class="of-ellipsis">{{ option }}</strong>
       <div class="row">
         <button
+          style="min-width: 75px;"
           (click)="selectOption(value)"
           *ngFor="let value of options[option]"
           [ngClass]="
@@ -140,13 +141,24 @@
         >
         </p-inputNumber>
       </div>
+      <button
+      class="w-auto ml-auto p-button-outlined"
+      pButton
+      pRipple
+      [disabled]="
+        !selectedProductDetail ||
+        (selectedProductDetail?.remaining_quantity ?? product.quantity) == 0
+      "
+      (click)="addToCart()"
+      label="Thêm vào giỏ hàng"
+    ></button>
     </div>
     <div class="my-1">
       <strong>Mô tả sản phẩm</strong>
       <div [innerHTML]="product.description | sanitizer"></div>
     </div>
     <div class="d-flex mt-auto">
-      <button
+      <!-- <button
         class="w-auto ml-auto p-button-outlined"
         pButton
         pRipple
@@ -156,7 +168,7 @@
         "
         (click)="addToCart()"
         label="Thêm vào giỏ hàng"
-      ></button>
+      ></button> -->
     </div>
   </div>
 </div>

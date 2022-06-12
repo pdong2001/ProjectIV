@@ -11,13 +11,25 @@
           <span class="mr-2"><a routerLink="/">Trang chủ</a></span>
           <span>/ Shop</span>
         </p>
-        <h1 class="mb-0 bread">Shop</h1>
+        <h1 class="text-center mb-0 bread">Shop</h1>
       </div>
     </div>
   </div>
 </div>
 <section class="section-sm">
   <div class="container">
+    <div class="row">
+        <form (submit)="searchFormSubmit(searchInput.value)" class="col-12 my-4 p-inputgroup">
+          <input #searchInput type="text" pInputText placeholder="Từ khóa..." />
+          <button
+            type="submit"
+            pButton
+            pRipple
+            icon="pi pi-search"
+            class="p-button-outlined p-button-warning"
+          ></button>
+        </form>
+    </div>
     <div class="row">
       <div class="col-md-12">
         <div *ngIf="search" class="search-result bg-gray">
