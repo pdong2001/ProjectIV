@@ -17,7 +17,7 @@ export class ProfileComponent implements OnInit {
     private authService: AuthService,
     private authDataService: AuthDataService,
     private customerService: CustomerService,
-    private router : Router
+    private router: Router
   ) {
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required]),
@@ -47,8 +47,7 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  loadCustomerData()
-  {
+  loadCustomerData() {
     this.authService.getUser().subscribe((res) => {
       if (res.status == true && res.data) {
         this.user = res.data;
@@ -65,7 +64,7 @@ export class ProfileComponent implements OnInit {
         sub.subscribe({
           next: (res) => {
             if (res.status == true) {
-
+              this.loadCustomerData();
             }
           },
         });

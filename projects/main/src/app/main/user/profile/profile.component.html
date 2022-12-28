@@ -8,7 +8,7 @@
             <!-- User Image -->
             <div class="image d-flex justify-content-center">
               <img
-                style="overflow: hidden"
+                style="overflow: hidden; object-fit: cover"
                 [src]="
                   user?.customer?.image?.file_path
                     ? (user?.customer?.image?.file_path | filePath)
@@ -80,10 +80,10 @@
                 <div class="form-group">
                   <label for="last-name">Ngày sinh</label>
                   <input
-                  type="date"
-                  class="form-control"
-                  formControlName="birth"
-                  name="date-of-birth"
+                    type="date"
+                    class="form-control"
+                    formControlName="birth"
+                    name="date-of-birth"
                   />
                 </div>
                 <div class="form-group">
@@ -155,7 +155,12 @@
                   />
                 </div>
                 <!-- Submit button -->
-                <button class="btn btn-primary" (click)="saveCustomer(upload.files)">Lưu thay đổi</button>
+                <button
+                  class="btn btn-primary"
+                  (click)="saveCustomer(upload.files)"
+                >
+                  Lưu thay đổi
+                </button>
               </form>
             </div>
           </div>

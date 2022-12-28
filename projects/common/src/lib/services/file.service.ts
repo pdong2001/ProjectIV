@@ -65,9 +65,9 @@ export class FileService {
     const payload = new FormData();
     payload.append('imageable_id', input.imageable_id.toString());
     payload.append('imageable_type', input.imageable_type);
-    if (input.name) payload.append('name', input.name);
-    if (input.file) payload.append('file', input.file);
-    else if (input.blob_id) payload.append('blob_id', input.blob_id.toString());
+    payload.append('name', input.name??"");
+    payload.append('file', input.file??"");
+    payload.append('blob_id', input.blob_id?.toString()??"");
     return this.httpClient.post<ServiceResponse<ImageAssignDto>>(url, payload);
   }
 

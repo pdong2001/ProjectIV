@@ -15,12 +15,10 @@ import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { InputNumberModule } from 'primeng/inputnumber';
-
+import { ToggleButtonModule } from 'primeng/togglebutton';
 
 @NgModule({
-  declarations: [
-    InvoicesComponent
-  ],
+  declarations: [InvoicesComponent],
   imports: [
     FormsModule,
     CommonModule,
@@ -36,8 +34,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
     RippleModule,
     InvoicesRoutingModule,
     ReactiveFormsModule,
-    InputNumberModule
+    InputNumberModule,
+    ToggleButtonModule,
   ],
-  exports : [InvoicesComponent]
+  exports: [InvoicesComponent],
 })
-export class InvoicesModule { }
+export class InvoicesModule {}

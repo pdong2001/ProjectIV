@@ -54,9 +54,6 @@
       <th pSortableColumn="phone_number">
         Số điện thoại <p-sortIcon field="phone_number"></p-sortIcon>
       </th>
-      <th pSortableColumn="option_count">
-        Số loại hàng <p-sortIcon field="option_count"></p-sortIcon>
-      </th>
       <th pSortableColumn="status">
         Trạng thái <p-sortIcon field="status"></p-sortIcon>
       </th>
@@ -71,27 +68,35 @@
     <tr>
       <td>{{ invoice.customer_name }}</td>
       <td>{{ invoice.phone_number }}</td>
-      <td>{{ invoice.option_count }}</td>
-      <td>{{ invoice.status_name }}</td>
-      <td>{{ invoice.created_at | date: "HH:mm dd/MM/yyyy" }}</td>
+      <td>
+        <div>
+          <strong>
+            {{ invoice.status_name }}
+          </strong>
+        </div>
+        {{ invoice.cancel_pending ? "Yêu cầu hủy" : "Bình thường" }}
+      </td>
+      <td>{{ invoice.created_at | date : "HH:mm dd/MM/yyyy" }}</td>
       <td>{{ invoice.note }}</td>
-      <td class="d-md-flex">
-        <button
-          pButton
-          pRipple
-          type="button"
-          icon="far fa-edit"
-          class="p-button-rounded p-button-sm mr-1"
-          (click)="showEditDialog(invoice)"
-        ></button>
-        <button
-          pButton
-          pRipple
-          type="button"
-          icon="far fa-trash-alt"
-          class="p-button-rounded p-button-danger"
-          (click)="delete(invoice)"
-        ></button>
+      <td>
+        <div class="d-md-flex">
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="far fa-edit"
+            class="p-button-rounded p-button-sm mr-1"
+            (click)="showEditDialog(invoice)"
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            [icon]="readonly ? 'far fa-times-circle' : 'far fa-trash-alt'"
+            class="p-button-rounded p-button-danger"
+            (click)="delete(invoice)"
+          ></button>
+        </div>
       </td>
     </tr>
   </ng-template>
@@ -123,7 +128,6 @@
           filterBy="name,province,district,commune,phone_number,address"
           dataKey="id"
           [readonly]="isReadonly"
-          
         >
           <ng-template pTemplate="selectedItem" let-customer>
             {{ customer.name }}
@@ -144,20 +148,40 @@
           formControlName="customer_name"
         />
       </div>
-      <div class="field my-1 col-12 col-md-6">
-        <label for="">Trạng thái</label>
-        <p-dropdown
-          appendTo="body"
-          [options]="statusOptions"
-          [ngModelOptions]="{ standalone: true }"
-          [(ngModel)]="selectedStatus"
-          placeholder="Trạng thái"
-          dataKey="value"
-          optionLabel="label"
-          [readonly]="readonly"
-        >
-        </p-dropdown>
+      <div class="d-flex col-12 col-md-6">
+        <div class="field my-1 flex-grow-1">
+          <label for="">Trạng thái</label>
+          <p-dropdown
+            appendTo="body"
+            [options]="statusOptions"
+            [ngModelOptions]="{ standalone: true }"
+            [(ngModel)]="selectedStatus"
+            placeholder="Trạng thái"
+            dataKey="value"
+            optionLabel="label"
+            [readonly]="readonly"
+          >
+          </p-dropdown>
+        </div>
+        <div class="field my-1">
+          <label for="">Yêu cầu hủy</label>
+          <p-dropdown
+            formControlName="cancel_pending"
+            [readonly]="
+              !readonly ||
+              this.form.value.status >= 4 ||
+              (this.form.value.cancel_pending && this.form.value.status < 6)
+            "
+            [options]="[
+              { value: true, label: 'Có' },
+              { value: false, label: 'Không' }
+            ]"
+            optionLabel="label"
+            optionValue="value"
+          ></p-dropdown>
+        </div>
       </div>
+
       <div *ngIf="!readonly" class="field my-1 col-12">
         <label for="customer_name">Tên khách hàng</label>
         <input
@@ -343,8 +367,8 @@
           </ul>
         </td>
         <td class="text-end">{{ detail.quantity | number }}</td>
-        <td class="text-end">{{ detail.price | currency: "VND" }}</td>
-        <td class="text-end">{{ detail.total | currency: "VND" }}</td>
+        <td class="text-end">{{ detail.price | currency : "VND" }}</td>
+        <td class="text-end">{{ detail.total | currency : "VND" }}</td>
         <td *ngIf="!isReadonly || readonly">
           <button
             pButton

@@ -59,11 +59,8 @@
       <th style="white-space: nowrap" pSortableColumn="default_image">
         Ảnh <p-sortIcon field="default_image"></p-sortIcon>
       </th>
-      <th style="white-space: nowrap" pSortableColumn="remaining_quantity">
-        Còn lại <p-sortIcon field="remaining_quantity"></p-sortIcon>
-      </th>
-      <th style="white-space: nowrap" pSortableColumn="unit">
-        ĐVT <p-sortIcon field="unit"></p-sortIcon>
+      <th style="white-space: nowrap" pSortableColumn="remaining_quantity,unit">
+        Số lượng <p-sortIcon field="remaining_quantity,unit"></p-sortIcon>
       </th>
       <th style="white-space: nowrap" pSortableColumn="created_at">
         Ngày tạo <p-sortIcon field="created_at"></p-sortIcon>
@@ -107,10 +104,12 @@
       </td>
       <td>
         <span class="p-column-title">Còn lại</span
-        >{{ detail.remaining_quantity | number }}
+        >{{ detail.remaining_quantity | number }} {{ detail.unit }}
       </td>
-      <td><span class="p-column-title">ĐVT</span>{{ detail.unit }}</td>
-      <td><span class="p-column-title">Ngày tạo</span>{{ detail.created_at | date :"dd/MM/yyyy" }}</td>
+      <td>
+        <span class="p-column-title">Ngày tạo</span
+        >{{ detail.created_at | date : "dd/MM/yyyy" }}
+      </td>
       <td>
         <div class="d-flex justify-content-between w-100">
           <button
@@ -153,7 +152,7 @@
       <td colspan="10">
         <div class="p-fluid w-100">
           <div class="row">
-            <div class="p-field col-8 col-sm-9">
+            <!-- <div class="p-field col-8 col-sm-9">
               <label for="total_quantity"
                 ><strong>Tổng số lượng đã nhập</strong></label
               >
@@ -161,6 +160,28 @@
                 type="text"
                 [ngModel]="detail.total_quantity | number"
                 id="total_quantity"
+                [readonly]="true"
+                pInputText
+              />
+            </div> -->
+
+            <div *ngIf="detail.in_price" class="p-field col-12 col-sm-6">
+              <label for="in_price"><strong>Giá nhập</strong></label>
+              <input
+                type="text"
+                [ngModel]="detail.in_price | currency : 'VND'"
+                id="in_price"
+                [readonly]="true"
+                pInputText
+              />
+            </div>
+
+            <div class="p-field col-12 col-8 col-sm-9">
+              <label for="out_price"><strong>Giá bán</strong></label>
+              <input
+                type="text"
+                [ngModel]="detail.out_price | currency : 'VND'"
+                id="out_price"
                 [readonly]="true"
                 pInputText
               />
@@ -177,28 +198,13 @@
                 ></p-inputSwitch>
               </div>
             </div>
-            <div *ngIf="detail.in_price" class="p-field col-12 col-sm-6">
-              <label for="in_price"><strong>Giá nhập</strong></label>
-              <input
-                type="text"
-                [ngModel]="detail.in_price | currency: 'VND'"
-                id="in_price"
-                [readonly]="true"
-                pInputText
-              />
-            </div>
-            <div class="p-field col-12 col-sm-6">
-              <label for="out_price"><strong>Giá bán</strong></label>
-              <input
-                type="text"
-                [ngModel]="detail.out_price | currency: 'VND'"
-                id="out_price"
-                [readonly]="true"
-                pInputText
-              />
-            </div>
-            <div *ngFor="let opt of detail.options" class="p-field col-12 col-sm-6">
-              <label><strong> {{opt?.name}} </strong></label>
+            <div
+              *ngFor="let opt of detail.options"
+              class="p-field col-12 col-sm-6"
+            >
+              <label
+                ><strong> {{ opt?.name }} </strong></label
+              >
               <input
                 type="text"
                 [ngModel]="opt.value"
@@ -275,16 +281,21 @@
         </p-dropdown>
       </div>
       <div *ngFor="let opt of options" class="p-field col-12 col-sm-6">
-        <label><strong>{{opt?.option?.name}}</strong></label>
+        <label
+          ><strong>{{ opt?.option?.name }}</strong></label
+        >
         <input
           type="text"
           pInputText
           [(ngModel)]="opt.value"
-          [ngModelOptions]="{standalone : true}"
+          [ngModelOptions]="{ standalone: true }"
           [placeholder]="opt?.option?.name"
         />
       </div>
-      <div *ngIf="options.length % 2 == 1" class="p-field col-12 col-sm-6"></div>
+      <div
+        *ngIf="options.length % 2 == 1"
+        class="p-field col-12 col-sm-6"
+      ></div>
     </div>
     <div class="row">
       <div class="p-field col-sm-6 col-12">
@@ -362,7 +373,7 @@
   </form>
   <ng-template pTemplate="footer">
     <button
-      [disabled]="!selectedProduct"
+      [disabled]="!selectedProduct || formGroup.invalid"
       pButton
       pRipple
       icon="fas fa-check"

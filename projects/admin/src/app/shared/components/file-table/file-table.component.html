@@ -50,7 +50,9 @@
           [value]="blob"
         ></p-tableRadioButton>
       </td>
-      <td>{{ blob.name }}</td>
+      <td style="max-width: 200px; text-overflow: ellipsis; overflow: hidden" [title]="blob.name">
+        {{ blob.name }}
+      </td>
       <td><img height="75" [src]="getFilePath(blob.file_path)" /></td>
     </tr>
   </ng-template>

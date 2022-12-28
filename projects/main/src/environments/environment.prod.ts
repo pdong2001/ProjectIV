@@ -1,6 +1,6 @@
 import { Environment } from "projects/common/src/Contracts/Common/environment";
 
-const SERVER_ADDRESS = 'https://php.pdong-vps.tk';
+const SERVER_ADDRESS = 'https://pdong-vps.tk';
 export const environment: Environment = {
   production: true,
   REST_API_SERVER: `${SERVER_ADDRESS}/api`,

@@ -1,1 +1,43 @@
-<p>dashboard works!</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-3">
+      <p-card
+        [style]="{ backgroundColor: 'var(--blue-500)', color: 'white' }"
+        header="Đơn hàng chờ duyệt"
+      >
+        <h3 class="d-block" style="text-align: center">{{ pendingCount }}</h3>
+      </p-card>
+    </div>
+    <div class="col-3">
+      <p-card
+      [style]="{ backgroundColor: 'var(--green-500)', color: 'white' }"
+      header="Đơn hàng đang chuẩn bị">
+        <h3 class="d-block" style="text-align: center">{{ preparingCount }}</h3>
+      </p-card>
+    </div>
+    <div class="col-3">
+      <p-card header="Đơn hàng đang giao"
+      [style]="{ backgroundColor: 'var(--yellow-500)', color: 'white' }"
+      >
+        <h3 class="d-block" style="text-align: center">{{ shippingCount }}</h3>
+      </p-card>
+    </div>
+    <div class="col-3">
+      <p-card header="Đơn hàng yêu cầu hủy"
+      [style]="{ backgroundColor: 'var(--red-500)', color: 'white' }"
+      
+      >
+        <h3 class="d-block" style="text-align: center">{{ cancelCount }}</h3>
+      </p-card>
+    </div>
+    <div class="col-12 mt-3">
+      <p-card header="Phân tích sản phẩm đã bán">
+        <p-chart
+          type="line"
+          [data]="multiAxisData"
+          [options]="multiAxisOptions"
+        ></p-chart>
+      </p-card>
+    </div>
+  </div>
+</div>

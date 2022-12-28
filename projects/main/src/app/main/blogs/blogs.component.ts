@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TitleService } from 'projects/admin/src/app/services/title.service';
 import { BlogDto } from 'projects/common/src/Contracts/Blog/blog-dto';
 import { BlogService } from 'projects/common/src/lib/services/blog.service';
 
@@ -9,7 +10,9 @@ import { BlogService } from 'projects/common/src/lib/services/blog.service';
 })
 export class BlogsComponent implements OnInit {
   blogs: BlogDto[] | undefined;
-  constructor(private blogService: BlogService) {}
+  constructor(private blogService: BlogService) {
+
+    }
 
   ngOnInit(): void {
     this.loadData();

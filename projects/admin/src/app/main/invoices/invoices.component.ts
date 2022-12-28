@@ -113,7 +113,10 @@ export class InvoicesComponent implements OnInit {
   }
   public set selectedInvoice(value: InvoiceDto | undefined) {
     this._selectedInvoice = value;
-    this.isReadonly = (value?.status ?? 0) == 4 || (value?.status ?? 0) == 5 || (value?.status == 3 && this.readonly);
+    this.isReadonly =
+      (value?.status ?? 0) == 4 ||
+      (value?.status ?? 0) == 5 ||
+      (value?.status == 3 && this.readonly);
     if (value) {
       this.details = [];
       this.invoiceDetalService
@@ -125,6 +128,10 @@ export class InvoicesComponent implements OnInit {
         })
         .subscribe((res) => {
           if (res.status == true && res.data) {
+            res.data.forEach((item) => {
+              if (item.product_detail)
+                item.product_detail.name = item.product_detail?.product?.name;
+            });
             this.details = res.data;
             if (this.selectedInvoice)
               this.selectedInvoice.details = [...res.data];
@@ -140,9 +147,8 @@ export class InvoicesComponent implements OnInit {
     { value: 4, label: 'Đang giao' },
     { value: 5, label: 'Hoàn tất' },
     { value: 6, label: 'Từ chối' },
-    { value: 7, label: 'Yêu cầu hủy' },
-    { value: 8, label: 'Hủy' },
-    { value: 9, label: 'Trả hàng' },
+    { value: 7, label: 'Hủy' },
+    { value: 8, label: 'Trả hàng' },
   ];
 
   public selectedStatus: { value: number; label: string } | undefined =
@@ -171,12 +177,15 @@ export class InvoicesComponent implements OnInit {
     private invoiceService: InvoiceService,
     private toastService: ToastService,
     private confirmService: ConfirmService,
+    private confirmationService: ConfirmationService,
     private customerService: CustomerService,
     private invoiceDetalService: InvoiceDetailService,
     private productDetailService: ProductDetailService
   ) {
-    this.breadCrumpService.setPageTitle('Hóa đơn bán');
-    this.breadCrumpService.setTitle('Admin - Hóa đơn bán');
+    if (!this.customer) {
+      this.breadCrumpService.setPageTitle('Đơn đặt hàng');
+      this.breadCrumpService.setTitle('Admin - Đơn đặt hàng');
+    }
     this.form = new FormGroup({
       paid: new FormControl(0, [Validators.required, Validators.min(0)]),
       customer_id: new FormControl('', [Validators.required]),
@@ -187,6 +196,7 @@ export class InvoicesComponent implements OnInit {
       province: new FormControl('', [Validators.required]),
       commune: new FormControl('', [Validators.required]),
       note: new FormControl('', []),
+      cancel_pending: new FormControl(false),
     });
     this.detailForm = new FormGroup({
       quantity: new FormControl(1, [Validators.required, forbiddenValue(0)]),
@@ -265,8 +275,7 @@ export class InvoicesComponent implements OnInit {
         this.invoiceService.create(value).subscribe({
           next: async (res) => {
             if (res.status == true) {
-              for (let index = 0; index < this.details.length; index++) {
-                const i = this.details[index];
+              for (const i of this.details) {
                 await firstValueFrom(
                   this.invoiceDetalService.create({
                     product_detail_id: i.product_detail_id ?? 0,
@@ -276,6 +285,7 @@ export class InvoicesComponent implements OnInit {
                   })
                 );
               }
+
               this.loadInvoices(this.dt.createLazyLoadMetadata());
               this.formVisible = false;
               this.toastService.addSuccess('Thêm đơn hàng thành công.');
@@ -324,11 +334,29 @@ export class InvoicesComponent implements OnInit {
 
   delete(invoice: InvoiceDto) {
     if (this.readonly) {
+      if (invoice.cancel_pending) {
+        this.confirmationService.confirm({
+          header: 'Thông báo',
+          rejectVisible: false,
+          acceptLabel: 'Xác nhận',
+          message: 'Yêu cầu đang được xử lý, vui lòng kiểm tra lại sau',
+        });
+        return;
+      }
+      if (invoice?.status && invoice.status >= 4) {
+        this.confirmationService.confirm({
+          header: 'Thông báo',
+          rejectVisible: false,
+          acceptLabel: 'Xác nhận',
+          message: 'Bạn không thể hủy đơn hàng này.',
+        });
+        return;
+      }
       this.confirmService.confirm(
         `Bạn có chắc chắn muốn yêu cầu hủy đơn đặt hàng?`,
         () => {
-          const item:InsertUpdateInvoiceDto = {...invoice};
-          item.status = 7;
+          const item: any = { ...invoice };
+          item.cancel_pending = true;
           firstValueFrom(this.invoiceService.update(invoice.id, item)).then(
             (res) => {
               if (res?.status) {
@@ -336,7 +364,7 @@ export class InvoicesComponent implements OnInit {
                 this.toastService.addSuccess(`Yêu cầu đang được xử lý.`);
               } else {
                 this.toastService.addError(
-                  `Đơn hàng đang được vận chuyển, không thể hủy.`
+                  `Đơn hàng đang được vận chuyển hoặc đã hoàn tất, không thể hủy.`
                 );
               }
             }
@@ -381,10 +409,14 @@ export class InvoicesComponent implements OnInit {
         .getList({
           page: 1,
           limit: 99999,
+          with_detail: true,
         })
         .subscribe((res) => {
           if (res.status == true) {
             this.productDetails = res.data ?? [];
+            this.productDetails.forEach((d) => {
+              d.name = d.product?.name;
+            });
           }
         });
     }
@@ -406,7 +438,7 @@ export class InvoicesComponent implements OnInit {
   }
   public calTotal() {
     this.total = 0;
-    this.details.forEach((i) => (this.total += i.total));
+    this.details.forEach((i) => (this.total += i.price * i.quantity));
   }
   public addDetail() {
     if (this.detailForm && this.selectedProduct) {

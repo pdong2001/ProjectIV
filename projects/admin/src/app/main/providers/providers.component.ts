@@ -54,8 +54,8 @@ export class ProvidersComponent implements OnInit {
     private confirmService: ConfirmService,
     private fileService : FileService
   ) {
-    this.breadCrumpService.setPageTitle('Loại sản phẩm');
-    this.breadCrumpService.setTitle('Admin - Loại sản phẩm');
+    this.breadCrumpService.setPageTitle('Nhà cung cấp');
+    this.breadCrumpService.setTitle('Admin - Nhà cung cấp');
   }
 
   ngOnInit(): void {}

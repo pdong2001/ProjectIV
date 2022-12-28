@@ -12,6 +12,7 @@ export interface InvoiceDto extends AuditedEntity {
   commune: string;
   phone_number: string;
   status: number;
-  status_name : string;
+  status_name: string;
   details?: InvoiceDetailDto[];
+  cancel_pending?: boolean;
 }

@@ -59,8 +59,8 @@ export class BlogsComponent implements OnInit {
     private fileService: FileService,
     formBuilder: FormBuilder
   ) {
-    this.breadCrumpService.setPageTitle('Loại sản phẩm');
-    this.breadCrumpService.setTitle('Admin - Loại sản phẩm');
+    this.breadCrumpService.setPageTitle('Blogs');
+    this.breadCrumpService.setTitle('Admin - Blogs');
     this.form = formBuilder.group({
       title: ['', [Validators.required]],
       short_description: ['', [Validators.required]],

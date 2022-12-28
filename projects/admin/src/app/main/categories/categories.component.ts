@@ -115,7 +115,8 @@ export class CategoriesComponent implements OnInit {
     if (this.category.name != '') {
       if (
         this.category.name != this.selectedCategory.name ||
-        this.selectedCategory.visible != this.category.visible
+        this.selectedCategory.visible != this.category.visible ||
+        this.category.note != this.selectedCategory.note
       ) {
         this.loading = true;
         this.categoryService

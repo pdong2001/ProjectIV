@@ -54,7 +54,6 @@
         class="h-100 d-flex justify-content-between flex-column border rounded"
       >
         <p-image
-        
           appendTo="body"
           class="mx-auto h-100"
           [src]="blob.file_path | filePath"
@@ -64,13 +63,18 @@
           styleClass="h-100 mw-100"
         ></p-image>
         <div>
-          <strong class="d-block text-center">{{ blob.name }}</strong>
+          <strong
+            class="d-block text-center"
+            style="overflow: hidden; text-overflow: ellipsis"
+            [pTooltip]="blob.name"
+            >{{ blob.name }}</strong
+          >
           <div class="d-flex justify-content-between">
             <button
               pButton
               pRipple
               icon="fas fa-plus"
-              class="m-3 p-button-sm p-button-success"
+              class="p-1 p-button-sm p-button-success"
               (click)="duplicate(blob)"
               pTooltip="Nhân bản ảnh"
             ></button>
@@ -78,18 +82,18 @@
               pButton
               pRipple
               icon="far fa-edit"
-              class="m-3 p-button-sm"
+              class="p-button-sm"
               (click)="showEditDialog(blob)"
               pTooltip="Chỉnh sửa ảnh"
-              ></button>
+            ></button>
             <button
               (click)="delete(blob)"
               pButton
               pRipple
               icon="pi pi-trash"
-              class="m-3 p-button-sm p-button-danger"
+              class="p-button-sm p-button-danger"
               pTooltip="Xóa ảnh"
-              ></button>
+            ></button>
           </div>
         </div>
       </div>
@@ -185,7 +189,7 @@
           [maintainAspectRatio]="false"
           (imageCropped)="imageCropped($event)"
           format="png"
-          [aspectRatio]="10/13"
+          [aspectRatio]="10 / 13"
           [containWithinAspectRatio]="true"
         >
         </image-cropper>

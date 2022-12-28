@@ -102,9 +102,9 @@ export class ProductDetailsComponent implements OnInit {
         remaining_quantity: [0, [Validators.required, Validators.min(0)]],
         visible: [true, [Validators.required]],
         unit: ['', [Validators.required]],
-        in_price: [0, [Validators.required, Validators.min(0)]],
+        in_price: [0, [Validators.min(0)]],
         out_price: [0, [Validators.required, Validators.min(0)]],
-        total_quantity: [0, [Validators.required, Validators.min(0)]],
+        total_quantity: [0, [Validators.min(0)]],
       },
       {
         updateOn: 'change',
@@ -128,7 +128,7 @@ export class ProductDetailsComponent implements OnInit {
         with_detail: false,
         with_images: false,
         has_image_only: false,
-        visible_only: false
+        visible_only: false,
       })
       .subscribe({
         next: (res) => {
@@ -145,7 +145,7 @@ export class ProductDetailsComponent implements OnInit {
                   with_detail: false,
                   with_images: false,
                   has_image_only: false,
-                  visible_only: false
+                  visible_only: false,
                 })
                 .subscribe({
                   next: (res) => {
@@ -219,17 +219,17 @@ export class ProductDetailsComponent implements OnInit {
       this.loading = true;
       if (this.tabActiveIndex == 0 && this.newImages.length > 0) {
         const file = this.newImages[0];
-        await firstValueFrom(this.fileService.createAssign({
-          imageable_id : this.selectedProduct.id,
-          imageable_type: ImageableType.Product,
-          file: file
-        })).then(
-          (res) => {
-            if (res.status) {
-              productDetail.default_image = res.data?.blob.id;
-            }
+        await firstValueFrom(
+          this.fileService.createAssign({
+            imageable_id: this.selectedProduct.id,
+            imageable_type: ImageableType.Product,
+            file: file,
+          })
+        ).then((res) => {
+          if (res.status) {
+            productDetail.default_image = res.data?.blob.id;
           }
-        );
+        });
       } else if (this.tabActiveIndex == 1 && this.selectedFiles.length > 0) {
         productDetail.default_image = this.selectedFiles[0].id;
       }
@@ -259,15 +259,11 @@ export class ProductDetailsComponent implements OnInit {
             this.formVisible = false;
             this.loadProductDetails(this.dt.createLazyLoadMetadata());
             this.toastService.addSuccess(
-              `Đã thêm ${productDetail.option_name?.toLocaleLowerCase()} với giá trị là ${
-                productDetail.option_value
-              }.`
+              `Đã thêm tùy chọn sản phẩm thành công.`
             );
           } else {
             this.loading = false;
-            this.toastService.addError(
-              `Thêm ${productDetail.option_name?.toLocaleLowerCase()} với giá trị là ${productDetail.option_value?.toLocaleLowerCase()} thất bại.`
-            );
+            this.toastService.addError(`Thêm tùy chọn cho sản phẩm thất bại.`);
           }
         });
       }

@@ -1,7 +1,9 @@
 <section id="home-section" class="hero">
   <div
     class="home-slider owl-carousel"
-    style="background-size: cover !important;background-image : url('{{ getOne(infoType.Slide)?.image?.file_path | filePath }}'); height: 80vh !important;"
+    style="background-size: cover !important;background-image : url('{{
+      getOne(infoType.Slide)?.image?.file_path | filePath
+    }}'); height: 80vh !important;"
   >
     <div *ngFor="let slide of slides" class="slider-item js-fullheight">
       <div class="overlay"></div>
@@ -11,7 +13,7 @@
           data-scrollax-parent="true"
         >
           <div
-            class="one-forth d-flex align-items-center "
+            class="one-forth d-flex align-items-center"
             data-scrollax=" properties: { translateY: '70%' }"
           >
             <div [innerHTML]="slide.content | sanitizer" class="text"></div>
@@ -81,17 +83,23 @@
 <section class="ftco-section bg-light">
   <div class="container">
     <div class="row justify-content-center mb-3 pb-3">
-      <div class="col-md-12 heading-section text-center ">
+      <div class="col-md-12 heading-section text-center">
         <h2 class="mb-4">Sản phẩm mới ra mắt</h2>
         <p>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus doloribus harum, placeat facilis quos, accusantium tenetur aperiam a ab, necessitatibus earum deleniti quis nihil esse illum ex? Earum, quae hic.
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus
+          doloribus harum, placeat facilis quos, accusantium tenetur aperiam a
+          ab, necessitatibus earum deleniti quis nihil esse illum ex? Earum,
+          quae hic.
         </p>
       </div>
     </div>
   </div>
   <div class="container">
     <div class="row">
-      <div *ngFor="let prod of trendingProds" class="col-sm-12 col-md-6 col-lg-3 d-flex">
+      <div
+        *ngFor="let prod of trendingProds"
+        class="col-sm-12 col-md-6 col-lg-3 d-flex"
+      >
         <app-product-box [value]="prod"></app-product-box>
       </div>
     </div>
@@ -364,21 +372,24 @@
 <section class="ftco-gallery">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-md-8 heading-section text-center mb-4 ">
+      <div class="col-md-8 heading-section text-center mb-4">
         <h2 class="mb-4">Theo dõi chúng tôi</h2>
-        <p>
-          
-        </p>
+        <p></p>
       </div>
     </div>
   </div>
   <div class="container-fluid px-0">
     <div class="row no-gutters">
-      <div *ngFor="let item of getSettings(infoType.Gallery)" class="col-md-4 col-lg-2 ">
+      <div
+        *ngFor="let item of getSettings(infoType.Gallery)"
+        class="col-md-4 col-lg-2"
+      >
         <a
           href="{{ item?.image?.file_path | filePath }}"
           class="gallery image-popup img d-flex align-items-center"
-          style="background-image: url('{{ item?.image?.file_path | filePath }}')"
+          style="background-image: url('{{
+            item?.image?.file_path | filePath
+          }}')"
         >
           <div
             class="icon mb-4 d-flex align-items-center justify-content-center"

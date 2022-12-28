@@ -3,7 +3,12 @@ import {
   HttpErrorResponse,
   HttpHeaders,
 } from '@angular/common/http';
-import { Inject, Injectable, Injector, ReflectiveInjector } from '@angular/core';
+import {
+  Inject,
+  Injectable,
+  Injector,
+  ReflectiveInjector,
+} from '@angular/core';
 import { Route, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { catchError, Observable, throwError } from 'rxjs';
@@ -14,15 +19,9 @@ import { AuthDataService } from './auth-data.service';
   providedIn: 'root',
 })
 export class HttpService {
-  private httpOption = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-    }),
-  };
-
   protected static MessageService: MessageService;
   protected static Router: Router;
-  protected static AuthDataService : AuthDataService;
+  protected static AuthDataService: AuthDataService;
   handleError(error: HttpErrorResponse) {
     switch (error.status) {
       case 500:
@@ -39,7 +38,7 @@ export class HttpService {
           detail: `Bạn không có quyền truy cập chức năng này`,
         });
         HttpService.AuthDataService.removeToken();
-        HttpService.Router.navigateByUrl("/account/login");
+        HttpService.Router.navigateByUrl('/account/login');
         break;
       default:
         break;
@@ -49,9 +48,9 @@ export class HttpService {
   constructor(
     private httpClient: HttpClient,
     messageService: MessageService,
-    authDataService : AuthDataService,
+    authDataService: AuthDataService,
     router: Router,
-    @Inject(REST_API_SERVER) private apiServerAddress : string
+    @Inject(REST_API_SERVER) private apiServerAddress: string
   ) {
     HttpService.MessageService = messageService;
     HttpService.Router = router;

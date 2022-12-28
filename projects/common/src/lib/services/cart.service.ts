@@ -110,10 +110,12 @@ export class CartService extends CRUDService<
           return res;
         })
       );
-    response = new Observable<ServiceResponse<number>>((sub) => {
-      const item = this.addToLocal(input);
-      sub.next({ status: true, data: item.id });
-    });
+    else {
+      response = new Observable<ServiceResponse<number>>((sub) => {
+        const item = this.addToLocal(input);
+        sub.next({ status: true, data: item.id });
+      });
+    }
     return response;
   }
 
@@ -138,7 +140,7 @@ export class CartService extends CRUDService<
 
   public refreshCount() {
     if (this.authDataService.isLoggedIn()) {
-      this.getList({ page: 1, limit: 0 });
+      this.getList({ page: 1, limit: 0 }).subscribe();
     } else {
       this.loadFormLocal();
     }

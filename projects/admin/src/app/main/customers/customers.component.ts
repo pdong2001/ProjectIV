@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterContentChecked, Component, OnInit, ViewChild } from '@angular/core';
 import { LazyLoadEvent } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { SortMode } from 'projects/common/src/Contracts/Common/paged-and-sorted-request';
@@ -18,7 +18,7 @@ import { FileUpload } from 'primeng/fileupload';
   templateUrl: './customers.component.html',
   styleUrls: ['./customers.component.css'],
 })
-export class CustomersComponent implements OnInit {
+export class CustomersComponent implements OnInit, AfterContentChecked {
   @ViewChild('dt') dt!: Table;
   @ViewChild(FileUpload) upload!: FileUpload;
   customers: CustomerDto[] = [];
@@ -59,8 +59,8 @@ export class CustomersComponent implements OnInit {
     private fileService: FileService,
     formBuilder: FormBuilder
   ) {
-    this.breadCrumpService.setPageTitle('Loại sản phẩm');
-    this.breadCrumpService.setTitle('Admin - Loại sản phẩm');
+    this.breadCrumpService.setPageTitle('Khách hàng');
+    this.breadCrumpService.setTitle('Admin - Khách hàng');
     this.form = formBuilder.group({
       name: ['', [Validators.required]],
       phone_number: ['', [Validators.required]],
@@ -73,6 +73,10 @@ export class CustomersComponent implements OnInit {
       bank_name: [''],
       note: [''],
     });
+  }
+  ngAfterContentChecked(): void {
+    this.breadCrumpService.setPageTitle('Khách hàng');
+    this.breadCrumpService.setTitle('Admin - Khách hàng');
   }
 
   ngOnInit(): void {}
